@@ -25,7 +25,7 @@ Follow these steps to set up your development environment.
 1.  **Clone the Repository**
     Open your terminal and run the following command to download the project files:
     ```sh
-    git clone
+    git clone https://github.com/mhoveida/restaurant-roulette.git
     ```
 
 2.  **Navigate to the Project Directory**
