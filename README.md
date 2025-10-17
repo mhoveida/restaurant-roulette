@@ -1,24 +1,73 @@
-# README
+# Restaurant Roulette
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A Rails application to help you decide where to eat. This project is built with Ruby on Rails and uses PostgreSQL as its database.
 
-Things you may want to cover:
+---
 
-* Ruby version
+## Getting Started
 
-* System dependencies
+Follow these instructions to get a copy of the project up and running on your local machine for development and testing.
 
-* Configuration
+### Prerequisites
 
-* Database creation
+Before you begin, ensure you have the following software installed on your machine:
 
-* Database initialization
+* **Ruby** (version 3.3.9)
+* **Bundler** (gem for managing dependencies)
+* **Git** (version control)
+* **PostgreSQL** (database)
+    * For macOS users, it is highly recommended to install and manage PostgreSQL using [Homebrew](https://brew.sh/).
 
-* How to run the test suite
+### Installation
 
-* Services (job queues, cache servers, search engines, etc.)
+Follow these steps to set up your development environment.
 
-* Deployment instructions
+1.  **Clone the Repository**
+    Open your terminal and run the following command to download the project files:
+    ```sh
+    git clone [https://github.com/mhoveida/restaurant-roulette.git](https://github.com/mhoveida/restaurant-roulette.git)
+    ```
 
-* ...
+2.  **Navigate to the Project Directory**
+    ```sh
+    cd restaurant-roulette
+    ```
+
+3.  **Install Ruby Dependencies**
+    Use Bundler to install all the necessary gems specified in the `Gemfile`:
+    ```sh
+    bundle install
+    ```
+
+4.  **Set Up the Database**
+    This project uses PostgreSQL.
+
+    * First, make sure your PostgreSQL server is running. If you installed it with Homebrew, you can start it with:
+        ```sh
+        brew services start postgresql
+        ```
+
+    * Next, create the development and test databases for the application:
+        ```sh
+        rails db:create
+        ```
+
+    * Finally, run the database migrations to set up the schema:
+        ```sh
+        rails db:migrate
+        ```
+
+## Usage
+
+To run the application locally:
+
+1.  **Start the Rails Server**
+    ```sh
+    rails server
+    ```
+
+2.  **View the Application**
+    Open your favorite web browser and navigate to:
+    [http://localhost:3000](http://localhost:3000)
+
+You should see the application's homepage.
