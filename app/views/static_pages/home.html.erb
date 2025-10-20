@@ -1,0 +1,26 @@
+<div class="home-container">
+  <header>
+    <h1>RESTAURANT R<span class="wheel-icon"></span>ULETTE</h1>
+
+    <%= link_to "Log In", "#", class: "login-button" %>
+  </header>
+
+  <main>
+    <div class="controls">
+      <h2>Let the Wheel pick your next <strong>meal</strong></h2>
+
+      <%= link_to "Solo Spin", "#", class: "button" %>
+      <%= link_to "Create Room", "#", class: "button" %>
+
+      <%= form_with(url: "#", class: "join-form") do |form| %>
+        <%= form.text_field :room_code, placeholder: "Enter Room Code" %>
+        <%= form.submit "Join Room", class: "button" %>
+      <% end %>
+    </div>
+
+    <div class="wheel-container">
+      <div id="roulette-wheel-graphic">
+                   </div>
+    </div>
+  </main>
+</div>
