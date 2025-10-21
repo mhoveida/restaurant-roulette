@@ -52,7 +52,7 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  gem "rspec-rails", "~> 6.0"
+  gem "rspec-rails", "~> 8.0"
   gem "cucumber-rails", ">= 2.6.1", require: false
   gem "capybara", ">= 3.39"
   gem "selenium-webdriver", ">= 4.10"
