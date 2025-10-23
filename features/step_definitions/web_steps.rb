@@ -1,18 +1,16 @@
-# --- Page Navigation ---
+# ============================================
+# BACKGROUND
+# ============================================
+
+
+
+# ============================================
+# GIVEN STEPS - Setup
+# ============================================
 
 Given "I am on the home page" do
   visit root_path
 end
-
-When /I click "(.*)"/ do |link_or_button_text|
-  click_on link_or_button_text
-end
-
-When /I fill in "(.*)" with "(.*)"/ do |field_name, value|
-  fill_in field_name, with: value
-end
-
-# --- Authentication Steps ---
 
 Given /I am logged in as "(.*)"/ do |name|
   user = FactoryBot.create(:user, email: "#{name.downcase}@example.com")
@@ -24,7 +22,42 @@ Given "I am not logged in" do
   visit root_path
 end
 
-# --- ASSERTION STEPS (CORRECTED) ---
+# --- Pending Steps ---
+
+Given /a room exists with code "(.*)"/ do |code|
+  FactoryBot.create(:room, code: code)
+end
+
+
+# ============================================
+# WHEN STEPS - Actions
+# ============================================
+
+When /I click "(.*)"/ do |link_or_button_text|
+  click_on link_or_button_text
+end
+
+When /I fill in "(.*)" with "(.*)"/ do |field_name, value|
+  fill_in field_name, with: value
+end
+
+
+# --- Room-Specific Steps ---
+
+When "I click 'Join Room' without entering a code" do
+  click_on "Join Room"
+end
+
+# --- Pending Steps ---
+
+When "I click on the user profile icon" do
+  pending "Step not defined: Implement profile dropdown JavaScript/CSS"
+end
+
+
+# ============================================
+# THEN STEPS - Assertions
+# ============================================
 
 Then /I should see "(.*)"/ do |text|
   expect(page.has_content?(text)).to be(true), "Expected to find text '#{text}', but did not."
@@ -72,22 +105,9 @@ Then /I should see a "(.*)" button in the header/ do |button_text|
   end
 end
 
-# --- Room-Specific Steps ---
-
-When "I click 'Join Room' without entering a code" do
-  click_on "Join Room"
-end
-
 # --- Pending Steps ---
-
-Given /a room exists with code "(.*)"/ do |code|
-  FactoryBot.create(:room, code: code)
-end
-
-When "I click on the user profile icon" do
-  pending "Step not defined: Implement profile dropdown JavaScript/CSS"
-end
 
 Then "I should see a dropdown menu with profile options" do
   pending "Step not defined: Implement profile dropdown HTML"
 end
+
