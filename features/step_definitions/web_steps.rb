@@ -81,7 +81,7 @@ end
 # --- Pending Steps ---
 
 Given /a room exists with code "(.*)"/ do |code|
-  pending "Step not defined: Create Room model and factory"
+  FactoryBot.create(:room, code: code)
 end
 
 When "I click on the user profile icon" do

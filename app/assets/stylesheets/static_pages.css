@@ -61,15 +61,32 @@
 
 .join-form {
   margin-top: 2rem;
+  display: flex;
 }
 
 .join-form input[type="text"] {
-  width: 100%;
-  padding: 15px;
-  border-radius: 8px;
-  border: none;
-  box-sizing: border-box; /* padding */
-  margin-bottom: 1rem;
+  flex-grow: 1;
+  padding: 15px; 
+  border-radius: 8px 0 0 8px;
+  border: 2px solid var(--color-yellow);
+  border-right: none; 
+  box-sizing: border-box; 
+  margin-bottom: 0;
+  background-color: transparent;
+  color: var(--color-text);
+  height: 50px;
+}
+
+.join-form .button {
+  border-radius: 0 8px 8px 0;
+  padding: 15px 20px;
+  border: 2px solid var(--color-yellow);
+  border-left: none;
+  box-sizing: border-box; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
 }
 
 .wheel-container {

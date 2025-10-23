@@ -15,13 +15,19 @@
     <div class="controls">
       <h2>Let the <strong>Wheel</strong> pick your next <strong>meal</strong></h2>
 
-      <%= link_to "Solo Spin", "#", class: "button" %>
-      <%= link_to "Create Room", "#", class: "button" %>
+      <%= link_to "Solo Spin", solo_spin_path, class: "button" %>
+      <%= link_to "Create Room", create_room_path, class: "button" %>
 
-      <%= form_with(url: "#", class: "join-form") do |form| %>
-        <%= form.text_field :room_code, placeholder: "Enter Room Code" %>
-        <%= form.submit "Join Room", class: "button" %>
-      <% end %>
+      <%= form_with(url: join_room_path, class: "join-form") do |form| %>
+        <%= form.text_field :room_code, placeholder: "Enter Room Code", value: flash[:submitted_code]%>
+        <%= form.button "Join Room", class: "button" %>
+        <% end %>
+
+        <% if flash[:alert] %>
+          <div class="flash-alert" style="color: #ef4444; margin-top: 8px;">
+            <%= flash[:alert] %>
+          </div>
+        <% end %>
     </div>
 
     <div class="wheel-container">

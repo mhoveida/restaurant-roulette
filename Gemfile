@@ -60,6 +60,7 @@ group :development, :test do
   gem "selenium-webdriver", ">= 4.10"
   gem "factory_bot_rails"
   gem "database_cleaner-active_record"
+  gem "warden"
 end
 
 group :development do
