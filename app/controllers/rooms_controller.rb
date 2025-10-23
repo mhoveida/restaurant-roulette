@@ -9,7 +9,7 @@ class RoomsController < ApplicationController
 
   def join
     @room = Room.find_by(code: params[:room_code])
-    
+
     if @room
       if user_signed_in?
         redirect_to @room
@@ -26,5 +26,4 @@ class RoomsController < ApplicationController
   def join_as_guest
     @room = Room.find(params[:id])
   end
-  
 end
