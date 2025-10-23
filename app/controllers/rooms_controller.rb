@@ -8,6 +8,20 @@ class RoomsController < ApplicationController
   end
 
   def join
+    room_code = params[:room_code]
+    if room_code.blank?
+      flash[:alert] = "Please enter a room code"
+      redirect_to root_path
+      return
+
+    elsif !room_code.match?(/^\d{4}$/)
+      flash[:alert] = "Please enter a valid 4-digit room code"
+      flash[:submitted_code] = room_code
+      redirect_to root_path
+      return
+      
+    end
+
     @room = Room.find_by(code: params[:room_code])
 
     if @room
