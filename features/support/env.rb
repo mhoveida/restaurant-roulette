@@ -66,3 +66,19 @@ end
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
+
+# ============================================
+# Restaurant Data Setup for Tests
+# ============================================
+
+Before do
+  # Seed database for tests if empty
+  if Restaurant.count == 0
+    puts "Seeding test database with restaurants..."
+    load Rails.root.join('db', 'seeds.rb')
+    puts "Loaded #{Restaurant.count} restaurants"
+  end
+
+  # Initialize restaurant service for all scenarios
+  @restaurant_service = RestaurantService.new
+end

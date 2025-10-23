@@ -1,9 +1,289 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+
+Restaurant.destroy_all
+
+restaurants_data = [
+  {
+    name: "Da Andrea",
+    rating: 4.7,
+    price: "$$",
+    address: "160 8th Ave, New York, NY 10011",
+    phone: "+1 212-367-1979",
+    image_url: "https://source.unsplash.com/400x300/?italian,restaurant",
+    latitude: 40.7423,
+    longitude: -74.0018,
+    review_count: 1250,
+    is_open_now: true,
+    closing_time: "10:00 PM",
+    categories: [ "Italian", "Mediterranean", "Pasta" ]
+  },
+  {
+    name: "Carbone",
+    rating: 4.8,
+    price: "$$$",
+    address: "181 Thompson St, New York, NY 10012",
+    phone: "+1 212-254-3000",
+    image_url: "https://source.unsplash.com/400x300/?fine,dining,italian",
+    latitude: 40.7265,
+    longitude: -74.0033,
+    review_count: 2800,
+    is_open_now: true,
+    closing_time: "11:00 PM",
+    categories: [ "Italian", "Fine Dining", "Wine Bar" ]
+  },
+  {
+    name: "L'Artusi",
+    rating: 4.6,
+    price: "$$$",
+    address: "228 W 10th St, New York, NY 10014",
+    phone: "+1 212-255-5757",
+    image_url: "https://source.unsplash.com/400x300/?modern,italian",
+    latitude: 40.7342,
+    longitude: -74.0021,
+    review_count: 1890,
+    is_open_now: true,
+    closing_time: "11:00 PM",
+    categories: [ "Italian", "Wine Bar", "Contemporary" ]
+  },
+  {
+    name: "Lilia",
+    rating: 4.7,
+    price: "$$$",
+    address: "567 Union Ave, Brooklyn, NY 11222",
+    phone: "+1 718-576-3095",
+    image_url: "https://source.unsplash.com/400x300/?pasta,brooklyn",
+    latitude: 40.7202,
+    longitude: -73.9502,
+    review_count: 2100,
+    is_open_now: true,
+    closing_time: "10:30 PM",
+    categories: [ "Italian", "Pasta", "Seafood" ]
+  },
+  {
+    name: "Bourbon and Branch",
+    rating: 4.5,
+    price: "$",
+    address: "155 W 33rd St, New York, NY 10001",
+    phone: "+1 212-947-4853",
+    image_url: "https://source.unsplash.com/400x300/?american,casual",
+    latitude: 40.7506,
+    longitude: -73.9911,
+    review_count: 453,
+    is_open_now: true,
+    closing_time: "12:00 AM",
+    categories: [ "American", "Bar", "Casual" ]
+  },
+  {
+    name: "The Smith",
+    rating: 4.4,
+    price: "$$",
+    address: "956 2nd Ave, New York, NY 10022",
+    phone: "+1 212-644-2700",
+    image_url: "https://source.unsplash.com/400x300/?american,brunch",
+    latitude: 40.7614,
+    longitude: -73.9656,
+    review_count: 3200,
+    is_open_now: true,
+    closing_time: "11:00 PM",
+    categories: [ "American", "Brunch", "Cocktails" ]
+  },
+  {
+    name: "Joe's Pizza",
+    rating: 4.6,
+    price: "$",
+    address: "7 Carmine St, New York, NY 10014",
+    phone: "+1 212-366-1182",
+    image_url: "https://source.unsplash.com/400x300/?pizza,slice",
+    latitude: 40.7303,
+    longitude: -74.0025,
+    review_count: 5400,
+    is_open_now: true,
+    closing_time: "4:00 AM",
+    categories: [ "Pizza", "Italian", "Quick Bites" ]
+  },
+  {
+    name: "Shake Shack",
+    rating: 4.3,
+    price: "$",
+    address: "Madison Square Park, New York, NY 10010",
+    phone: "+1 212-889-6600",
+    image_url: "https://source.unsplash.com/400x300/?burger,shake",
+    latitude: 40.7414,
+    longitude: -73.9882,
+    review_count: 8900,
+    is_open_now: true,
+    closing_time: "11:00 PM",
+    categories: [ "American", "Burgers", "Fast Food" ]
+  },
+  {
+    name: "Shukette",
+    rating: 4.7,
+    price: "$$",
+    address: "240 W 52nd St, New York, NY 10019",
+    phone: "+1 212-858-9820",
+    image_url: "https://source.unsplash.com/400x300/?mediterranean,food",
+    latitude: 40.7624,
+    longitude: -73.9826,
+    review_count: 890,
+    is_open_now: true,
+    closing_time: "10:00 PM",
+    categories: [ "Mediterranean", "Middle Eastern", "Israeli" ]
+  },
+  {
+    name: "Zahav",
+    rating: 4.8,
+    price: "$$$",
+    address: "237 St Marks Pl, New York, NY 10003",
+    phone: "+1 215-625-8800",
+    image_url: "https://source.unsplash.com/400x300/?israeli,cuisine",
+    latitude: 40.7281,
+    longitude: -73.9819,
+    review_count: 1560,
+    is_open_now: true,
+    closing_time: "10:00 PM",
+    categories: [ "Israeli", "Mediterranean", "Fine Dining" ]
+  },
+  {
+    name: "Ippudo",
+    rating: 4.5,
+    price: "$$",
+    address: "65 4th Ave, New York, NY 10003",
+    phone: "+1 212-388-0088",
+    image_url: "https://source.unsplash.com/400x300/?ramen,japanese",
+    latitude: 40.7299,
+    longitude: -73.9903,
+    review_count: 4200,
+    is_open_now: true,
+    closing_time: "11:00 PM",
+    categories: [ "Japanese", "Ramen", "Noodles" ]
+  },
+  {
+    name: "Sushi Nakazawa",
+    rating: 4.9,
+    price: "$$$$",
+    address: "23 Commerce St, New York, NY 10014",
+    phone: "+1 212-924-2212",
+    image_url: "https://source.unsplash.com/400x300/?sushi,omakase",
+    latitude: 40.7352,
+    longitude: -74.0057,
+    review_count: 980,
+    is_open_now: true,
+    closing_time: "10:00 PM",
+    categories: [ "Japanese", "Sushi", "Fine Dining" ]
+  },
+  {
+    name: "Los Tacos No. 1",
+    rating: 4.6,
+    price: "$",
+    address: "Chelsea Market, 75 9th Ave, New York, NY 10011",
+    phone: "+1 212-256-0343",
+    image_url: "https://source.unsplash.com/400x300/?tacos,mexican",
+    latitude: 40.7424,
+    longitude: -74.0060,
+    review_count: 6700,
+    is_open_now: true,
+    closing_time: "10:00 PM",
+    categories: [ "Mexican", "Tacos", "Casual" ]
+  },
+  {
+    name: "Cosme",
+    rating: 4.7,
+    price: "$$$",
+    address: "35 E 21st St, New York, NY 10010",
+    phone: "+1 212-913-9659",
+    image_url: "https://source.unsplash.com/400x300/?modern,mexican",
+    latitude: 40.7399,
+    longitude: -73.9882,
+    review_count: 2300,
+    is_open_now: true,
+    closing_time: "10:30 PM",
+    categories: [ "Mexican", "Contemporary", "Fine Dining" ]
+  },
+  {
+    name: "Xi'an Famous Foods",
+    rating: 4.5,
+    price: "$",
+    address: "81 St Marks Pl, New York, NY 10003",
+    phone: "+1 212-786-2068",
+    image_url: "https://source.unsplash.com/400x300/?chinese,noodles",
+    latitude: 40.7282,
+    longitude: -73.9842,
+    review_count: 3400,
+    is_open_now: true,
+    closing_time: "10:00 PM",
+    categories: [ "Chinese", "Noodles", "Casual" ]
+  },
+  {
+    name: "RedFarm",
+    rating: 4.6,
+    price: "$$",
+    address: "529 Hudson St, New York, NY 10014",
+    phone: "+1 212-792-9700",
+    image_url: "https://source.unsplash.com/400x300/?dim,sum",
+    latitude: 40.7344,
+    longitude: -74.0068,
+    review_count: 2800,
+    is_open_now: true,
+    closing_time: "11:00 PM",
+    categories: [ "Chinese", "Dim Sum", "Contemporary" ]
+  },
+  {
+    name: "Le Bernardin",
+    rating: 4.9,
+    price: "$$$$",
+    address: "155 W 51st St, New York, NY 10019",
+    phone: "+1 212-554-1515",
+    image_url: "https://source.unsplash.com/400x300/?fine,dining,seafood",
+    latitude: 40.7614,
+    longitude: -73.9819,
+    review_count: 1450,
+    is_open_now: true,
+    closing_time: "10:00 PM",
+    categories: [ "French", "Seafood", "Fine Dining" ]
+  },
+  {
+    name: "Balthazar",
+    rating: 4.5,
+    price: "$$$",
+    address: "80 Spring St, New York, NY 10012",
+    phone: "+1 212-965-1414",
+    image_url: "https://source.unsplash.com/400x300/?french,bistro",
+    latitude: 40.7223,
+    longitude: -73.9977,
+    review_count: 5200,
+    is_open_now: true,
+    closing_time: "12:00 AM",
+    categories: [ "French", "Bistro", "Brunch" ]
+  },
+  {
+    name: "Prince Street Pizza",
+    rating: 4.7,
+    price: "$",
+    address: "27 Prince St, New York, NY 10012",
+    phone: "+1 212-966-4100",
+    image_url: "https://source.unsplash.com/400x300/?pepperoni,pizza",
+    latitude: 40.7227,
+    longitude: -73.9950,
+    review_count: 4800,
+    is_open_now: true,
+    closing_time: "11:00 PM",
+    categories: [ "Pizza", "Italian", "Quick Bites" ]
+  },
+  {
+    name: "Momofuku Noodle Bar",
+    rating: 4.4,
+    price: "$$",
+    address: "171 1st Ave, New York, NY 10003",
+    phone: "+1 212-777-7773",
+    image_url: "https://source.unsplash.com/400x300/?ramen,asian",
+    latitude: 40.7289,
+    longitude: -73.9861,
+    review_count: 3900,
+    is_open_now: true,
+    closing_time: "11:00 PM",
+    categories: [ "Asian Fusion", "Ramen", "Contemporary" ]
+  }
+]
+
+restaurants_data.each do |restaurant_attrs|
+  restaurant = Restaurant.create!(restaurant_attrs)
+end

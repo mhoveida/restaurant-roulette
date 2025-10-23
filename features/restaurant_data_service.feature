@@ -42,7 +42,7 @@ Feature: Restaurant Data Service
     Given a restaurant is fetched from the service
     When the system requests restaurant details
     Then the response should include an image_url
-    And images should be in usable format (JPEG/PNG or URL)
+    And images should be in usable format
 
   Scenario: Filter by price range
     Given location is "New York"
