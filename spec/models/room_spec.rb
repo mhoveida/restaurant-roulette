@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Room, type: :model do
-  
   # TEST FOR RULE 1:
   # This test tries to break the "presence" rule.
   it "is not valid without a code" do
@@ -16,5 +15,4 @@ RSpec.describe Room, type: :model do
     room2 = Room.new(code: "1234")
     expect(room2).not_to be_valid
   end
-  
 end

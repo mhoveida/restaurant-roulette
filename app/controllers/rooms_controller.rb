@@ -19,7 +19,7 @@ class RoomsController < ApplicationController
       flash[:submitted_code] = room_code
       redirect_to root_path
       return
-      
+
     end
 
     @room = Room.find_by(code: params[:room_code])
