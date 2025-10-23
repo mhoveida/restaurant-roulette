@@ -13,8 +13,8 @@ class RestaurantService
       cuisine_array = categories.is_a?(Array) ? categories : categories.split(",").map(&:strip)
       cuisine_queries = cuisine_array.map { |c| "categories LIKE ?" }
       query_values = cuisine_array.map { |c| "%#{c}%" }
-      
-      results = results.where(cuisine_queries.join(' OR '), *query_values)
+
+      results = results.where(cuisine_queries.join(" OR "), *query_values)
     end
 
     # Filter by price
@@ -46,8 +46,8 @@ class RestaurantService
       cuisine_array = categories.is_a?(Array) ? categories : categories.split(",").map(&:strip)
       cuisine_queries = cuisine_array.map { |c| "categories LIKE ?" }
       query_values = cuisine_array.map { |c| "%#{c}%" }
-      
-      results = results.where(cuisine_queries.join(' OR '), *query_values)
+
+      results = results.where(cuisine_queries.join(" OR "), *query_values)
     end
 
     results = results.by_price(price) if price.present?
