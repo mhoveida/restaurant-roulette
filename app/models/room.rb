@@ -1,3 +1,7 @@
 class Room < ApplicationRecord
-    validates :code, presence: true, uniqueness: true
+  # RULE 1: A code must be present
+  validates :code, presence: true
+
+  # RULE 2: A code must be unique
+  validates :code, uniqueness: true
 end
