@@ -81,3 +81,33 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--color-background);
   color: var(--color-text); /* White text for black background */
 }
+
+/* This makes the profile email look clickable */
+.profile-email {
+  cursor: pointer;
+}
+
+/* This styles the dropdown menu itself */
+.dropdown-menu {
+  position: absolute;
+  top: 60px; /* Position it below the navbar */
+  right: 2rem;
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+/* This styles the links inside the dropdown */
+.dropdown-menu .dropdown-item {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #f5f5f5;
+}

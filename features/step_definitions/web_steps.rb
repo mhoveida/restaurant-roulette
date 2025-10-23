@@ -22,8 +22,6 @@ Given "I am not logged in" do
   visit root_path
 end
 
-# --- Pending Steps ---
-
 Given /a room exists with code "(.*)"/ do |code|
   FactoryBot.create(:room, code: code)
 end
@@ -41,17 +39,12 @@ When /I fill in "(.*)" with "(.*)"/ do |field_name, value|
   fill_in field_name, with: value
 end
 
-
-# --- Room-Specific Steps ---
+When "I click on the user profile icon" do
+  find("span.profile-email", text: "User: maddison@example.com").click
+end
 
 When "I click 'Join Room' without entering a code" do
   click_on "Join Room"
-end
-
-# --- Pending Steps ---
-
-When "I click on the user profile icon" do
-  pending "Step not defined: Implement profile dropdown JavaScript/CSS"
 end
 
 
@@ -105,8 +98,6 @@ Then /I should see a "(.*)" button in the header/ do |button_text|
   end
 end
 
-# --- Pending Steps ---
-
 Then "I should see a dropdown menu with profile options" do
-  pending "Step not defined: Implement profile dropdown HTML"
+  expect(page).to have_css(".dropdown-menu", visible: true)
 end

@@ -83,6 +83,7 @@ Feature: Home Page
     And I click "Join Room"
     Then I should see "Please enter a valid 4-digit room code"
 
+  @javascript
   Scenario: Logged in user accesses profile menu
     Given I am logged in as "Maddison"
     And I am on the home page
