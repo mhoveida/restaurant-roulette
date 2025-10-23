@@ -11,9 +11,10 @@ class RestaurantService
     # Filter by cuisine/categories
     if categories.present?
       cuisine_array = categories.is_a?(Array) ? categories : categories.split(",").map(&:strip)
-      # Search for first cuisine in the array
-      cuisine = cuisine_array.first
-      results = results.where("categories LIKE ?", "%#{cuisine}%")
+      cuisine_queries = cuisine_array.map { |c| "categories LIKE ?" }
+      query_values = cuisine_array.map { |c| "%#{c}%" }
+      
+      results = results.where(cuisine_queries.join(' OR '), *query_values)
     end
 
     # Filter by price
@@ -43,8 +44,10 @@ class RestaurantService
 
     if categories.present?
       cuisine_array = categories.is_a?(Array) ? categories : categories.split(",").map(&:strip)
-      cuisine = cuisine_array.first
-      results = results.where("categories LIKE ?", "%#{cuisine}%")
+      cuisine_queries = cuisine_array.map { |c| "categories LIKE ?" }
+      query_values = cuisine_array.map { |c| "%#{c}%" }
+      
+      results = results.where(cuisine_queries.join(' OR '), *query_values)
     end
 
     results = results.by_price(price) if price.present?
@@ -53,7 +56,7 @@ class RestaurantService
     results = results.where.not(id: exclude_ids) if exclude_ids.any?
 
     # Get random sample
-    selected = results.order("RANDOM()").limit(count)
+    selected = results.order(Arel.sql("RANDOM()")).limit(count)
 
     selected.map { |r| restaurant_to_hash(r) }
   end

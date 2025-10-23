@@ -103,7 +103,7 @@ end
 When('the system requests restaurants') do
   @search_results = @restaurant_service.search_restaurants(
     location: @location || 'New York',
-    categories: @cuisine,
+    categories: @cuisine || @cuisine,
     price: @price
   )
 end
