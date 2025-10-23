@@ -18,7 +18,6 @@
   letter-spacing: 2px;
 }
 
-/* This is how we can add the little wheel icon from our logo */
 .home-container header .wheel-icon {
   display: inline-block;
   width: 28px;
@@ -101,4 +100,24 @@
   background-position: center;
   width: 100%;
   min-height: 500px;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  margin: 0;
+  color: var(--color-yellow);
+  letter-spacing: 2px;
+  margin-bottom: 4rem; /* This pushes the content back down */
+}
+
+.home-title .wheel-icon {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  background-image: url('small.png'); /* Use your image name */
+  background-size: cover; /* This scales the image to fill the circle */
+  background-position: center; /* This centers the image */
+  border-radius: 50%;
+  margin: 0 5px;
+  vertical-align: middle;
 }

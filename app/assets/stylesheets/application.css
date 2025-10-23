@@ -32,3 +32,52 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
   font-size: 1rem;
 }
+
+/* =================================
+   Navbar
+   ================================= */
+.main-navbar {
+  display: flex;
+  justify-content: space-between; /* Puts logo on left, auth on right */
+  align-items: center;
+  background-color: var(--color-background); /* Your black variable */
+  padding: 1rem 2rem; /* 1rem top/bottom, 2rem left/right */
+  border-bottom: 1px solid #444;
+}
+
+.main-navbar .navbar-logo img {
+  height: 40px; /* Adjust as needed */
+  width: auto;
+}
+
+.main-navbar .user-auth-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Adds space between email and button */
+}
+
+.main-navbar .profile-email {
+  color: var(--color-text); /* White text */
+  font-size: 0.9rem;
+}
+
+/* Make sure your login button still looks good */
+.login-button {
+  background-color: var(--color-yellow);
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.bg-white {
+  background-color: #FFFFFF;
+  color: #333333; /* Dark text for white background */
+}
+
+.bg-black {
+  background-color: var(--color-background);
+  color: var(--color-text); /* White text for black background */
+}
