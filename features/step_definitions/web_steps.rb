@@ -110,4 +110,3 @@ end
 Then "I should see a dropdown menu with profile options" do
   pending "Step not defined: Implement profile dropdown HTML"
 end
-
