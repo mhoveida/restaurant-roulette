@@ -22,8 +22,8 @@ class Restaurant < ApplicationRecord
   scope :open_now, -> { where(is_open_now: true) }
 
   def cuisine_list
-    categories.join(", ")
-  end
+  categories.is_a?(Array) ? categories.join(", ") : ""
+end
 
   def has_cuisine?(cuisine)
     return false unless categories.is_a?(Array)

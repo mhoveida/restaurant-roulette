@@ -59,13 +59,27 @@ RSpec.describe Restaurant, type: :model do
     let!(:italian_restaurant) { FactoryBot.create(:restaurant, categories: [ "Italian", "Pasta" ]) }
     let!(:mexican_restaurant) { FactoryBot.create(:restaurant, categories: [ "Mexican", "Tacos" ]) }
 
+    # FIXED: Added .to_a and .count to force SQL execution (covers line 14)
     it "returns restaurants matching the cuisine" do
-      expect(Restaurant.by_cuisine("Italian")).to include(italian_restaurant)
-      expect(Restaurant.by_cuisine("Italian")).not_to include(mexican_restaurant)
+      results = Restaurant.by_cuisine("Italian")
+      # Force SQL execution to ensure WHERE clause runs
+      expect(results.to_a).to include(italian_restaurant)
+      expect(results.to_a).not_to include(mexican_restaurant)
+      expect(results.count).to eq(1)
+      # Additional verification to ensure WHERE executed
+      expect(results.pluck(:id)).to include(italian_restaurant.id)
+      expect(results.pluck(:id)).not_to include(mexican_restaurant.id)
     end
 
     it "returns all restaurants if cuisine is blank" do
-      expect(Restaurant.by_cuisine("")).to include(italian_restaurant, mexican_restaurant)
+      results = Restaurant.by_cuisine("")
+      expect(results.to_a).to include(italian_restaurant, mexican_restaurant)
+      expect(results.count).to eq(2)
+    end
+    
+    it "returns all restaurants if cuisine is nil" do
+      results = Restaurant.by_cuisine(nil)
+      expect(results.to_a).to include(italian_restaurant, mexican_restaurant)
     end
   end
 
@@ -93,7 +107,46 @@ RSpec.describe Restaurant, type: :model do
     end
   end
 
-  # --- METHOD TESTS --- (Example for has_cuisine?)
+  # --- METHOD TESTS ---
+  
+  describe "#cuisine_list" do
+    # FIXED: Changed build to create to ensure serialization works (covers line 25)
+    it "returns a comma-separated string of categories" do
+      restaurant = FactoryBot.create(:restaurant, categories: ["Italian", "Pasta", "Pizza"])
+      restaurant.reload  # Ensure DB round-trip
+      result = restaurant.cuisine_list
+      expect(result).to eq("Italian, Pasta, Pizza")
+      expect(restaurant.categories).to be_a(Array)
+    end
+
+    it "returns an empty string if categories is empty" do
+      restaurant = FactoryBot.create(:restaurant, categories: [])
+      restaurant.reload
+      expect(restaurant.cuisine_list).to eq("")
+    end
+
+    it "returns an empty string if categories is nil" do
+      restaurant = FactoryBot.create(:restaurant, categories: nil)
+      restaurant.reload
+      result = restaurant.cuisine_list
+      expect(result).to eq("")
+      expect(restaurant.categories).to be_nil
+    end
+
+    # NEW: Added test for FALSE branch of ternary operator (covers line 26)
+    it "returns empty string when categories is not an array" do
+      restaurant = Restaurant.new(
+        name: "Not Array Test",
+        rating: 4.0,
+        price: "$$",
+        address: "123 Test St",
+        categories: "this is a string, not an array"
+      )
+      result = restaurant.cuisine_list
+      expect(result).to eq("")
+      expect(restaurant.categories.is_a?(Array)).to be false
+    end
+  end
 
   describe "#has_cuisine?" do
     let(:restaurant) { FactoryBot.create(:restaurant, categories: [ "Italian", "Mediterranean" ]) }
@@ -101,14 +154,37 @@ RSpec.describe Restaurant, type: :model do
     it "returns true if the restaurant has the specified cuisine (case-insensitive)" do
       expect(restaurant.has_cuisine?("italian")).to be true
       expect(restaurant.has_cuisine?("Mediterranean")).to be true
+      expect(restaurant.has_cuisine?("ITALIAN")).to be true
     end
 
     it "returns false if the restaurant does not have the specified cuisine" do
       expect(restaurant.has_cuisine?("Mexican")).to be false
     end
 
-    it "returns false if categories is nil or not an array" do
+    # CRITICAL: This covers line 29 (return false unless categories.is_a?(Array))
+    it "returns false if categories is nil" do
       restaurant.update(categories: nil)
+      restaurant.reload
+      result = restaurant.has_cuisine?("Italian")
+      expect(result).to be false
+      expect(restaurant.categories).to be_nil
+    end
+    
+    # CRITICAL: This covers line 30 (categories.any? with downcase.include?)
+    it "uses case-insensitive partial matching" do
+      expect(restaurant.has_cuisine?("ital")).to be true
+      expect(restaurant.has_cuisine?("MEDITERR")).to be true
+      expect(restaurant.has_cuisine?("mex")).to be false
+    end
+    
+    it "returns false for non-array categories" do
+      restaurant = Restaurant.new(
+        name: "Test",
+        rating: 4.0,
+        price: "$$",
+        address: "123 Test",
+        categories: "Italian"
+      )
       expect(restaurant.has_cuisine?("Italian")).to be false
     end
   end
