@@ -18,7 +18,7 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -47,8 +47,12 @@
       </div>
     </header>
 
-    <main class="container mx-auto mt-28 px-5">
+    <% if content_for?(:skip_main_container) %>
       <%= yield %>
-    </main>
+    <% else %>
+      <main class="container mx-auto mt-28 px-5">
+        <%= yield %>
+      </main>
+    <% end %>
   </body>
 </html>

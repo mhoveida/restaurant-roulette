@@ -1,38 +1,23 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="auth-form"
 export default class extends Controller {
   static targets = [
     "loginTab",
     "signupTab",
     "loginForm",
     "signupForm",
-    "loginEmail",
+    "loginError",
+    "signupError",
     "loginPassword",
-    "loginEmailError",
-    "loginPasswordError",
-    "firstName",
-    "lastName",
-    "signupEmail",
-    "signupPassword",
-    "firstNameError",
-    "lastNameError",
-    "signupEmailError",
-    "signupPasswordError",
-    "loginButton",
-    "signupButton"
+    "signupPassword"
   ]
-
-  connect() {
-    this.clearForms()
-  }
 
   switchToLogin() {
     this.loginTabTarget.classList.add("active")
     this.signupTabTarget.classList.remove("active")
     this.loginFormTarget.style.display = "block"
     this.signupFormTarget.style.display = "none"
-    this.clearSignupErrors()
+    this.loginErrorTarget.style.display = "none"
   }
 
   switchToSignup() {
@@ -40,57 +25,82 @@ export default class extends Controller {
     this.signupTabTarget.classList.add("active")
     this.loginFormTarget.style.display = "none"
     this.signupFormTarget.style.display = "block"
-    this.clearLoginErrors()
+    this.signupErrorTarget.style.display = "none"
   }
 
-  toggleLoginPassword() {
+  toggleLoginPassword(e) {
     const field = this.loginPasswordTarget
-    const button = event.currentTarget
-
     if (field.type === "password") {
       field.type = "text"
-      button.textContent = "🙈"
+      e.currentTarget.textContent = "🙈"
     } else {
       field.type = "password"
-      button.textContent = "👁️"
+      e.currentTarget.textContent = "👁️"
     }
   }
 
-  toggleSignupPassword() {
+  toggleSignupPassword(e) {
     const field = this.signupPasswordTarget
-    const button = event.currentTarget
-
     if (field.type === "password") {
       field.type = "text"
-      button.textContent = "🙈"
+      e.currentTarget.textContent = "🙈"
     } else {
       field.type = "password"
-      button.textContent = "👁️"
+      e.currentTarget.textContent = "👁️"
     }
   }
 
-  clearForms() {
-    this.clearLoginErrors()
-    this.clearSignupErrors()
+  submitLogin(e) {
+    e.preventDefault()
+    this.loginErrorTarget.style.display = "none"
+
+    const form = e.target
+    const formData = new FormData(form)
+
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' },
+      credentials: 'same-origin'
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = '/'
+      } else {
+        this.loginErrorTarget.textContent = 'Invalid email or password'
+        this.loginErrorTarget.style.display = 'block'
+      }
+    })
+    .catch(() => {
+      this.loginErrorTarget.textContent = 'Something went wrong'
+      this.loginErrorTarget.style.display = 'block'
+    })
   }
 
-  clearLoginErrors() {
-    this.hideError("loginEmailError")
-    this.hideError("loginPasswordError")
-  }
+  submitSignup(e) {
+    e.preventDefault()
+    this.signupErrorTarget.style.display = "none"
 
-  clearSignupErrors() {
-    this.hideError("firstNameError")
-    this.hideError("lastNameError")
-    this.hideError("signupEmailError")
-    this.hideError("signupPasswordError")
-  }
+    const form = e.target
+    const formData = new FormData(form)
 
-  hideError(targetName) {
-    try {
-      this[`${targetName}Target`].style.display = "none"
-    } catch (e) {
-      // Target doesn't exist, skip
-    }
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' },
+      credentials: 'same-origin'
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = '/'
+      } else {
+        this.signupErrorTarget.textContent = 'Missing or invalid credentials'
+        this.signupErrorTarget.style.display = 'block'
+      }
+    })
+    .catch(() => {
+      this.signupErrorTarget.textContent = 'Something went wrong'
+      this.signupErrorTarget.style.display = 'block'
+    })
   }
 }

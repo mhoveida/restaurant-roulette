@@ -1,11 +1,5 @@
 <% content_for :body_class, "bg-black" %>
-
-<style>
-  main.container {
-    margin-top: 0 !important;
-    padding: 0 !important;
-  }
-</style>
+<% content_for :skip_main_container, true %>
 
 <div class="auth-page-wrapper">
   <div class="auth-container" data-controller="auth-form">
@@ -23,7 +17,9 @@
   <div class="auth-form-container" id="login-form" data-auth-form-target="loginForm">
     <h1 class="auth-title">Log In</h1>
 
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name), local: true) do |f| %>
+    <div class="validation-message" id="login-error" data-auth-form-target="loginError" style="display: none;"></div>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), local: true, data: { action: 'submit->auth-form#submitLogin' }) do |f| %>
       <% if devise_mapping.rememberable? %>
         <div class="remember-me-section" style="display: none;">
           <%= f.check_box :remember_me %>
@@ -36,9 +32,7 @@
         <%= f.email_field :email,
             autofocus: true,
             autocomplete: "email",
-            placeholder: "Enter your email",
-            data: { 'auth-form-target': 'loginEmail' } %>
-        <span class="error-message" data-auth-form-target="loginEmailError" style="display: none;"></span>
+            placeholder: "Enter your email" %>
       </div>
 
       <div class="form-group">
@@ -53,20 +47,11 @@
             👁️
           </button>
         </div>
-        <span class="error-message" data-auth-form-target="loginPasswordError" style="display: none;"></span>
       </div>
 
       <div class="auth-actions">
         <%= f.submit "Log In", class: "button auth-button", data: { 'auth-form-target': 'loginButton' } %>
       </div>
-
-      <% if resource.errors.any? %>
-        <div class="alert alert-danger">
-          <% resource.errors.full_messages.each do |message| %>
-            <p><%= message %></p>
-          <% end %>
-        </div>
-      <% end %>
     <% end %>
 
     <!-- Social Login (placeholder for future) -->
@@ -85,22 +70,20 @@
   <div class="auth-form-container" id="signup-form" data-auth-form-target="signupForm" style="display: none;">
     <h1 class="auth-title">Sign Up</h1>
 
-    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), local: true) do |f| %>
+    <div class="validation-message" id="signup-error" data-auth-form-target="signupError" style="display: none;"></div>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), local: true, data: { action: 'submit->auth-form#submitSignup' }) do |f| %>
       <div class="form-row">
         <div class="form-group">
           <%= f.label :first_name, "First name" %>
           <%= f.text_field :first_name,
-              placeholder: "Enter your first name",
-              data: { 'auth-form-target': 'firstName' } %>
-          <span class="error-message" data-auth-form-target="firstNameError" style="display: none;"></span>
+              placeholder: "Enter your first name" %>
         </div>
 
         <div class="form-group">
           <%= f.label :last_name, "Last name" %>
           <%= f.text_field :last_name,
-              placeholder: "Enter your last name",
-              data: { 'auth-form-target': 'lastName' } %>
-          <span class="error-message" data-auth-form-target="lastNameError" style="display: none;"></span>
+              placeholder: "Enter your last name" %>
         </div>
       </div>
 
@@ -108,9 +91,7 @@
         <%= f.label :email, "Email address" %>
         <%= f.email_field :email,
             autocomplete: "email",
-            placeholder: "Enter your email",
-            data: { 'auth-form-target': 'signupEmail' } %>
-        <span class="error-message" data-auth-form-target="signupEmailError" style="display: none;"></span>
+            placeholder: "Enter your email" %>
       </div>
 
       <div class="form-group">
@@ -125,20 +106,11 @@
             👁️
           </button>
         </div>
-        <span class="error-message" data-auth-form-target="signupPasswordError" style="display: none;"></span>
       </div>
 
       <div class="auth-actions">
-        <%= f.submit "Sign Up", class: "button auth-button", data: { 'auth-form-target': 'signupButton' } %>
+        <%= f.submit "Sign Up", class: "button auth-button" %>
       </div>
-
-      <% if resource.errors.any? %>
-        <div class="alert alert-danger">
-          <% resource.errors.full_messages.each do |message| %>
-            <p><%= message %></p>
-          <% end %>
-        </div>
-      <% end %>
     <% end %>
 
     <!-- Social Signup (placeholder for future) -->
