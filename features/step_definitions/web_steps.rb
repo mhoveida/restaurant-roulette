@@ -69,7 +69,71 @@ Then /I should see the roulette wheel graphic/ do
 end
 
 Then /I should be on the solo spin page/ do
-  expect(page.has_content?("This is the Solo Spin page")).to be(true), "Expected to be on the solo spin page, but was not."
+  expect(page.has_content?("Solo Spin")).to be(true), "Expected to be on the solo spin page, but was not."
+end
+
+Given "I am on the solo spin page" do
+  visit solo_spin_path
+end
+
+Then /I should see a name input field/ do
+  expect(page.has_field?("Name")).to be(true), "Expected to find 'Name' field, but did not."
+end
+
+Then /I should see a location input field with search icon/ do
+  expect(page.has_field?("Location")).to be(true), "Expected to find 'Location' field, but did not."
+  expect(page.has_content?("📍")).to be(true), "Expected to find search icon, but did not."
+end
+
+Then /I should see a price range dropdown/ do
+  expect(page.has_field?("Price Range")).to be(true), "Expected to find 'Price Range' dropdown, but did not."
+end
+
+Then /I should see a cuisine preferences dropdown/ do
+  expect(page.has_field?("Cuisine Preferences")).to be(true), "Expected to find 'Cuisine Preferences' field, but did not."
+end
+
+Then /I should see the roulette wheel/ do
+  expect(page.has_css?("#roulette-wheel")).to be(true), "Expected to find roulette wheel, but did not."
+end
+
+Then /the name field should display "(.*)"/ do |name|
+  expect(page.has_field?("Name", with: name)).to be(true), "Expected name field to display '#{name}', but did not."
+end
+
+Then /the name field should be read-only/ do
+  name_field = find("input[name='name']")
+  expect(name_field["readonly"]).to eq("readonly"), "Expected name field to be read-only, but was not."
+end
+
+When /I select "([^"]*)" from "([^"]*)"/ do |option, field|
+  select option, from: field
+end
+
+When /I select cuisines "([^"]*)"/ do |cuisines|
+  fill_in "Cuisine Preferences", with: cuisines
+end
+
+Then /all required fields should be filled/ do
+  name_field = find("input[name='name']")
+  location_field = find("input[name='location']")
+  price_field = find("select[name='price']")
+  cuisine_field = find("input[name='categories']")
+
+  expect(name_field.value).not_to be_empty, "Name field should be filled"
+  expect(location_field.value).not_to be_empty, "Location field should be filled"
+  expect(price_field.value).not_to be_empty, "Price field should be filled"
+  expect(cuisine_field.value).not_to be_empty, "Cuisine field should be filled"
+end
+
+Then /the "([^"]*)" button should be enabled/ do |button_text|
+  button = find("button", text: button_text)
+  expect(button["disabled"]).to be_nil, "Expected button to be enabled, but was disabled."
+end
+
+Then /the wheel should not spin/ do
+  wheel = find("#roulette-wheel")
+  expect(wheel["class"]).not_to include("spinning"), "Expected wheel not to spin, but it did."
 end
 
 Then /I should be on the create room page/ do
