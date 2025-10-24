@@ -76,7 +76,7 @@ RSpec.describe Restaurant, type: :model do
       expect(results.to_a).to include(italian_restaurant, mexican_restaurant)
       expect(results.count).to eq(2)
     end
-    
+
     it "returns all restaurants if cuisine is nil" do
       results = Restaurant.by_cuisine(nil)
       expect(results.to_a).to include(italian_restaurant, mexican_restaurant)
@@ -108,11 +108,11 @@ RSpec.describe Restaurant, type: :model do
   end
 
   # --- METHOD TESTS ---
-  
+
   describe "#cuisine_list" do
     # FIXED: Changed build to create to ensure serialization works (covers line 25)
     it "returns a comma-separated string of categories" do
-      restaurant = FactoryBot.create(:restaurant, categories: ["Italian", "Pasta", "Pizza"])
+      restaurant = FactoryBot.create(:restaurant, categories: [ "Italian", "Pasta", "Pizza" ])
       restaurant.reload  # Ensure DB round-trip
       result = restaurant.cuisine_list
       expect(result).to eq("Italian, Pasta, Pizza")
@@ -169,14 +169,14 @@ RSpec.describe Restaurant, type: :model do
       expect(result).to be false
       expect(restaurant.categories).to be_nil
     end
-    
+
     # CRITICAL: This covers line 30 (categories.any? with downcase.include?)
     it "uses case-insensitive partial matching" do
       expect(restaurant.has_cuisine?("ital")).to be true
       expect(restaurant.has_cuisine?("MEDITERR")).to be true
       expect(restaurant.has_cuisine?("mex")).to be false
     end
-    
+
     it "returns false for non-array categories" do
       restaurant = Restaurant.new(
         name: "Test",
