@@ -24,6 +24,9 @@ require 'rspec/expectations'
 World(Capybara::RSpecMatchers)
 World(RSpec::Matchers)
 
+# Include FactoryBot in Cucumber World
+World(FactoryBot::Syntax::Methods)
+
 # Configure Capybara to use Selenium with headless Chrome for JavaScript tests
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new
