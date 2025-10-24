@@ -1,5 +1,69 @@
 class RoomsController < ApplicationController
   def new
+    @owner_name = current_user&.email&.split("@")&.first || ""
+    @location = ""
+    @price = ""
+    @categories = ""
+  end
+
+  def create
+    owner_name = params[:owner_name]
+    location = params[:location]
+    price = params[:price]
+    categories = params[:categories]
+
+    # Validate owner name (required for guests, used for logged-in users)
+    if owner_name.blank? && !user_signed_in?
+      flash[:alert] = "Please enter your name"
+      redirect_to create_room_path
+      return
+    end
+
+    # Validate location
+    if location.blank?
+      flash[:alert] = "Please enter a location"
+      redirect_to create_room_path
+      return
+    end
+
+    # Validate price
+    if price.blank?
+      flash[:alert] = "Please select a price range"
+      redirect_to create_room_path
+      return
+    end
+
+    # Validate price format
+    unless [ "$", "$$", "$$$", "$$$$" ].include?(price)
+      flash[:alert] = "Please select a valid price range"
+      redirect_to create_room_path
+      return
+    end
+
+    # Validate categories
+    if categories.blank?
+      flash[:alert] = "Please select at least one cuisine"
+      redirect_to create_room_path
+      return
+    end
+
+    # Use logged-in user's name if available, otherwise use provided name
+    final_owner_name = user_signed_in? ? (current_user.email.split("@").first) : owner_name
+
+    # Create the room
+    @room = Room.new(
+      owner_name: final_owner_name,
+      location: location,
+      price: price,
+      categories: categories
+    )
+
+    if @room.save
+      redirect_to @room, notice: "Room created successfully"
+    else
+      flash[:alert] = @room.errors.full_messages.join(", ")
+      redirect_to create_room_path
+    end
   end
 
   # This is the "Group Room" page
