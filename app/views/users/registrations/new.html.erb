@@ -1,29 +1,132 @@
-<h2>Sign up</h2>
+<% content_for :body_class, "bg-black" %>
+<% content_for :skip_main_container, true %>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "users/shared/error_messages", resource: resource %>
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+<div class="auth-page-wrapper">
+  <div class="auth-container" data-controller="auth-form">
+  <!-- Tab Navigation -->
+  <div class="auth-tabs">
+    <button class="auth-tab-button" data-auth-form-target="loginTab" data-action="click->auth-form#switchToLogin">
+      Log In
+    </button>
+    <button class="auth-tab-button active" data-auth-form-target="signupTab" data-action="click->auth-form#switchToSignup">
+      Sign Up
+    </button>
   </div>
 
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
+  <!-- Login Form -->
+  <div class="auth-form-container" id="login-form" data-auth-form-target="loginForm" style="display: none;">
+    <h1 class="auth-title">Log In</h1>
+
+    <div class="validation-message" style="display: none;">
+      Invalid email or password
+    </div>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), local: true) do |f| %>
+      <% if devise_mapping.rememberable? %>
+        <div class="remember-me-section" style="display: none;">
+          <%= f.check_box :remember_me %>
+          <%= f.label :remember_me, "Remember me" %>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <%= f.label :email, "Email address" %>
+        <%= f.email_field :email,
+            autofocus: true,
+            autocomplete: "email",
+            placeholder: "Enter your email" %>
+      </div>
+
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <div class="password-input-wrapper">
+          <%= f.password_field :password,
+              autocomplete: "current-password",
+              placeholder: "Enter your password",
+              id: "login-password",
+              data: { 'auth-form-target': 'loginPassword' } %>
+          <button type="button" class="password-toggle" data-action="click->auth-form#toggleLoginPassword">
+            👁️
+          </button>
+        </div>
+      </div>
+
+      <div class="auth-actions">
+        <%= f.submit "Log In", class: "button auth-button", data: { 'auth-form-target': 'loginButton' } %>
+      </div>
+    <% end %>
+
+    <!-- Social Login (placeholder for future) -->
+    <div class="divider">OR</div>
+    <div class="social-buttons">
+      <button class="social-button facebook-button" disabled>
+        <span>📱</span> Log in with Facebook
+      </button>
+      <button class="social-button google-button" disabled>
+        <span>🔍</span> Log in with Google
+      </button>
+    </div>
   </div>
 
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
+  <!-- Signup Form -->
+  <div class="auth-form-container" id="signup-form" data-auth-form-target="signupForm">
+    <h1 class="auth-title">Sign Up</h1>
 
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
+    <% if resource.errors.any? && @signup_attempted %>
+      <div class="validation-message">Missing or invalid credentials</div>
+    <% end %>
 
-<%= render "users/shared/links" %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), local: true) do |f| %>
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :first_name, "First name" %>
+          <%= f.text_field :first_name,
+              placeholder: "Enter your first name" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :last_name, "Last name" %>
+          <%= f.text_field :last_name,
+              placeholder: "Enter your last name" %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :email, "Email address" %>
+        <%= f.email_field :email,
+            autocomplete: "email",
+            placeholder: "Enter your email" %>
+      </div>
+
+      <div class="form-group">
+        <label for="signup-password">Password</label>
+        <div class="password-input-wrapper">
+          <%= f.password_field :password,
+              autocomplete: "new-password",
+              placeholder: "Enter your password (min 8 characters)",
+              id: "signup-password",
+              data: { 'auth-form-target': 'signupPassword' } %>
+          <button type="button" class="password-toggle" data-action="click->auth-form#toggleSignupPassword">
+            👁️
+          </button>
+        </div>
+      </div>
+
+      <div class="auth-actions">
+        <%= f.submit "Sign Up", class: "button auth-button" %>
+      </div>
+    <% end %>
+
+    <!-- Social Signup (placeholder for future) -->
+    <div class="divider">OR</div>
+    <div class="social-buttons">
+      <button class="social-button facebook-button" disabled>
+        <span>📱</span> Sign up with Facebook
+      </button>
+      <button class="social-button google-button" disabled>
+        <span>🔍</span> Sign up with Google
+      </button>
+    </div>
+  </div>
+  </div>
+</div>

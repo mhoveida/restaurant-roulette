@@ -22,8 +22,7 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <body class="<%= content_for(:body_class) || 'bg-white' %>">
+  <body class="<%= content_for(:body_class) || 'bg-white' %>">
     <header class="main-navbar">
       <div class="navbar-logo">
         <%= link_to root_path do %>
@@ -47,7 +46,8 @@
       </div>
     </header>
 
-    <% if content_for?(:skip_main_container) %>
+    <% skip_main = content_for?(:skip_main_container) || controller_name == 'sessions' || controller_name == 'registrations' %>
+    <% if skip_main %>
       <%= yield %>
     <% else %>
       <main class="container mx-auto mt-28 px-5">

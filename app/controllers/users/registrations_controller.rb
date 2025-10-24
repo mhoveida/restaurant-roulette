@@ -3,12 +3,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_account_update_params, only: [:update]
 
   def create
-    super do |resource|
-      if !resource.persisted?
-        render json: { errors: resource.errors.full_messages }, status: :unprocessable_entity
-        return
-      end
-    end
+    # Mark that signup was attempted so we show errors in the view
+    @signup_attempted = true
+    super
   end
 
   protected

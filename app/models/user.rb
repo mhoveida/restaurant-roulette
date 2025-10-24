@@ -4,9 +4,12 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
-  # Validations
-  validates :first_name, presence: true
-  validates :last_name, presence: true
+  # Validations - only validate names on signup, not login
+  validates :first_name, presence: true, on: :create
+  validates :last_name, presence: true, on: :create
+
+  # Custom validation for login - check email and password are present
+  validate :validate_login_credentials, on: :login
 
   # Helper methods
   def full_name
@@ -15,5 +18,11 @@ class User < ApplicationRecord
 
   def short_name
     first_name
+  end
+
+  private
+
+  def validate_login_credentials
+    errors.add(:base, 'Missing or invalid credentials') if email.blank? || encrypted_password.blank?
   end
 end
