@@ -35,12 +35,8 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_24_195006) do
   end
 
   create_table "rooms", force: :cascade do |t|
-    t.text "categories"
     t.string "code"
     t.datetime "created_at", null: false
-    t.string "location"
-    t.string "owner_name"
-    t.string "price"
     t.datetime "updated_at", null: false
   end
 
