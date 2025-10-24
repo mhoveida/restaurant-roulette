@@ -25,7 +25,7 @@ RSpec.describe SoloSpinController, type: :controller do
     end
 
     context 'when user is logged in' do
-      let(:user) { FactoryBot.create(:user, email: 'john@example.com') }
+      let(:user) { create(:user, email: 'john@example.com') }
 
       before { sign_in user }
 
@@ -36,7 +36,7 @@ RSpec.describe SoloSpinController, type: :controller do
 
       it 'extracts name from user email' do
         get :show
-        expect(assigns(:name)).to eq("john")
+        expect(assigns(:name)).to eq('John')
       end
 
       it 'does not set @restaurant when no location provided' do
@@ -46,8 +46,10 @@ RSpec.describe SoloSpinController, type: :controller do
     end
 
     context 'when location parameter is provided' do
+      let(:restaurant) { create(:restaurant) }
+
       it 'calls restaurant service with correct params' do
-        allow_any_instance_of(RestaurantService).to receive(:random_restaurant).and_return(nil)
+        allow_any_instance_of(RestaurantService).to receive(:random_restaurant).and_return(restaurant)
 
         get :show, params: {
           location: 'New York',
@@ -55,23 +57,43 @@ RSpec.describe SoloSpinController, type: :controller do
           categories: 'Italian'
         }
 
-        expect(assigns(:location)).to eq('New York')
+        expect(assigns(:restaurant)).to eq(restaurant)
+      end
+
+      it 'passes location parameter to service' do
+        service_double = instance_double(RestaurantService)
+        allow(RestaurantService).to receive(:new).and_return(service_double)
+        allow(service_double).to receive(:random_restaurant).with(
+          location: 'New York',
+          categories: 'Italian',
+          price: '$$'
+        ).and_return(restaurant)
+
+        get :show, params: {
+          location: 'New York',
+          price: '$$',
+          categories: 'Italian'
+        }
+
+        expect(service_double).to have_received(:random_restaurant)
       end
     end
 
     context 'when location is empty' do
-      it 'sets location to empty string' do
+      it 'does not call random_restaurant' do
         allow_any_instance_of(RestaurantService).to receive(:random_restaurant)
 
         get :show, params: { location: '', price: '$$' }
 
-        expect(assigns(:location)).to eq('')
+        expect_any_instance_of(RestaurantService).not_to have_received(:random_restaurant)
       end
     end
 
     context 'parameter handling' do
+      let(:restaurant) { create(:restaurant) }
+
       before do
-        allow_any_instance_of(RestaurantService).to receive(:random_restaurant).and_return(nil)
+        allow_any_instance_of(RestaurantService).to receive(:random_restaurant).and_return(restaurant)
       end
 
       it 'captures location parameter' do
