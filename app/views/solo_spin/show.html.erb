@@ -1,1 +1,164 @@
-<h1>This is the Solo Spin page</h1>
+<% content_for :body_class, "bg-black" %>
+
+<div class="solo-spin-container" data-controller="solo-spin">
+  <h1 class="solo-spin-title">Solo Spin</h1>
+
+  <!-- Preference Form Section -->
+  <div class="preference-section">
+    <h2>Set Your Preference</h2>
+    <p class="subtitle">Tell us what you're looking for</p>
+
+    <%= form_with(url: solo_spin_path, method: :get, local: true, data: { action: "submit->solo-spin#onSubmit" }) do |form| %>
+      <div class="form-group">
+        <label for="name">Name</label>
+        <%= form.text_field :name,
+            value: @name,
+            placeholder: "Your name",
+            readonly: current_user.present?,
+            data: { 'solo-spin-target': 'nameInput' } %>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location</label>
+        <div class="location-input-wrapper">
+          <%= form.text_field :location,
+              value: @location,
+              placeholder: "Enter location",
+              data: { 'solo-spin-target': 'locationInput', 'action': 'input->solo-spin#onLocationChange' } %>
+          <span class="location-icon">📍</span>
+        </div>
+        <div class="location-suggestions" data-solo-spin-target="suggestions" style="display: none;"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="price">Price Range</label>
+          <%= form.select :price,
+              [['Select price range', ''], ['$', '$'], ['$$', '$$'], ['$$$', '$$$'], ['$$$$', '$$$$']],
+              { selected: @price },
+              { data: { 'solo-spin-target': 'priceSelect' } } %>
+        </div>
+
+        <div class="form-group">
+          <label for="categories">Cuisine Preferences</label>
+          <%= form.text_field :categories,
+              value: @categories,
+              placeholder: "e.g., Italian, American",
+              data: { 'solo-spin-target': 'cuisineInput', 'action': 'input->solo-spin#onCuisineChange' } %>
+          <div class="cuisine-tags" data-solo-spin-target="cuisineTags"></div>
+        </div>
+      </div>
+
+      <!-- Roulette Wheel -->
+      <div class="wheel-section">
+        <canvas id="roulette-wheel" width="300" height="300" data-solo-spin-target="wheel"></canvas>
+      </div>
+
+      <div class="button-group">
+        <%= form.submit "Spin", class: "button spin-button", data: { 'solo-spin-target': 'spinButton', action: 'click->solo-spin#validateAndSpin' } %>
+      </div>
+
+      <div class="validation-message" data-solo-spin-target="validationMessage" style="display: none;">
+        Please fill in all required fields
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Restaurant Result Overlay -->
+  <% if @restaurant.present? %>
+    <div class="result-overlay" data-controller="restaurant-result">
+      <div class="result-modal">
+        <button class="close-button" data-action="click->restaurant-result#close">×</button>
+
+        <div class="result-header">
+          <h3>You are going to:</h3>
+        </div>
+
+        <div class="restaurant-result">
+          <% if @restaurant["image_url"].present? %>
+            <div class="restaurant-image">
+              <img src="<%= @restaurant['image_url'] %>" alt="<%= @restaurant['name'] %>">
+            </div>
+          <% end %>
+
+          <h2 class="restaurant-name"><%= @restaurant["name"] %></h2>
+
+          <!-- Rating -->
+          <div class="restaurant-rating">
+            <span class="stars"><%= "★" * @restaurant["rating"].to_i %><%= "☆" * (5 - @restaurant["rating"].to_i) %></span>
+            <span class="rating-value">(<%= @restaurant["rating"] %>)</span>
+          </div>
+
+          <!-- Price and Categories -->
+          <div class="restaurant-meta">
+            <span class="price"><%= @restaurant["price"] %></span>
+            <% if @restaurant["categories"].present? %>
+              <div class="cuisine-list">
+                <% @restaurant["categories"].each do |category| %>
+                  <span class="cuisine-tag"><%= category %></span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+
+          <!-- Address -->
+          <div class="restaurant-address">
+            <span class="address-icon">📍</span>
+            <%= @restaurant["address"] %>
+          </div>
+
+          <!-- Status -->
+          <div class="restaurant-status">
+            <% if @restaurant["is_open_now"] %>
+              <span class="status-open">Open</span>
+            <% else %>
+              <span class="status-closed">Closed</span>
+              <% if @restaurant["closing_time"].present? %>
+                <span class="closing-time">Closes at <%= @restaurant["closing_time"] %></span>
+              <% end %>
+            <% end %>
+          </div>
+
+          <!-- Review Count -->
+          <% if @restaurant["review_count"].present? %>
+            <div class="review-count">
+              <%= @restaurant["review_count"] %> reviews
+            </div>
+          <% end %>
+
+          <!-- Distance (placeholder - would be calculated on frontend) -->
+          <div class="distance">
+            🚗 10 min by car
+          </div>
+        </div>
+
+        <!-- Feedback Section (only for logged-in users) -->
+        <% if current_user.present? %>
+          <div class="feedback-section" data-controller="feedback">
+            <h4>How was it?</h4>
+            <p class="feedback-subtitle">Help us to learn your preferences</p>
+            <div class="feedback-buttons">
+              <button class="feedback-btn thumbs-down" data-action="click->feedback#giveFeedback" data-feedback="negative">👎</button>
+              <button class="feedback-btn thumbs-up" data-action="click->feedback#giveFeedback" data-feedback="positive">👍</button>
+            </div>
+            <div class="feedback-message" data-feedback-target="message" style="display: none;">
+              Thank you for your feedback
+            </div>
+          </div>
+        <% end %>
+
+        <!-- Action Buttons -->
+        <div class="result-actions">
+          <button class="button spin-again-button" data-action="click->restaurant-result#spinAgain">Spin Again</button>
+          <button class="button share-button" data-action="click->restaurant-result#share">Share</button>
+        </div>
+      </div>
+    </div>
+  <% elsif params[:location].present? %>
+    <!-- No Results State -->
+    <div class="empty-state">
+      <h2>No restaurants found matching your criteria</h2>
+      <p>Try adjusting your preferences</p>
+    </div>
+  <% end %>
+</div>
