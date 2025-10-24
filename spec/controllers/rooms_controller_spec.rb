@@ -154,7 +154,7 @@ RSpec.describe RoomsController, type: :controller do
       end
 
       it 'accepts valid price ranges' do
-        ["$", "$$", "$$$", "$$$$"].each do |price|
+        [ "$", "$$", "$$$", "$$$$" ].each do |price|
           expect {
             post :create, params: {
               owner_name: "John",
