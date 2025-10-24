@@ -17,9 +17,17 @@
   <div class="auth-form-container" id="login-form" data-auth-form-target="loginForm" style="display: none;">
     <h1 class="auth-title">Log In</h1>
 
-    <div class="validation-message" style="display: none;">
-      Invalid email or password
-    </div>
+    <% if resource.errors.any? && @login_attempted %>
+      <div class="validation-message">
+        <% resource.errors.full_messages.each do |msg| %>
+          <div><%= msg %></div>
+        <% end %>
+      </div>
+    <% elsif @login_attempted %>
+      <div class="validation-message">
+        Invalid email or password
+      </div>
+    <% end %>
 
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), local: true) do |f| %>
       <% if devise_mapping.rememberable? %>
@@ -55,17 +63,6 @@
         <%= f.submit "Log In", class: "button auth-button", data: { 'auth-form-target': 'loginButton' } %>
       </div>
     <% end %>
-
-    <!-- Social Login (placeholder for future) -->
-    <div class="divider">OR</div>
-    <div class="social-buttons">
-      <button class="social-button facebook-button" disabled>
-        <span>📱</span> Log in with Facebook
-      </button>
-      <button class="social-button google-button" disabled>
-        <span>🔍</span> Log in with Google
-      </button>
-    </div>
   </div>
 
   <!-- Signup Form -->
@@ -73,7 +70,11 @@
     <h1 class="auth-title">Sign Up</h1>
 
     <% if resource.errors.any? && @signup_attempted %>
-      <div class="validation-message">Missing or invalid credentials</div>
+      <div class="validation-message">
+        <% resource.errors.full_messages.each do |msg| %>
+          <div><%= msg %></div>
+        <% end %>
+      </div>
     <% end %>
 
     <%= form_for(resource, as: resource_name, url: registration_path(resource_name), local: true) do |f| %>
@@ -112,21 +113,24 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <label for="signup-password-confirmation">Confirm Password</label>
+        <div class="password-input-wrapper">
+          <%= f.password_field :password_confirmation,
+              autocomplete: "new-password",
+              placeholder: "Confirm your password",
+              id: "signup-password-confirmation",
+              data: { 'auth-form-target': 'signupPasswordConfirmation' } %>
+          <button type="button" class="password-toggle" data-action="click->auth-form#toggleSignupPasswordConfirmation">
+            👁️
+          </button>
+        </div>
+      </div>
+
       <div class="auth-actions">
         <%= f.submit "Sign Up", class: "button auth-button" %>
       </div>
     <% end %>
-
-    <!-- Social Signup (placeholder for future) -->
-    <div class="divider">OR</div>
-    <div class="social-buttons">
-      <button class="social-button facebook-button" disabled>
-        <span>📱</span> Sign up with Facebook
-      </button>
-      <button class="social-button google-button" disabled>
-        <span>🔍</span> Sign up with Google
-      </button>
-    </div>
   </div>
   </div>
 </div>

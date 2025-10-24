@@ -5,8 +5,11 @@ class Users::SessionsController < Devise::SessionsController
     # Mark that login was attempted so we show errors in the view
     @login_attempted = true
 
+    # Get sign in parameters
+    params_hash = sign_in_params
+
     # Validate that email and password are present before attempting authentication
-    user = resource_class.new(sign_in_params)
+    user = resource_class.new(params_hash)
     user.validate(:login)
 
     if user.errors.any?

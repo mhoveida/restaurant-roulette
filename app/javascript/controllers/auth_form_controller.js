@@ -7,7 +7,8 @@ export default class extends Controller {
     "loginForm",
     "signupForm",
     "loginPassword",
-    "signupPassword"
+    "signupPassword",
+    "signupPasswordConfirmation"
   ]
 
   switchToLogin() {
@@ -30,6 +31,10 @@ export default class extends Controller {
 
   toggleSignupPassword(e) {
     this.togglePassword(this.signupPasswordTarget, e)
+  }
+
+  toggleSignupPasswordConfirmation(e) {
+    this.togglePassword(this.signupPasswordConfirmationTarget, e)
   }
 
   togglePassword(field, e) {
