@@ -1,2 +1,70 @@
-<h1>Welcome to the Group Room</h1>
-<p>Room Code: <%= @room.code %></p>
+<% content_for :body_class, "bg-black" %>
+
+<div class="room-container">
+  <div class="room-header">
+    <h1>Room Waiting Area</h1>
+  </div>
+
+  <!-- Room Code Section -->
+  <div class="room-code-section">
+    <div class="room-code-card">
+      <div class="code-label">Share this code with your friends</div>
+      <div class="room-code-display">
+        Room Code: <span class="code-value"><%= @room.code %></span>
+      </div>
+      <button class="share-code-btn" data-action="click->room-show#shareCode">
+        📤 Share Code
+      </button>
+    </div>
+  </div>
+
+  <!-- Room Preferences Section -->
+  <div class="preferences-summary">
+    <h2>Group Preferences</h2>
+    <div class="preference-items">
+      <div class="preference-item">
+        <span class="label">Owner:</span>
+        <span class="value"><%= @room.owner_name %> (Host)</span>
+      </div>
+      <div class="preference-item">
+        <span class="label">Location:</span>
+        <span class="value"><%= @room.location %></span>
+      </div>
+      <div class="preference-item">
+        <span class="label">Price Range:</span>
+        <span class="value"><%= @room.price %></span>
+      </div>
+      <div class="preference-item">
+        <span class="label">Cuisines:</span>
+        <span class="value">
+          <% if @room.categories.is_a?(Array) %>
+            <% @room.categories.each do |cuisine| %>
+              <span class="cuisine-badge"><%= cuisine %></span>
+            <% end %>
+          <% else %>
+            <%= @room.categories %>
+          <% end %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Members Section -->
+  <div class="members-section">
+    <h2>Members in Room:</h2>
+    <div class="members-list">
+      <div class="member-item">
+        <span class="member-name"><%= @room.owner_name %></span>
+        <span class="member-badge">Host</span>
+      </div>
+      <!-- Other members would be added here dynamically in real-time -->
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="room-actions">
+    <button class="button ready-to-spin-btn" data-action="click->room-show#readyToSpin">
+      Ready to Spin?
+    </button>
+  </div>
+</div>
