@@ -34,7 +34,7 @@
       <div class="user-auth-links" data-controller="dropdown">
         <% if user_signed_in? %>
           <span class="profile-email" data-action="click->dropdown#toggle">
-            <%= current_user.full_name %>
+            User: <%= current_user.email %>
           </span>
 
           <div data-dropdown-target="menu" class="dropdown-menu" hidden>

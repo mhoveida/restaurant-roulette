@@ -1,26 +1,7 @@
 class Room < ApplicationRecord
-  # Preference validations
-  validates :location, presence: true
-  validates :price, presence: true, inclusion: { in: [ "$", "$$", "$$$", "$$$$" ] }
-  validates :categories, presence: true
-  validates :owner_name, presence: true
+  # RULE 1: A code must be present
+  validates :code, presence: true
 
-  # Code validations (but we'll generate it automatically)
-  validates :code, presence: true, uniqueness: true
-
-  serialize :categories, coder: JSON
-
-  # Generate a 4-digit room code before creating
-  before_validation :generate_code, on: :create
-
-  private
-
-  def generate_code
-    return if code.present?
-
-    self.code = loop do
-      new_code = rand(1000..9999).to_s
-      break new_code unless Room.exists?(code: new_code)
-    end
-  end
+  # RULE 2: A code must be unique
+  validates :code, uniqueness: true
 end
