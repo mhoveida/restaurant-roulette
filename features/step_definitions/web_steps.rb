@@ -13,7 +13,7 @@ Given "I am on the home page" do
 end
 
 Given /I am logged in as "(.*)"/ do |name|
-  user = FactoryBot.create(:user, email: "#{name.downcase}@example.com")
+  user = FactoryBot.create(:user, email: "#{name.downcase}@example.com", name: name)
   login_as(user)
 end
 
@@ -127,7 +127,7 @@ Then /all required fields should be filled/ do
 end
 
 Then /the "([^"]*)" button should be enabled/ do |button_text|
-  button = find("button", text: button_text)
+  button = find_button(button_text)
   expect(button["disabled"]).to be_nil, "Expected button to be enabled, but was disabled."
 end
 

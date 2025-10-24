@@ -7,7 +7,7 @@ class SoloSpinController < ApplicationController
     @location = params[:location]
     @price = params[:price]
     @categories = params[:categories]
-    @name = current_user&.email&.split("@")&.first || ""
+    @name = current_user&.name || ""
 
     # If filters are provided (spinning the wheel), get a random restaurant
     if @location.present?

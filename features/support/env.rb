@@ -23,6 +23,19 @@ require 'rspec/expectations'
 
 World(Capybara::RSpecMatchers)
 World(RSpec::Matchers)
+
+# Configure Capybara to use Selenium with headless Chrome for JavaScript tests
+Capybara.register_driver :selenium_chrome_headless do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('--headless')
+  options.add_argument('--no-sandbox')
+  options.add_argument('--disable-dev-shm-usage')
+  options.add_argument('--disable-gpu')
+
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+end
+
+Capybara.javascript_driver = :selenium_chrome_headless
 # -----------------------------
 World(Warden::Test::Helpers)
 Warden.test_mode!
@@ -75,6 +88,15 @@ end
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
+
+# Configure database cleaner for JavaScript scenarios
+Before('@javascript') do
+  DatabaseCleaner.strategy = :truncation
+end
+
+After('@javascript') do
+  DatabaseCleaner.clean
+end
 
 # ============================================
 # Restaurant Data Setup for Tests

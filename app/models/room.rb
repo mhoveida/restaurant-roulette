@@ -1,7 +1,8 @@
 class Room < ApplicationRecord
   # Preference validations
   validates :location, presence: true
-  validates :price, presence: true, inclusion: { in: ["$", "$$", "$$$", "$$$$"] }
+  validates :price, presence: true, inclusion: { in: [ "$", "$$", "$$$", "$$$$" ] }
+  validates :categories, presence: true
   validates :owner_name, presence: true
 
   # Code validations (but we'll generate it automatically)

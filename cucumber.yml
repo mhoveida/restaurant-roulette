@@ -1,0 +1,1 @@
+default: --strict --publish-quiet --tags "not @wip"

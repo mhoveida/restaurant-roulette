@@ -34,7 +34,7 @@ class RoomsController < ApplicationController
     end
 
     # Validate price format
-    unless ["$", "$$", "$$$", "$$$$"].include?(price)
+    unless [ "$", "$$", "$$$", "$$$$" ].include?(price)
       flash[:alert] = "Please select a valid price range"
       redirect_to create_room_path
       return
