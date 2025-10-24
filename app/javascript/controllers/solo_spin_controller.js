@@ -60,13 +60,16 @@ export default class extends Controller {
   }
 
   validateAndSpin(e) {
+    console.log('validateAndSpin clicked!')
     e.preventDefault()
 
     if (!this.validateForm()) {
+      console.log('Validation failed, showing message')
       this.showValidationMessage()
       return
     }
 
+    console.log('Validation passed, spinning wheel')
     this.hideValidationMessage()
     this.spinWheel()
   }
@@ -75,9 +78,11 @@ export default class extends Controller {
     const name = this.nameInputTarget.value.trim()
     const location = this.locationInputTarget.value.trim()
     const price = this.priceSelectTarget.value
-    const cuisines = this.cuisineInputTarget.value.trim()
 
-    return name && location && price && cuisines
+    console.log('Solo Spin Validation:', { name, location, price })
+    console.log('Valid?', !!(name && location && price))
+
+    return name && location && price
   }
 
   showValidationMessage() {

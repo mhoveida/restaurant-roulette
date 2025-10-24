@@ -14,17 +14,25 @@ export default class extends Controller {
   ]
 
   connect() {
+    console.log('Create Room Controller Connected!')
     this.updateCuisineTags()
+
+    // Debug: Log all targets
+    console.log('Button element:', this.createButtonTarget)
+    console.log('Button has click handler?', this.createButtonTarget.onclick)
   }
 
   validateAndCreate(e) {
+    console.log('validateAndCreate clicked!')
     e.preventDefault()
 
     if (!this.validateForm()) {
+      console.log('Validation failed, showing message')
       this.showValidationMessage()
       return
     }
 
+    console.log('Validation passed, submitting form')
     this.hideValidationMessage()
     const form = e.target.closest("form")
     form.submit()
@@ -34,9 +42,11 @@ export default class extends Controller {
     const ownerName = this.ownerNameInputTarget.value.trim()
     const location = this.locationInputTarget.value.trim()
     const price = this.priceSelectTarget.value
-    const cuisines = this.cuisineInputTarget.value.trim()
 
-    return ownerName && location && price && cuisines
+    console.log('Create Room Validation:', { ownerName, location, price })
+    console.log('Valid?', !!(ownerName && location && price))
+
+    return ownerName && location && price
   }
 
   showValidationMessage() {

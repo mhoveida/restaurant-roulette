@@ -40,22 +40,23 @@ class RoomsController < ApplicationController
       return
     end
 
-    # Validate categories
-    if categories.blank?
-      flash[:alert] = "Please select at least one cuisine"
-      redirect_to create_room_path
-      return
-    end
 
     # Use logged-in user's name if available, otherwise use provided name
     final_owner_name = user_signed_in? ? (current_user.email.split("@").first) : owner_name
+
+    # Parse categories - convert comma-separated string to array, or empty array if blank
+    categories_array = if categories.present?
+      categories.split(",").map(&:strip).reject(&:empty?)
+    else
+      []
+    end
 
     # Create the room
     @room = Room.new(
       owner_name: final_owner_name,
       location: location,
       price: price,
-      categories: categories
+      categories: categories_array
     )
 
     if @room.save
