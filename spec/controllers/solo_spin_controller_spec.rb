@@ -25,7 +25,7 @@ RSpec.describe SoloSpinController, type: :controller do
     end
 
     context 'when user is logged in' do
-      let(:user) { create(:user, email: 'john@example.com') }
+      let(:user) { create(:user, email: 'john@example.com', first_name: 'John', last_name: 'Doe', name: 'John') }
 
       before { sign_in user }
 
@@ -34,7 +34,7 @@ RSpec.describe SoloSpinController, type: :controller do
         expect(response).to render_template(:show)
       end
 
-      it 'extracts name from user email' do
+      it 'uses user name when available' do
         get :show
         expect(assigns(:name)).to eq('John')
       end
@@ -65,7 +65,7 @@ RSpec.describe SoloSpinController, type: :controller do
         allow(RestaurantService).to receive(:new).and_return(service_double)
         allow(service_double).to receive(:random_restaurant).with(
           location: 'New York',
-          categories: 'Italian',
+          categories: [ 'Italian' ],
           price: '$$'
         ).and_return(restaurant)
 
@@ -81,11 +81,14 @@ RSpec.describe SoloSpinController, type: :controller do
 
     context 'when location is empty' do
       it 'does not call random_restaurant' do
-        allow_any_instance_of(RestaurantService).to receive(:random_restaurant)
+        service_double = instance_double(RestaurantService)
+        allow(RestaurantService).to receive(:new).and_return(service_double)
+        allow(service_double).to receive(:random_restaurant)
 
         get :show, params: { location: '', price: '$$' }
 
-        expect_any_instance_of(RestaurantService).not_to have_received(:random_restaurant)
+        expect(service_double).not_to have_received(:random_restaurant)
+        expect(assigns(:restaurant)).to be_nil
       end
     end
 

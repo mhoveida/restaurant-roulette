@@ -62,6 +62,8 @@ group :development, :test do
   gem "database_cleaner-active_record"
   gem "warden"
   gem "simplecov", require: false
+  gem "rails-controller-testing"
+  gem "shoulda-matchers"
 end
 
 group :development do
