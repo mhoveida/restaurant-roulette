@@ -40,12 +40,14 @@ Feature: Solo Spin
     Then all required fields should be filled
     And the "Spin" button should be enabled
 
+  @javascript
   Scenario: User attempts to spin without filling required fields
     Given I am on the solo spin page
     When I click "Spin" without filling all fields
     Then I should see "Please fill in all required fields"
     And the wheel should not spin
 
+  @javascript
   Scenario: User searches for location with suggestions
     Given I am on the solo spin page
     When I click on the location field
@@ -61,6 +63,7 @@ Feature: Solo Spin
     And I should see "$$$" option
     And I should see "$$$$" option
 
+  @javascript
   Scenario: User selects multiple cuisine preferences
     Given I am on the solo spin page
     When I click on "Cuisine Preferences" dropdown
@@ -72,6 +75,7 @@ Feature: Solo Spin
     And I should see "American" as a selected tag with X button
     And I should see "Mediterranean" as a selected tag with X button
 
+  @javascript
   Scenario: User removes a selected cuisine
     Given I am on the solo spin page
     And I have selected cuisines "Italian, American, Mediterranean"
@@ -134,6 +138,7 @@ Feature: Solo Spin
     Then the result overlay should close
     And I should return to the solo spin page
 
+  @javascript
   Scenario: Logged in user provides feedback after visit
     Given I am logged in as "Maddison"
     And I am viewing a restaurant result "Bourbon and Branch"
@@ -142,6 +147,7 @@ Feature: Solo Spin
     And I should see a thumbs down button
     And I should see a thumbs up button
 
+  @javascript
   Scenario: User gives positive feedback
     Given I am logged in
     And I am viewing a restaurant result
@@ -150,6 +156,7 @@ Feature: Solo Spin
     And I should see "Thank you for your feedback"
     And my preferences should be updated for future recommendations
 
+  @javascript
   Scenario: User gives negative feedback
     Given I am logged in
     And I am viewing a restaurant result
