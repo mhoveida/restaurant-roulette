@@ -18,7 +18,7 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
@@ -34,7 +34,7 @@
       <div class="user-auth-links" data-controller="dropdown">
         <% if user_signed_in? %>
           <span class="profile-email" data-action="click->dropdown#toggle">
-            User: <%= current_user.email %>
+            <%= current_user.full_name %>
           </span>
 
           <div data-dropdown-target="menu" class="dropdown-menu" hidden>

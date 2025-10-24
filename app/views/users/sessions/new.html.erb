@@ -1,6 +1,14 @@
 <% content_for :body_class, "bg-black" %>
 
-<div class="auth-container" data-controller="auth-form">
+<style>
+  main.container {
+    margin-top: 0 !important;
+    padding: 0 !important;
+  }
+</style>
+
+<div class="auth-page-wrapper">
+  <div class="auth-container" data-controller="auth-form">
   <!-- Tab Navigation -->
   <div class="auth-tabs">
     <button class="auth-tab-button active" data-auth-form-target="loginTab" data-action="click->auth-form#switchToLogin">
@@ -143,5 +151,6 @@
         <span>🔍</span> Sign up with Google
       </button>
     </div>
+  </div>
   </div>
 </div>
