@@ -6,5 +6,6 @@ FactoryBot.define do
     sequence(:last_name) { |n| "User#{n}" }
     password { "password123" }
     password_confirmation { "password123" }
+    confirmed_at { Time.current }
   end
 end

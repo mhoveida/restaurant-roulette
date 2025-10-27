@@ -17,14 +17,20 @@ RSpec.describe User, type: :model do
   end
 
   describe 'validations' do
-    describe 'on create' do
-      it { is_expected.to validate_presence_of(:first_name).on(:create) }
-      it { is_expected.to validate_presence_of(:last_name).on(:create) }
+    describe 'name validations' do
+      it { is_expected.to validate_presence_of(:first_name) }
+      it { is_expected.to validate_presence_of(:last_name) }
     end
 
     describe 'devise validations' do
       it { is_expected.to validate_presence_of(:email) }
-      it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
+
+      it 'validates email uniqueness case-insensitively via Devise' do
+        user1 = create(:user, email: 'test@example.com')
+        user2 = build(:user, email: 'TEST@EXAMPLE.COM')
+        expect(user2).not_to be_valid
+        expect(user2.errors[:email]).to be_present
+      end
     end
 
     describe 'login validation' do

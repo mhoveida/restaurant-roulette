@@ -3,12 +3,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_action :configure_account_update_params, only: [:update]
 
   def create
-    super do |resource|
-      # Only mark signup_attempted if there were validation errors
-      if resource.errors.any?
-        @signup_attempted = true
-      end
-    end
+    @signup_attempted = true
+    super
   end
 
   protected

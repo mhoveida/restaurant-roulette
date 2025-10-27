@@ -25,7 +25,7 @@ RSpec.describe SoloSpinController, type: :controller do
     end
 
     context 'when user is logged in' do
-      let(:user) { create(:user, email: 'john@example.com', first_name: 'John', last_name: 'Doe', name: 'John') }
+      let(:user) { create(:user, email: 'john@example.com', first_name: 'John', last_name: 'Doe') }
 
       before { sign_in user }
 

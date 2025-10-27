@@ -68,3 +68,16 @@ Then /the room should not be created/ do
   # The path could be either /rooms/new (if redirected) or /rooms (if rendered)
   expect(["/rooms/new", "/rooms"]).to include(page.current_path)
 end
+
+Then /the name field should be empty/ do
+  expect(page).to have_field("Name", with: "")
+end
+
+Then /the owner name field should be empty/ do
+  expect(page).to have_field("Name", with: "")
+end
+
+Then /the owner name field should be editable/ do
+  owner_name_field = find("input[name='owner_name']")
+  expect(owner_name_field["readonly"]).to be_nil
+end
