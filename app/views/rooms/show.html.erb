@@ -12,9 +12,17 @@
       <div class="room-code-display">
         Room Code: <span class="code-value"><%= @room.code %></span>
       </div>
-      <button class="share-code-btn" data-action="click->room-show#shareCode">
-        📤 Share Code
-      </button>
+      <button id="copyCodeBtn" class="button">📋 Copy Room Code</button>
+      <script>
+        document.addEventListener("DOMContentLoaded", () => {
+          const btn = document.getElementById("copyCodeBtn");
+          const code = "<%= @room.code %>";
+          btn.addEventListener("click", () => {
+            navigator.clipboard.writeText(code);
+            alert(`Room code ${code} copied to clipboard!`);
+          });
+        });
+      </script>
     </div>
   </div>
 
