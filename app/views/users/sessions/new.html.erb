@@ -17,34 +17,29 @@
   <div class="auth-form-container" id="login-form" data-auth-form-target="loginForm">
     <h1 class="auth-title">Log In</h1>
 
-    <% if resource.errors.any? && @login_attempted %>
+    <% if resource.errors.any? && @login_attempted && !current_user %>
       <div class="validation-message">Invalid email or password</div>
     <% end %>
 
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name), local: true) do |f| %>
+    <form action="<%= session_path(resource_name) %>" method="post" data-turbo="false" id="login-form-element">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
       <% if devise_mapping.rememberable? %>
         <div class="remember-me-section" style="display: none;">
-          <%= f.check_box :remember_me %>
-          <%= f.label :remember_me, "Remember me" %>
+          <%= check_box_tag "user[remember_me]" %>
+          <label for="user_remember_me">Remember me</label>
         </div>
       <% end %>
 
       <div class="form-group">
-        <%= f.label :email, "Email address" %>
-        <%= f.email_field :email,
-            autofocus: true,
-            autocomplete: "email",
-            placeholder: "Enter your email" %>
+        <label for="user_email">Email address</label>
+        <input type="email" id="user_email" name="user[email]" placeholder="Enter your email" autofocus>
       </div>
 
       <div class="form-group">
         <label for="login-password">Password</label>
         <div class="password-input-wrapper">
-          <%= f.password_field :password,
-              autocomplete: "current-password",
-              placeholder: "Enter your password",
-              id: "login-password",
-              data: { 'auth-form-target': 'loginPassword' } %>
+          <input type="password" id="login-password" name="user[password]" placeholder="Enter your password" data-auth-form-target="loginPassword">
           <button type="button" class="password-toggle" data-action="click->auth-form#toggleLoginPassword">
             👁️
           </button>
@@ -52,9 +47,9 @@
       </div>
 
       <div class="auth-actions">
-        <%= f.submit "Log In", class: "button auth-button", data: { 'auth-form-target': 'loginButton' } %>
+        <button type="submit" class="button auth-button" data-auth-form-target="loginButton">Log In</button>
       </div>
-    <% end %>
+    </form>
 
     <!-- Social Login (placeholder for future) -->
     <div class="divider">OR</div>

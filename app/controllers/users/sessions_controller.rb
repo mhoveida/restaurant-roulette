@@ -2,9 +2,6 @@ class Users::SessionsController < Devise::SessionsController
   layout 'application'
 
   def create
-    # Mark that login was attempted so we show errors in the view
-    @login_attempted = true
-
     # Get sign in parameters
     params_hash = sign_in_params
 
@@ -13,11 +10,18 @@ class Users::SessionsController < Devise::SessionsController
     user.validate(:login)
 
     if user.errors.any?
+      # Only mark login_attempted if validation failed
+      @login_attempted = true
       self.resource = user
-      respond_with resource
+      render :new
     else
+      # Let Devise handle the actual authentication
       super
     end
+  end
+
+  def after_sign_in_path_for(resource)
+    root_path
   end
 
   protected
