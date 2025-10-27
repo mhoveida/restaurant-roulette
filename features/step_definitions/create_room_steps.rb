@@ -3,15 +3,11 @@
 # ============================================
 
 Given "I am on the create room page" do
-  visit new_room_path
+  visit "/rooms/new"
 end
 
 Then /I should see "Create Room"/ do
   expect(page).to have_content("Create Room")
-end
-
-Then /I should see an "([^"]*)" input field$/ do |field_name|
-  expect(page).to have_field(field_name)
 end
 
 Then /the owner name field should display "([^"]*)"/ do |name|
@@ -23,16 +19,12 @@ Then /the owner name field should be read-only/ do
   expect(owner_name_field["readonly"]).to eq("readonly")
 end
 
-When /I select "([^"]*)" from "([^"]*)"/ do |option, field|
-  select option, from: field
-end
-
 Then /I should see an error message "([^"]*)"/ do |message|
   expect(page).to have_content(message)
 end
 
 Then /I should remain on the create room page/ do
-  expect(current_path).to eq(new_room_path)
+  expect(current_path).to eq("/rooms/new")
 end
 
 Then /the "Create Room" button should be enabled/ do
@@ -46,10 +38,6 @@ end
 
 Then /I should see the room code/ do
   expect(page).to have_css(".room-code")
-end
-
-When /I select cuisines "([^"]*)"/ do |cuisines|
-  fill_in "Cuisine Preferences", with: cuisines
 end
 
 Then /all required room fields should be filled/ do

@@ -1,6 +1,6 @@
 class RoomsController < ApplicationController
   def new
-    @owner_name = current_user&.email&.split("@")&.first || ""
+    @owner_name = current_user&.first_name || ""
     @location = ""
     @price = ""
     @categories = ""
