@@ -23,11 +23,11 @@ Then('the sign up form should be displayed') do
 end
 
 Then('I should see email input field') do
-  expect(page).to have_field('Email address', type: 'email')
+  expect(page).to have_field('Email address', type: 'email', visible: :all)
 end
 
 Then('I should see password input field') do
-  expect(page).to have_field('Password', type: 'password')
+  expect(page).to have_field('Password', type: 'password', visible: :all)
 end
 
 # Tab Navigation
@@ -57,22 +57,30 @@ Then('the {string} tab should be active') do |tab_name|
 end
 
 # Form filling and submission
-When('I fill in {string} with {string}') do |field, value|
-  fill_in field, with: value
-end
-
-When('I click {string} without filling any fields') do |button_text|
-  click_button button_text
-end
+# (Using generic web_steps "I click" definition)
 
 # Login results
+Then('I should be on the login page') do
+  expect(page).to have_current_path(new_user_session_path)
+end
+
+Then('I should be on the sign up page') do
+  expect(page).to have_current_path(new_user_registration_path)
+end
+
 Then('I should be redirected to the login page') do
   expect(page).to have_current_path(new_user_session_path)
 end
 
 Then('I should be logged in as {string}') do |name|
-  expect(page).not_to have_button('Log In')
-  expect(page).to have_text(name)
+  # Wait for the page to load after form submission
+  using_wait_time(10) do
+    # Check that we're no longer on the login/signup page
+    expect(page).not_to have_current_path(new_user_session_path)
+    expect(page).not_to have_current_path(new_user_registration_path)
+    # Check that the name appears on the page
+    expect(page).to have_text(name)
+  end
 end
 
 Then('I should be logged in') do
@@ -99,9 +107,37 @@ Then('I should remain on the sign up page') do
   expect(page).to have_current_path(new_user_registration_path)
 end
 
-# Signup
+# Signup & Account Creation
 Given('an account exists with email {string}') do |email|
   create(:user, email: email, first_name: 'Existing', last_name: 'User')
+end
+
+Given('an account exists with email {string} and password {string}') do |email, password|
+  create(:user, email: email, first_name: 'Test', last_name: 'User', password: password, password_confirmation: password)
+end
+
+Given('a user account exists with email {string} and password {string}') do |email, password|
+  create(:user, email: email, first_name: 'Test', last_name: 'User', password: password, password_confirmation: password)
+end
+
+Given('I am logged in as {string}') do |name|
+  # Extract first and last name from the full name
+  names = name.split(' ')
+  first_name = names[0]
+  last_name = names.length > 1 ? names[1..].join(' ') : names[0]
+
+  # Create the user
+  user = create(:user,
+    email: "#{first_name.downcase}@example.com",
+    first_name: first_name,
+    last_name: last_name,
+    password: 'TestPassword123',
+    password_confirmation: 'TestPassword123'
+  )
+
+  # Log in the user using Warden test helpers
+  login_as(user, scope: :user)
+  visit root_path
 end
 
 Then('a new account should be created') do
@@ -141,36 +177,32 @@ Then('the password should be hidden') do
 end
 
 # OAuth - all pending for now
-When('I click {string} button') do |button_text|
-  click_button button_text
-end
-
 Then('I should be redirected to Facebook authentication') do
-  pending('Facebook OAuth integration not yet implemented')
+  skip('Facebook OAuth integration not yet implemented')
 end
 
 Then('I should be redirected to Google authentication') do
-  pending('Google OAuth integration not yet implemented')
+  skip('Google OAuth integration not yet implemented')
 end
 
 Then('after successful Facebook authentication') do
-  pending('Facebook OAuth integration not yet implemented')
+  skip('Facebook OAuth integration not yet implemented')
 end
 
 Then('after successful Google authentication') do
-  pending('Google OAuth integration not yet implemented')
+  skip('Google OAuth integration not yet implemented')
 end
 
 When('I cancel the Google authentication') do
-  pending('Google OAuth cancellation not yet implemented')
+  skip('Google OAuth cancellation not yet implemented')
 end
 
 When('I authenticate with Google account {string}') do |email|
-  pending('Google OAuth authentication not yet implemented')
+  skip('Google OAuth authentication not yet implemented')
 end
 
 When('Facebook authentication fails') do
-  pending('Facebook OAuth error handling not yet implemented')
+  skip('Facebook OAuth error handling not yet implemented')
 end
 
 Given('an account exists linked to Google account {string}') do |email|

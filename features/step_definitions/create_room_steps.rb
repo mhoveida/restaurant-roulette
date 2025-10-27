@@ -23,16 +23,8 @@ Then /the owner name field should be read-only/ do
   expect(owner_name_field["readonly"]).to eq("readonly")
 end
 
-When /I fill in "([^"]*)" with "([^"]*)"/ do |field_name, value|
-  fill_in field_name, with: value
-end
-
 When /I select "([^"]*)" from "([^"]*)"/ do |option, field|
   select option, from: field
-end
-
-When /I click "([^"]*)"/ do |button_text|
-  click_on button_text
 end
 
 Then /I should see an error message "([^"]*)"/ do |message|
