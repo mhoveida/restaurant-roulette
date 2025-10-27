@@ -1,5 +1,5 @@
 class Users::SessionsController < Devise::SessionsController
-  layout 'application'
+  layout "application"
 
   def create
     @login_attempted = true

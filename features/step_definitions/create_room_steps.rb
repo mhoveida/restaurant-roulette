@@ -66,7 +66,7 @@ end
 Then /the room should not be created/ do
   # After form submission with validation errors, we're back on the create form
   # The path could be either /rooms/new (if redirected) or /rooms (if rendered)
-  expect(["/rooms/new", "/rooms"]).to include(page.current_path)
+  expect([ "/rooms/new", "/rooms" ]).to include(page.current_path)
 end
 
 Then /the name field should be empty/ do

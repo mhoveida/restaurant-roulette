@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get "rooms/new"
-  devise_for :users, controllers: { sessions: 'users/sessions', registrations: 'users/registrations' }
+  devise_for :users, controllers: { sessions: "users/sessions", registrations: "users/registrations" }
   get "home/index"
   # root to: "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
