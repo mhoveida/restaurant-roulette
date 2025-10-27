@@ -50,7 +50,8 @@ RSpec.describe RoomsController, type: :controller do
           }
         }.not_to change(Room, :count)
 
-        expect(response).to redirect_to(rooms_new_path)
+        expect(response).to render_template(:new)
+        expect(assigns(:room).errors[:location]).to include("Please enter a location")
       end
 
       it 'does not create room without price' do
@@ -63,7 +64,8 @@ RSpec.describe RoomsController, type: :controller do
           }
         }.not_to change(Room, :count)
 
-        expect(response).to redirect_to(rooms_new_path)
+        expect(response).to render_template(:new)
+        expect(assigns(:room).errors[:price]).to include("Please select a price range")
       end
 
       it 'does not create room with invalid price format' do
@@ -76,7 +78,8 @@ RSpec.describe RoomsController, type: :controller do
           }
         }.not_to change(Room, :count)
 
-        expect(response).to redirect_to(rooms_new_path)
+        expect(response).to render_template(:new)
+        expect(assigns(:room).errors[:price]).to be_present
       end
 
       it 'guest user can create room with all required fields' do

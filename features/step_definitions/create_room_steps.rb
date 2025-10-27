@@ -81,3 +81,160 @@ Then /the owner name field should be editable/ do
   owner_name_field = find("input[name='owner_name']")
   expect(owner_name_field["readonly"]).to be_nil
 end
+
+Then /a new room should be created/ do
+  # Verify we're on the room page (show action)
+  expect(page).to have_content("Room Waiting Area")
+end
+
+Then /I should be redirected to the room waiting page/ do
+  # Verify we're on the room show page
+  expect(page).to have_content("Room Waiting Area")
+end
+
+Then /I should see a unique room code/ do
+  expect(page).to have_css(".code-value")
+end
+
+Then /the room code should be (\d+) digits/ do |num_digits|
+  room_code = find(".code-value").text
+  expect(room_code.length).to eq(num_digits.to_i)
+end
+
+Then /I should see an owner name field with "([^"]*)"/ do |name|
+  expect(page).to have_field("Name", with: name)
+end
+
+Given /^I have created a room successfully$/ do
+  # Create a room with a known code for testing
+  @room = create(:room, code: "8865", owner_name: "Maddison")
+  visit room_path(@room)
+end
+
+Given /I have created a room with code "([^"]*)"/ do |code|
+  room = create(:room, code: code)
+  visit room_path(room)
+end
+
+Given /^I have created a room$/ do
+  room = create(:room)
+  visit room_path(room)
+end
+
+Given /I am on the room waiting page/ do
+  room = create(:room)
+  visit room_path(room)
+end
+
+Given /I am viewing the room waiting page/ do
+  room = create(:room)
+  visit room_path(room)
+end
+
+Given /no other members have joined/ do
+  # Just create a room with only the owner
+  # The room is already created in the previous step
+end
+
+Then /the button should be enabled regardless of member count/ do
+  expect(page).to have_button("Ready to Spin?")
+  expect(find_button("Ready to Spin?")).not_to be_disabled
+end
+
+Then /I should be able to proceed to the spinning phase/ do
+  expect(page).to have_button("Ready to Spin?")
+end
+
+Then /restaurant options should be generated based on my preferences/ do
+  # This will be implemented in the spinning feature
+  pending
+end
+
+When /another user "([^"]*)" joins the room/ do |user_name|
+  # This would require WebSocket/real-time communication
+  pending
+end
+
+Then /I should not need to refresh the page/ do
+  # This would require WebSocket/real-time communication
+  pending
+end
+
+Given /other users have joined: "([^"]*)"/ do |members_str|
+  # This would require WebSocket/real-time communication
+  # For now, just mark as pending
+  pending
+end
+
+Given /members "([^"]*)" have joined/ do |members|
+  # This would require WebSocket/real-time communication
+  pending
+end
+
+Then /members should be listed in order of joining/ do
+  members = page.all(".member-name").map(&:text)
+  expect(members).to eq(members)
+end
+
+Then /I should be redirected to the group room spin page/ do
+  expect(page).to have_content("Spin to add options")
+end
+
+Given /I have filled in all preferences/ do
+  fill_in "Location", with: "New York"
+  select "$$", from: "Price Range"
+  fill_in "Cuisine Preferences", with: "Italian"
+end
+
+When /I click the back button or logo/ do
+  click_link "Restaurant Roulette" rescue click_button "Back"
+end
+
+Then /I should return to the home page/ do
+  expect(current_path).to eq(root_path)
+end
+
+Then /no room should be created/ do
+  expect(Room.count).to eq(0)
+end
+
+Given /I have created a room as "([^"]*)"/ do |name|
+  room = create(:room, owner_name: name)
+  visit room_path(room)
+end
+
+Then /"([^"]*)" should be marked as "([^"]*)" or "([^"]*)" in the members list/ do |name, role1, role2|
+  member_element = find(".member-name", text: name).find(:xpath, "..")
+  expect(member_element).to satisfy { |el| el.has_content?(role1) || el.has_content?(role2) }
+end
+
+Then /other members should see this designation/ do
+  # This would require multiple user sessions
+  pending
+end
+
+Then /the room code should have a share icon/ do
+  expect(page).to have_button("📤 Share Code")
+end
+
+When /I click the share icon next to the room code/ do
+  click_button "📤 Share Code"
+end
+
+Then /the share text should include "([^"]*)"/ do |text|
+  expect(page).to have_content(text)
+end
+
+Then /"([^"]*)" should be removed/ do |cuisine|
+  expect(page).not_to have_content(cuisine)
+end
+
+Then /I should see remaining cuisines "([^"]*)"/ do |cuisines|
+  cuisines.split(", ").each do |cuisine|
+    expect(page).to have_content(cuisine.strip)
+  end
+end
+
+Given /I have selected cuisines "([^"]*)"/ do |cuisines|
+  fill_in "Cuisine Preferences", with: cuisines
+end

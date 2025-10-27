@@ -33,8 +33,13 @@ class RoomsController < ApplicationController
     if @room.save
       redirect_to @room, notice: "Room created successfully"
     else
-      flash[:alert] = @room.errors.full_messages.join(", ")
-      redirect_to rooms_new_path
+      # Re-render the form with validation errors
+      @owner_name = final_owner_name
+      @location = location
+      @price = price
+      @categories = categories
+      flash.now[:alert] = @room.errors.full_messages.join(", ")
+      render :new
     end
   end
 

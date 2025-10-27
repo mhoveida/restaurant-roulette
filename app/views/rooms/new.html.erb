@@ -3,6 +3,12 @@
 <div class="create-room-container" data-controller="create-room">
   <h1 class="create-room-title">Create a Group Room</h1>
 
+  <% if flash[:alert].present? %>
+    <div class="alert alert-danger">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
+
   <!-- Preference Form Section -->
   <div class="preference-section">
     <h2>Coordinate with your friends</h2>

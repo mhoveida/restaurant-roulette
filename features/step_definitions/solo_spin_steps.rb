@@ -170,7 +170,7 @@ When /I click the share button/ do
 end
 
 Then /I should see share options/ do
-  expect(page).to have_css(".share-button")
+  expect(page).to have_button("📤 Share Code")
 end
 
 Then /the shared message should include restaurant name and address/ do
