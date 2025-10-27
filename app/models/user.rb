@@ -6,8 +6,9 @@ class User < ApplicationRecord
          :confirmable
 
   # Validations - only validate names on signup, not login
-  validates :first_name, presence: true
-  validates :last_name, presence: true
+  validates :first_name, presence: true, on: :create
+  validates :last_name, presence: true, on: :create
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   # Custom validation for login - check email and password are present
   validate :validate_login_credentials, on: :login

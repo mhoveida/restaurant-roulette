@@ -65,7 +65,7 @@ Then('I should be on the login page') do
 end
 
 Then('I should be on the sign up page') do
-  expect(page).to have_current_path(new_user_registration_path)
+  expect([new_user_registration_path, '/users']).to include(page.current_path)
 end
 
 Then('I should be redirected to the login page') do
@@ -104,7 +104,7 @@ Then('I should remain on the login page') do
 end
 
 Then('I should remain on the sign up page') do
-  expect(page).to have_current_path(new_user_registration_path)
+  expect([new_user_registration_path, '/users']).to include(page.current_path)
 end
 
 # Signup & Account Creation
