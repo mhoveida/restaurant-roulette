@@ -1,0 +1,123 @@
+<% content_for :body_class, "bg-black" %>
+<% content_for :skip_main_container, true %>
+
+<div class="auth-page-wrapper">
+  <div class="auth-container" data-controller="auth-form">
+  <!-- Tab Navigation -->
+  <div class="auth-tabs">
+    <button class="auth-tab-button active" data-auth-form-target="loginTab" data-action="click->auth-form#switchToLogin">
+      Log In
+    </button>
+    <button class="auth-tab-button" data-auth-form-target="signupTab" data-action="click->auth-form#switchToSignup">
+      Sign Up
+    </button>
+  </div>
+
+  <!-- Login Form -->
+  <div class="auth-form-container" id="login-form" data-auth-form-target="loginForm">
+    <h1 class="auth-title">Log In</h1>
+
+    <% if resource.errors.any? && @login_attempted && !current_user %>
+      <div class="validation-message">Invalid email or password</div>
+    <% end %>
+
+    <form action="<%= session_path(resource_name) %>" method="post" data-turbo="false" id="login-form-element">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+      <% if devise_mapping.rememberable? %>
+        <div class="remember-me-section" style="display: none;">
+          <%= check_box_tag "user[remember_me]" %>
+          <label for="user_remember_me">Remember me</label>
+        </div>
+      <% end %>
+
+      <div class="form-group">
+        <label for="user_email">Email address</label>
+        <input type="email" id="user_email" name="user[email]" placeholder="Enter your email" autofocus>
+      </div>
+
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <div class="password-input-wrapper">
+          <input type="password" id="login-password" name="user[password]" placeholder="Enter your password" data-auth-form-target="loginPassword">
+          <button type="button" class="password-toggle" data-action="click->auth-form#toggleLoginPassword">
+            👁️
+          </button>
+        </div>
+      </div>
+
+      <div class="auth-actions">
+        <button type="submit" class="button auth-button" data-auth-form-target="loginButton">Log In</button>
+      </div>
+    </form>
+
+    <!-- Social Login (placeholder for future) -->
+    <div class="divider">OR</div>
+    <div class="social-buttons">
+      <button class="social-button facebook-button" disabled>
+        <span>📱</span> Log in with Facebook
+      </button>
+      <button class="social-button google-button" disabled>
+        <span>🔍</span> Log in with Google
+      </button>
+    </div>
+  </div>
+
+  <!-- Signup Form -->
+  <div class="auth-form-container" id="signup-form" data-auth-form-target="signupForm" style="display: none;">
+    <h1 class="auth-title">Sign Up</h1>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), local: true) do |f| %>
+      <div class="form-row">
+        <div class="form-group">
+          <%= f.label :first_name, "First name" %>
+          <%= f.text_field :first_name,
+              placeholder: "Enter your first name" %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :last_name, "Last name" %>
+          <%= f.text_field :last_name,
+              placeholder: "Enter your last name" %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :email, "Email address" %>
+        <%= f.email_field :email,
+            autocomplete: "email",
+            placeholder: "Enter your email" %>
+      </div>
+
+      <div class="form-group">
+        <label for="signup-password">Password</label>
+        <div class="password-input-wrapper">
+          <%= f.password_field :password,
+              autocomplete: "new-password",
+              placeholder: "Enter your password (min 8 characters)",
+              id: "signup-password",
+              data: { 'auth-form-target': 'signupPassword' } %>
+          <button type="button" class="password-toggle" data-action="click->auth-form#toggleSignupPassword">
+            👁️
+          </button>
+        </div>
+      </div>
+
+      <div class="auth-actions">
+        <%= f.submit "Sign Up", class: "button auth-button" %>
+      </div>
+    <% end %>
+
+    <!-- Social Signup (placeholder for future) -->
+    <div class="divider">OR</div>
+    <div class="social-buttons">
+      <button class="social-button facebook-button" disabled>
+        <span>📱</span> Sign up with Facebook
+      </button>
+      <button class="social-button google-button" disabled>
+        <span>🔍</span> Sign up with Google
+      </button>
+    </div>
+  </div>
+  </div>
+</div>

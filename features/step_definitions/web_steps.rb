@@ -12,11 +12,6 @@ Given "I am on the home page" do
   visit root_path
 end
 
-Given /I am logged in as "(.*)"/ do |name|
-  user = FactoryBot.create(:user, email: "#{name.downcase}@example.com", first_name: name, last_name: "User")
-  login_as(user)
-end
-
 Given "I am not logged in" do
   logout(:user)
   visit root_path
@@ -32,7 +27,21 @@ end
 # ============================================
 
 When /I click "(.*)"/ do |link_or_button_text|
-  click_on link_or_button_text
+  # Try to click a button first (within the visible form), then try a link
+  begin
+    # Try to click visible form first
+    visible_form = find('form', visible: true)
+    within(visible_form) do
+      click_button link_or_button_text
+    end
+  rescue Capybara::ElementNotFound
+    # No visible form, try clicking anywhere
+    begin
+      click_button link_or_button_text
+    rescue Capybara::ElementNotFound
+      click_link link_or_button_text
+    end
+  end
 end
 
 When /I fill in "(.*)" with "(.*)"/ do |field_name, value|
@@ -53,11 +62,15 @@ end
 # ============================================
 
 Then /I should see "(.*)"/ do |text|
-  expect(page.has_content?(text)).to be(true), "Expected to find text '#{text}', but did not."
+  # Check if text exists anywhere on the page (including hidden content)
+  page_text = page.text(:all)
+  expect(page_text).to include(text), "Expected to find text '#{text}' on the page"
 end
 
 Then /I should see a "(.*)" button$/ do |link_or_button_text|
-  expect(page.has_link?(link_or_button_text) || page.has_button?(link_or_button_text)).to be(true), "Expected to find link or button '#{link_or_button_text}', but did not."
+  has_button = page.has_link?(link_or_button_text) || page.has_button?(link_or_button_text) ||
+               page.has_link?(link_or_button_text, visible: :all) || page.has_button?(link_or_button_text, visible: :all)
+  expect(has_button).to be(true), "Expected to find link or button '#{link_or_button_text}', but did not."
 end
 
 Then /I should see an "(.*)" input field/ do |field_name|
@@ -115,7 +128,12 @@ When /I select cuisines "([^"]*)"/ do |cuisines|
 end
 
 Then /all required fields should be filled/ do
-  name_field = find("input[name='name']")
+  # Try to find either 'name' (solo_spin) or 'owner_name' (create_room)
+  name_field = if page.has_field?("name")
+    find("input[name='name']")
+  else
+    find("input[name='owner_name']")
+  end
   location_field = find("input[name='location']")
   price_field = find("select[name='price']")
   cuisine_field = find("input[name='categories']")

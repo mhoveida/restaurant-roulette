@@ -22,7 +22,7 @@ RSpec.describe RoomsController, type: :controller do
     end
 
     context 'when user is logged in' do
-      let(:user) { FactoryBot.create(:user, email: 'maddison@example.com') }
+      let(:user) { create(:user, email: 'maddison@example.com', first_name: 'Maddison', last_name: 'Test') }
 
       before { sign_in user }
 
@@ -31,73 +31,79 @@ RSpec.describe RoomsController, type: :controller do
         expect(response).to render_template(:new)
       end
 
-      it 'extracts owner name from user email' do
+      it 'uses user first name as owner name' do
         get :new
-        expect(assigns(:owner_name)).to eq("maddison")
+        expect(assigns(:owner_name)).to eq("Maddison")
       end
     end
   end
 
   describe 'POST #create' do
     context 'guest user validation' do
-      it 'requires owner name for guest users' do
-        post :create, params: {
-          owner_name: "",
-          location: "New York",
-          price: "$$",
-          categories: "Italian"
-        }
+      it 'does not create room without location' do
+        expect {
+          post :create, params: {
+            owner_name: "John",
+            location: "",
+            price: "$$",
+            categories: "Italian"
+          }
+        }.not_to change(Room, :count)
 
-        expect(flash[:alert]).to eq("Please enter your name")
-        expect(response).to redirect_to(new_room_path)
+        expect(response).to render_template(:new)
+        expect(assigns(:room).errors[:location]).to include("Please enter a location")
       end
 
-      it 'requires location' do
-        post :create, params: {
-          owner_name: "John",
-          location: "",
-          price: "$$",
-          categories: "Italian"
-        }
+      it 'does not create room without price' do
+        expect {
+          post :create, params: {
+            owner_name: "John",
+            location: "New York",
+            price: "",
+            categories: "Italian"
+          }
+        }.not_to change(Room, :count)
 
-        expect(flash[:alert]).to eq("Please enter a location")
-        expect(response).to redirect_to(new_room_path)
+        expect(response).to render_template(:new)
+        expect(assigns(:room).errors[:price]).to include("Please select a price range")
       end
 
-      it 'requires price' do
-        post :create, params: {
-          owner_name: "John",
-          location: "New York",
-          price: "",
-          categories: "Italian"
-        }
+      it 'does not create room with invalid price format' do
+        expect {
+          post :create, params: {
+            owner_name: "John",
+            location: "New York",
+            price: "$$$$$",
+            categories: "Italian"
+          }
+        }.not_to change(Room, :count)
 
-        expect(flash[:alert]).to eq("Please select a price range")
-        expect(response).to redirect_to(new_room_path)
+        expect(response).to render_template(:new)
+        expect(assigns(:room).errors[:price]).to be_present
       end
 
-      it 'validates price format' do
-        post :create, params: {
-          owner_name: "John",
-          location: "New York",
-          price: "$$$$$",
-          categories: "Italian"
-        }
+      it 'guest user can create room with all required fields' do
+        expect {
+          post :create, params: {
+            owner_name: "John",
+            location: "New York",
+            price: "$$",
+            categories: "Italian"
+          }
+        }.to change(Room, :count).by(1)
 
-        expect(flash[:alert]).to eq("Please select a valid price range")
-        expect(response).to redirect_to(new_room_path)
+        expect(response).to redirect_to(Room.last)
       end
 
-      it 'requires categories' do
-        post :create, params: {
-          owner_name: "John",
-          location: "New York",
-          price: "$$",
-          categories: ""
-        }
-
-        expect(flash[:alert]).to eq("Please select at least one cuisine")
-        expect(response).to redirect_to(new_room_path)
+      it 'allows room creation without categories (optional field)' do
+        expect {
+          post :create, params: {
+            owner_name: "John",
+            location: "New York",
+            price: "$$",
+            categories: ""
+          }
+        }.to change(Room, :count).by(1)
       end
     end
 
@@ -114,7 +120,7 @@ RSpec.describe RoomsController, type: :controller do
       end
 
       it 'creates a room for logged in user' do
-        user = FactoryBot.create(:user, email: 'maddison@example.com')
+        user = create(:user, email: 'maddison@example.com', first_name: 'Maddison', last_name: 'Test')
         sign_in user
 
         expect {
@@ -127,8 +133,8 @@ RSpec.describe RoomsController, type: :controller do
         }.to change(Room, :count).by(1)
       end
 
-      it 'uses logged-in user email name instead of owner_name parameter' do
-        user = FactoryBot.create(:user, email: 'maddison@example.com')
+      it 'uses logged-in user first name instead of owner_name parameter' do
+        user = create(:user, email: 'maddison@example.com', first_name: 'Maddison', last_name: 'Test')
         sign_in user
 
         post :create, params: {
@@ -139,7 +145,7 @@ RSpec.describe RoomsController, type: :controller do
         }
 
         room = Room.last
-        expect(room.owner_name).to eq("maddison")
+        expect(room.owner_name).to eq("Maddison")
       end
 
       it 'redirects to room show page' do
@@ -219,7 +225,7 @@ RSpec.describe RoomsController, type: :controller do
 
     context 'successful join' do
       it 'redirects logged-in user to room' do
-        user = FactoryBot.create(:user)
+        user = create(:user)
         sign_in user
 
         post :join, params: { room_code: room.code }

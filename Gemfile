@@ -62,9 +62,14 @@ group :development, :test do
   gem "database_cleaner-active_record"
   gem "warden"
   gem "simplecov", require: false
+  gem "rails-controller-testing"
+  gem "shoulda-matchers"
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Preview emails in development [https://github.com/ryanb/letter_opener]
+  gem "letter_opener"
 end

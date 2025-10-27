@@ -1,6 +1,6 @@
 class RoomsController < ApplicationController
   def new
-    @owner_name = current_user&.email&.split("@")&.first || ""
+    @owner_name = current_user&.first_name || ""
     @location = ""
     @price = ""
     @categories = ""
@@ -12,57 +12,34 @@ class RoomsController < ApplicationController
     price = params[:price]
     categories = params[:categories]
 
-    # Validate owner name (required for guests, used for logged-in users)
-    if owner_name.blank? && !user_signed_in?
-      flash[:alert] = "Please enter your name"
-      redirect_to create_room_path
-      return
-    end
-
-    # Validate location
-    if location.blank?
-      flash[:alert] = "Please enter a location"
-      redirect_to create_room_path
-      return
-    end
-
-    # Validate price
-    if price.blank?
-      flash[:alert] = "Please select a price range"
-      redirect_to create_room_path
-      return
-    end
-
-    # Validate price format
-    unless [ "$", "$$", "$$$", "$$$$" ].include?(price)
-      flash[:alert] = "Please select a valid price range"
-      redirect_to create_room_path
-      return
-    end
-
-    # Validate categories
-    if categories.blank?
-      flash[:alert] = "Please select at least one cuisine"
-      redirect_to create_room_path
-      return
-    end
-
     # Use logged-in user's name if available, otherwise use provided name
-    final_owner_name = user_signed_in? ? (current_user.email.split("@").first) : owner_name
+    final_owner_name = user_signed_in? ? current_user.first_name : owner_name
+
+    # Parse categories - convert comma-separated string to array, or empty array if blank
+    categories_array = if categories.present?
+      categories.split(",").map(&:strip).reject(&:empty?)
+    else
+      []
+    end
 
     # Create the room
     @room = Room.new(
       owner_name: final_owner_name,
       location: location,
       price: price,
-      categories: categories
+      categories: categories_array
     )
 
     if @room.save
       redirect_to @room, notice: "Room created successfully"
     else
-      flash[:alert] = @room.errors.full_messages.join(", ")
-      redirect_to create_room_path
+      # Re-render the form with validation errors
+      @owner_name = final_owner_name
+      @location = location
+      @price = price
+      @categories = categories
+      flash.now[:alert] = @room.errors.full_messages.join(", ")
+      render :new
     end
   end
 

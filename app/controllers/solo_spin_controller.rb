@@ -7,13 +7,20 @@ class SoloSpinController < ApplicationController
     @location = params[:location]
     @price = params[:price]
     @categories = params[:categories]
-    @name = current_user&.name || ""
+    @name = current_user&.first_name || ""
 
     # If filters are provided (spinning the wheel), get a random restaurant
     if @location.present?
+      # Parse categories - convert comma-separated string to array, or nil if blank
+      categories_array = if @categories.present?
+        @categories.split(",").map(&:strip).reject(&:empty?)
+      else
+        nil
+      end
+
       @restaurant = @service.random_restaurant(
         location: @location,
-        categories: @categories,
+        categories: categories_array,
         price: @price
       )
     end
