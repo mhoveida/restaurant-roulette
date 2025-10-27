@@ -1,9 +1,10 @@
 class Room < ApplicationRecord
   # Preference validations
-  validates :location, presence: true
-  validates :price, presence: true, inclusion: { in: [ "$", "$$", "$$$", "$$$$" ] }
-  validates :categories, presence: true
-  validates :owner_name, presence: true
+  validates :location, presence: { message: "Please enter a location" }
+  validates :price, presence: { message: "Please select a price range" },
+                    inclusion: { in: [ "$", "$$", "$$$", "$$$$" ], message: "Please select a valid price range" }
+  validates :categories, presence: { message: "Please enter cuisine preferences" }
+  validates :owner_name, presence: { message: "Please enter your name" }
 
   # Code validations (but we'll generate it automatically)
   validates :code, presence: true, uniqueness: true

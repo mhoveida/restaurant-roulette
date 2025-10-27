@@ -12,37 +12,8 @@ class RoomsController < ApplicationController
     price = params[:price]
     categories = params[:categories]
 
-    # Validate owner name (required for guests, used for logged-in users)
-    if owner_name.blank? && !user_signed_in?
-      flash[:alert] = "Please enter your name"
-      redirect_to create_room_path
-      return
-    end
-
-    # Validate location
-    if location.blank?
-      flash[:alert] = "Please enter a location"
-      redirect_to create_room_path
-      return
-    end
-
-    # Validate price
-    if price.blank?
-      flash[:alert] = "Please select a price range"
-      redirect_to create_room_path
-      return
-    end
-
-    # Validate price format
-    unless [ "$", "$$", "$$$", "$$$$" ].include?(price)
-      flash[:alert] = "Please select a valid price range"
-      redirect_to create_room_path
-      return
-    end
-
-
     # Use logged-in user's name if available, otherwise use provided name
-    final_owner_name = user_signed_in? ? (current_user.email.split("@").first) : owner_name
+    final_owner_name = user_signed_in? ? current_user.first_name : owner_name
 
     # Parse categories - convert comma-separated string to array, or empty array if blank
     categories_array = if categories.present?
@@ -62,8 +33,12 @@ class RoomsController < ApplicationController
     if @room.save
       redirect_to @room, notice: "Room created successfully"
     else
-      flash[:alert] = @room.errors.full_messages.join(", ")
-      redirect_to create_room_path
+      # Re-render the new template with validation errors
+      @owner_name = final_owner_name
+      @location = location
+      @price = price
+      @categories = categories
+      render :new
     end
   end
 

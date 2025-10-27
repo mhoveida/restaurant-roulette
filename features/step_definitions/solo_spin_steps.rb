@@ -26,7 +26,7 @@ Then /I should see "([^"]*)" in the suggestions/ do |location|
   expect(page).to have_css(".location-suggestions")
 end
 
-When /I click on "([^"]*)" dropdown/ do |dropdown_name|
+When /I click on "([^"]*)" dropdown$/ do |dropdown_name|
   find("label", text: dropdown_name).sibling("select").click
 end
 

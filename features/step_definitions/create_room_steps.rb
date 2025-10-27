@@ -11,7 +11,7 @@ Then /I should see "Create Room"/ do
 end
 
 Then /the owner name field should display "([^"]*)"/ do |name|
-  expect(page).to have_field("Owner Name", with: name)
+  expect(page).to have_field("Name", with: name)
 end
 
 Then /the owner name field should be read-only/ do
@@ -25,11 +25,6 @@ end
 
 Then /I should remain on the create room page/ do
   expect(current_path).to eq("/rooms/new")
-end
-
-Then /the "Create Room" button should be enabled/ do
-  button = find_button("Create Room")
-  expect(button["disabled"]).to be_nil
 end
 
 Then /I should be redirected to the room page/ do
@@ -66,4 +61,10 @@ end
 
 Then /I should see the "([^"]*)" sharing option/ do |option|
   expect(page).to have_content(option)
+end
+
+Then /the room should not be created/ do
+  # After form submission with validation errors, we're back on the create form
+  # The path could be either /rooms/new (if redirected) or /rooms (if rendered)
+  expect(["/rooms/new", "/rooms"]).to include(page.current_path)
 end

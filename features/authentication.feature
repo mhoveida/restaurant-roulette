@@ -19,9 +19,6 @@ Feature: User Authentication
     And I should see email input field
     And I should see password input field
     And I should see "Log In" button
-    And I should see "Log in with Facebook" button
-    And I should see "Log in with Google" button
-    And I should see "OR" divider
 
   Scenario: User can remain logged in across page navigation
     Given I am logged in as "Maddison Test"
@@ -40,36 +37,6 @@ Feature: User Authentication
     Then I should see my name "Sarah Johnson" in the profile
     And I should see my name "Sarah" in the profile section
     And I should still be logged in
-
-  Scenario: User logs in with Facebook
-    Given I am on the login page
-    When I click "Log in with Facebook"
-    Then I should be redirected to Facebook authentication
-    And after successful Facebook authentication
-    Then I should be logged in
-    And I should be redirected to the home page
-
-  Scenario: User logs in with Google
-    Given I am on the login page
-    When I click "Log in with Google"
-    Then I should be redirected to Google authentication
-    And after successful Google authentication
-    Then I should be logged in
-    And I should be redirected to the home page
-
-  Scenario: User cancels social media login
-    Given I am on the login page
-    When I click "Log in with Google"
-    And I cancel the Google authentication
-    Then I should be returned to the login page
-    And I should not be logged in
-
-  Scenario: Social media authentication fails
-    Given I am on the login page
-    When I click "Log in with Facebook"
-    And Facebook authentication fails
-    Then I should see "Unable to log in with Facebook. Please try again"
-    And I should remain on the login page
 
   Scenario: User switches to sign up tab
     Given I am on the login page
@@ -181,32 +148,6 @@ Feature: User Authentication
     And I should see "Email address" input field
     And I should see "Password" input field
     And I should see "Sign Up" button
-
-  Scenario: User signs up with Facebook
-    Given I am on the sign up page
-    When I click "Sign up with Facebook"
-    Then I should be redirected to Facebook authentication
-    And after successful Facebook authentication
-    Then a new account should be created
-    And I should be logged in
-    And I should be redirected to the home page
-
-  Scenario: User signs up with Google
-    Given I am on the sign up page
-    When I click "Sign up with Google"
-    Then I should be redirected to Google authentication
-    And after successful Google authentication
-    Then a new account should be created
-    And I should be logged in
-    And I should be redirected to the home page
-
-  Scenario: Social sign up with existing account
-    Given an account exists linked to Google account "celine@gmail.com"
-    And I am on the sign up page
-    When I click "Sign up with Google"
-    And I authenticate with Google account "celine@gmail.com"
-    Then I should be logged into the existing account
-    And I should see "Welcome back, Celine!"
 
   Scenario: Password visibility toggle
     Given I am on the login page

@@ -128,7 +128,12 @@ When /I select cuisines "([^"]*)"/ do |cuisines|
 end
 
 Then /all required fields should be filled/ do
-  name_field = find("input[name='name']")
+  # Try to find either 'name' (solo_spin) or 'owner_name' (create_room)
+  name_field = if page.has_field?("name")
+    find("input[name='name']")
+  else
+    find("input[name='owner_name']")
+  end
   location_field = find("input[name='location']")
   price_field = find("select[name='price']")
   cuisine_field = find("input[name='categories']")
