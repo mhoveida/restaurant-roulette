@@ -13,7 +13,7 @@ Given "I am on the home page" do
 end
 
 Given /I am logged in as "(.*)"/ do |name|
-  user = FactoryBot.create(:user, email: "#{name.downcase}@example.com", name: name)
+  user = FactoryBot.create(:user, email: "#{name.downcase}@example.com", first_name: name, last_name: "User")
   login_as(user)
 end
 
@@ -40,7 +40,7 @@ When /I fill in "(.*)" with "(.*)"/ do |field_name, value|
 end
 
 When "I click on the user profile icon" do
-  find("span.profile-email", text: "User: maddison@example.com").click
+  find("span.profile-email").click
 end
 
 When "I click 'Join Room' without entering a code" do
@@ -93,7 +93,7 @@ Then /I should see a cuisine preferences dropdown/ do
   expect(page.has_field?("Cuisine Preferences")).to be(true), "Expected to find 'Cuisine Preferences' field, but did not."
 end
 
-Then /I should see the roulette wheel/ do
+Then /I should see the roulette wheel$/ do
   expect(page.has_css?("#roulette-wheel")).to be(true), "Expected to find roulette wheel, but did not."
 end
 
@@ -137,11 +137,11 @@ Then /the wheel should not spin/ do
 end
 
 Then /I should be on the create room page/ do
-  expect(page.has_content?("This is the Create Room page")).to be(true), "Expected to be on the create room page, but was not."
+  expect(page.has_content?("Create a Group Room")).to be(true), "Expected to be on the create room page, but was not."
 end
 
 Then /I should be redirected to the group room page/ do
-  expect(page.has_content?("Welcome to the Group Room")).to be(true), "Expected to be on the group room page, but was not."
+  expect(page.has_content?("Room Waiting Area")).to be(true), "Expected to be on the group room page, but was not."
 end
 
 Then /I should be redirected to the join room page/ do
