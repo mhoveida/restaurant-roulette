@@ -149,6 +149,7 @@ Feature: User Authentication
     And I should see "Password" input field
     And I should see "Sign Up" button
 
+  @javascript
   Scenario: Password visibility toggle
     Given I am on the login page
     And the password field is displayed
@@ -158,6 +159,7 @@ Feature: User Authentication
     When I click the toggle icon again
     Then the password should be hidden
 
+  @javascript
   Scenario: User switches from sign up back to login
     Given I am on the sign up page
     When I have clicked "Log in" tab
@@ -172,6 +174,7 @@ Feature: User Authentication
     Then I should still be logged in
     And I should see my name "Maddison" in the profile
 
+  @javascript
   Scenario: Email validation on sign up
     Given I am on the sign up page
     When I enter an email in incorrect format
