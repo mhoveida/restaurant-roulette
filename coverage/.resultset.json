@@ -544,13 +544,13 @@
           1,
           null,
           1,
-          7,
-          7,
+          6,
+          6,
           null,
           null,
-          7,
+          6,
           null,
-          7,
+          6,
           0,
           0,
           0,
@@ -561,17 +561,17 @@
           0,
           null,
           null,
-          7,
-          7,
+          6,
+          6,
           null,
-          7,
+          6,
           null,
           null,
           null,
           1,
           null,
           1,
-          7,
+          6,
           null,
           null,
           1,
@@ -760,6 +760,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1761613959
+    "timestamp": 1761668849
   }
 }

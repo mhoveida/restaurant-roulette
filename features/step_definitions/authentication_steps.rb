@@ -186,18 +186,13 @@ When('I click the toggle icon again') do
 end
 
 Then('the password should be visible as plain text') do
-  # Since JavaScript isn't running in tests, we can't actually test the toggle behavior
-  # Instead, we verify that the UI elements exist and the toggle mechanism is in place
-  expect(page).to have_css('.password-toggle', visible: true)
-  expect(page).to have_field('Password')
-  # For feature test purposes, we consider this scenario passed
-  # because the password visibility toggle UI is properly implemented
+  password_field = find('[data-auth-form-target="loginPassword"], [data-auth-form-target="signupPassword"]', match: :first)
+  expect(password_field[:type]).to eq('text')
 end
 
 Then('the password should be hidden') do
-  # Same approach - verify UI elements exist
-  expect(page).to have_css('.password-toggle', visible: true)
-  expect(page).to have_field('Password')
+  password_field = find('[data-auth-form-target="loginPassword"], [data-auth-form-target="signupPassword"]', match: :first)
+  expect(password_field[:type]).to eq('password')
 end
 
 # OAuth - all pending for now
@@ -259,19 +254,12 @@ Then('I should be logged out') do
 end
 
 Then('any entered sign up data should be cleared') do
-  # Since JavaScript isn't running in tests, the form data won't actually be cleared
-  # when switching tabs. Instead, we'll verify that:
-  # 1. We're now on the login form (not signup)
-  # 2. The user can successfully interact with the login form
-
-  # Verify we're on the login page/form
-  expect(page).to have_current_path(new_user_session_path)
-  expect(page).to have_css('[data-auth-form-target="loginForm"]', visible: true)
-
-  # Verify the login form is functional by checking we can see its elements
-  expect(page).to have_field('Email address', visible: :all)
-  expect(page).to have_field('Password', visible: :all)
-  expect(page).to have_button('Log In', visible: :all)
+  using_wait_time 2 do
+    expect(page).to have_field('First name', with: '', visible: :all)
+    expect(page).to have_field('Last name', with: '', visible: :all)
+    expect(page).to have_field('Email address', with: '', visible: :all)
+    expect(page).to have_field('Password', with: '', visible: :all)
+  end
 end
 
 Then('I navigate to {string} page') do |page_name|
@@ -299,26 +287,21 @@ Then('I enter an email in incorrect format') do
 end
 
 Then('I should see real-time validation error') do
-  # Since we don't have real-time JavaScript validation, we'll test server-side validation
-  # Fill in the rest of the required fields
-  fill_in 'First name', with: 'Test'
-  fill_in 'Last name', with: 'User'
-  fill_in 'Password', with: 'password123'
-  fill_in 'Confirm Password', with: 'password123'
-
-  # Click the specific Sign Up button in the signup form (not login form)
-  within '[data-auth-form-target="signupForm"]' do
-    click_button 'Sign Up'
-  end
-
-  # Check that we get validation errors for invalid email
-  expect(page).to have_css('.validation-message', wait: 5)
+  # Test actual real-time validation
+  expect(page).to have_css('.validation-message', visible: true)
 end
 
 Then('the {string} button should be disabled') do |button_name|
-  # For now, we'll verify the button exists and is visible
-  # Button disabling would require JavaScript real-time validation
-  within '[data-auth-form-target="signupForm"]' do
-    expect(page).to have_button(button_name, visible: true)
+  sleep 1
+
+  case button_name
+  when "Sign Up"
+    button = find('[data-auth-form-target="signupForm"] button[type="submit"]')
+  when "Log In"
+    button = find('[data-auth-form-target="loginForm"] button[type="submit"]')
+  else
+    button = find_button(button_name)
   end
+
+  expect(button.disabled?).to be true
 end
