@@ -2,8 +2,6 @@
 # BACKGROUND
 # ============================================
 
-
-
 # ============================================
 # GIVEN STEPS - Setup
 # ============================================
@@ -20,7 +18,6 @@ end
 Given /a room exists with code "(.*)"/ do |code|
   FactoryBot.create(:room, code: code)
 end
-
 
 # ============================================
 # WHEN STEPS - Actions
@@ -56,17 +53,40 @@ When "I click 'Join Room' without entering a code" do
   click_on "Join Room"
 end
 
-
 # ============================================
 # THEN STEPS - Assertions
 # ============================================
 
+# Generic text assertions
 Then (/^I should see "(.*)"$/) do |text|
   # Check if text exists anywhere on the page (including hidden content)
   page_text = page.text(:all)
   expect(page_text).to include(text), "Expected to find text '#{text}' on the page"
 end
 
+# ADD THESE MISSING STEPS FOR AUTHENTICATION FEATURE
+Then('I should see {string} tab') do |text|
+  expect(page).to have_css('.auth-tab-button', text: text)
+end
+
+Then('I should see {string} heading') do |text|
+  expect(page).to have_css('h1.auth-title', text: text)
+end
+
+Then('I should see {string} button') do |text|
+  expect(page).to have_button(text)
+end
+
+Then('I should see {string} input field') do |field_name|
+  expect(page).to have_field(field_name)
+end
+
+Then('I should see {string} button instead of my name') do |button_text|
+  expect(page).to have_button(button_text)
+  expect(page).not_to have_css('.profile-email')
+end
+
+# Existing specific assertions
 Then /I should see a "(.*)" button$/ do |link_or_button_text|
   has_button = page.has_link?(link_or_button_text) || page.has_button?(link_or_button_text) ||
                page.has_link?(link_or_button_text, visible: :all) || page.has_button?(link_or_button_text, visible: :all)
