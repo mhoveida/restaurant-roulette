@@ -3,7 +3,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def create
     @signup_attempted = true
-    
+
     build_resource(sign_up_params)
 
     if resource.save

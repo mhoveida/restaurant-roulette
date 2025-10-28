@@ -41,7 +41,7 @@ Given('I have clicked {string} tab') do |tab_name|
   when 'Log In'
     find('[data-auth-form-target="loginTab"]').click
   end
-  
+
   # Wait for the JavaScript to process
   sleep 0.5
 end

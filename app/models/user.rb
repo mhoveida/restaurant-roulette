@@ -17,5 +17,4 @@ class User < ApplicationRecord
   def short_name
     first_name
   end
-
 end
