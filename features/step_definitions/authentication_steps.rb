@@ -293,7 +293,7 @@ end
 
 Then('the {string} button should be disabled') do |button_name|
   sleep 1
-  
+
   case button_name
   when "Sign Up"
     button = find('[data-auth-form-target="signupForm"] button[type="submit"]')
@@ -302,6 +302,6 @@ Then('the {string} button should be disabled') do |button_name|
   else
     button = find_button(button_name)
   end
-  
+
   expect(button.disabled?).to be true
 end
