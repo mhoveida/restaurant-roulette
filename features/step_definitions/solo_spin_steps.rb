@@ -296,3 +296,7 @@ end
 Then /"American" should be removed from selected cuisines/ do
   expect(page).not_to have_content("American")
 end
+
+Then(/^I should see "([^"]*)" option$/) do |price|
+  expect(page).to have_select("Price Range", with_options: [ price ])
+end
