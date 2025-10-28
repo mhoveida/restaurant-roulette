@@ -26,6 +26,294 @@
         ]
       },
       "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/restaurant.rb": {
+<<<<<<< HEAD
+=======
+        "lines": [
+          1,
+          1,
+          6,
+          6,
+          6,
+          6,
+          null,
+          null,
+          1,
+          13,
+          13,
+          13,
+          13,
+          null,
+          null,
+          1,
+          5,
+          null,
+          null,
+          13,
+          12,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
+          8,
+          null,
+          null,
+          1,
+          19,
+          37,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/application_record.rb": {
+        "lines": [
+          1,
+          1,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/room.rb": {
+        "lines": [
+          1,
+          null,
+          null,
+          null,
+          1,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/user.rb": {
+        "lines": [
+          1,
+          null,
+          null,
+          1,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/rooms_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/application_controller.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
+        "lines": [
+          null,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/static_pages_controller.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/jobs/application_job.rb": {
+        "lines": [
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          0
+        ],
+        "branches": {}
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/mailers/application_mailer.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/services/restaurant_service.rb": {
+>>>>>>> 4d8e852 (moved TODO scenarios to pending/ dir --> 88% coverage)
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+<<<<<<< HEAD
+          1,
+          null,
+          1,
+=======
+          0,
+          null,
+          0,
+          0,
+          null,
+          null,
+          13,
+          null,
+          5,
+          3,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+>>>>>>> 4d8e852 (moved TODO scenarios to pending/ dir --> 88% coverage)
+          null,
+          1,
+          null,
+          1,
+          5,
+          null,
+          null,
+<<<<<<< HEAD
+=======
+          0,
+          0,
+          null,
+          null,
+          null,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          null,
+          1,
+          15,
+          null,
+          15,
+          null,
+          15,
+          4,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          null,
+          11,
+          11,
+          11,
+          null,
+          null,
+          null,
+          1,
+          null,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null
+        ]
+      },
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          20,
+          null,
+          20,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      }
+    },
+    "timestamp": 1761267124
+  },
+  "Cucumber Features": {
+    "coverage": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/restaurant.rb": {
         "lines": [
           null,
           null,
@@ -39,19 +327,25 @@
           null,
           1,
           null,
-          1,
-          5,
-          null,
-          null,
+>>>>>>> 4d8e852 (moved TODO scenarios to pending/ dir --> 88% coverage)
           1,
           3,
           null,
           null,
           1,
-          3,
+          15,
           null,
+<<<<<<< HEAD
           1,
           8,
+=======
+          null,
+          20,
+          1,
+          null,
+          1,
+          4,
+>>>>>>> 4d8e852 (moved TODO scenarios to pending/ dir --> 88% coverage)
           null,
           null,
           1,
@@ -147,12 +441,104 @@
       "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
         "lines": [
           null,
+<<<<<<< HEAD
           0,
           0,
           0,
           0
         ],
         "branches": {}
+=======
+          null,
+          1,
+          null,
+          1,
+          16,
+          null,
+          null,
+          16,
+          null,
+          null,
+          16,
+          10,
+          22,
+          22,
+          null,
+          10,
+          null,
+          null,
+          null,
+          16,
+          null,
+          null,
+          119,
+          null,
+          null,
+          null,
+          1,
+          5,
+          null,
+          null,
+          null,
+          null,
+          null,
+          5,
+          null,
+          null,
+          null,
+          1,
+          3,
+          null,
+          null,
+          3,
+          null,
+          3,
+          3,
+          12,
+          12,
+          null,
+          3,
+          null,
+          null,
+          3,
+          null,
+          null,
+          3,
+          null,
+          null,
+          3,
+          null,
+          6,
+          null,
+          null,
+          null,
+          1,
+          252,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          null,
+          346,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+>>>>>>> 4d8e852 (moved TODO scenarios to pending/ dir --> 88% coverage)
       },
       "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/static_pages_controller.rb": {
         "lines": [
@@ -322,16 +708,11 @@
       "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/application_record.rb": {
         "lines": [
           1,
-          1,
-          null
-        ]
-      },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/services/restaurant_service.rb": {
-        "lines": [
           null,
           null,
           1,
           null,
+<<<<<<< HEAD
           1,
           16,
           null,
@@ -426,6 +807,8 @@
           null,
           1,
           null,
+=======
+>>>>>>> 4d8e852 (moved TODO scenarios to pending/ dir --> 88% coverage)
           null,
           null,
           null,
@@ -490,6 +873,97 @@
           null
         ]
       },
+<<<<<<< HEAD
+=======
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          25,
+          null,
+          25,
+          null,
+          null,
+          1,
+          20,
+          null,
+          null
+        ]
+      },
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/registrations_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          6,
+          null,
+          6,
+          null,
+          6,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          6,
+          6,
+          6,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          6,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
+        "lines": [
+          null,
+          1,
+          1,
+          15,
+          null,
+          null,
+          15,
+          15,
+          15,
+          15,
+          null,
+          null,
+          15,
+          null,
+          4,
+          4,
+          null,
+          0,
+          null,
+          null,
+          4,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+>>>>>>> 4d8e852 (moved TODO scenarios to pending/ dir --> 88% coverage)
       "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
         "lines": [
           1,
