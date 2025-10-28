@@ -298,5 +298,5 @@ Then /"American" should be removed from selected cuisines/ do
 end
 
 Then(/^I should see "([^"]*)" option$/) do |price|
-  expect(page).to have_select("Price Range", with_options: [price])
+  expect(page).to have_select("Price Range", with_options: [ price ])
 end
