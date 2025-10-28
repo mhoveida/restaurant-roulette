@@ -181,7 +181,7 @@ Feature: User Authentication
   Scenario: Logout functionality
     Given I am logged in as "Maddison"
     When I click on my profile icon
-    And I click "Log Out"
+    And I click the logout link
     Then I should be logged out
     And I should be redirected to the home page
     And I should see "Log In" button instead of my name
