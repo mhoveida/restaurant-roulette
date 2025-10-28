@@ -9,6 +9,9 @@ class User < ApplicationRecord
   validates :first_name, presence: true, on: :create
   validates :last_name, presence: true, on: :create
 
+  # Custom validation for login context
+  validate :validate_login_credentials, on: :login
+
   # Helper methods
   def full_name
     "#{first_name} #{last_name}".strip
