@@ -17,4 +17,11 @@ class User < ApplicationRecord
   def short_name
     first_name
   end
+
+  private
+
+  def validate_login_credentials
+    errors.add(:email, "is required") if email.blank?
+    errors.add(:password, "is required") if password.blank?
+  end
 end
