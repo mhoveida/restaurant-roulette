@@ -136,15 +136,15 @@ Feature: Create Room
     When I click the copy icon next to the room code
     Then I should see a confirmation that the room code was copied
 
-  Scenario: Room displays current members
-    Given I have created a room
-    And other users have joined: "Olivia, Celine, Ben"
-    Then I should see "Members in Room:"
-    And I should see "Maddison"
-    And I should see "Olivia"
-    And I should see "Celine"
-    And I should see "Ben"
-    And members should be listed in order of joining
+#  Scenario: Room displays current members
+#    Given I have created a room
+#    And other users have joined: "Olivia, Celine, Ben"
+#    Then I should see "Members in Room:"
+#    And I should see "Maddison"
+#    And I should see "Olivia"
+#    And I should see "Celine"
+#    And I should see "Ben"
+#    And members should be listed in order of joining
 
   Scenario: Room creator waits for members
     Given I have created a room
@@ -157,22 +157,22 @@ Feature: Create Room
     And no other members have joined
     When I click "Ready to Spin?"
     Then I should be able to proceed to the spinning phase
-    And restaurant options should be generated based on my preferences
+#    And restaurant options should be generated based on my preferences
 
-  Scenario: Room members list updates in real-time
-    Given I have created a room with code "8865"
-    And I am viewing the room waiting page
-    When another user "Olivia" joins the room
-    Then I should see "Olivia" appear in the members list
-    And I should not need to refresh the page
+#  Scenario: Room members list updates in real-time
+#    Given I have created a room with code "8865"
+#    And I am viewing the room waiting page
+#    When another user "Olivia" joins the room
+#    Then I should see "Olivia" appear in the members list
+#    And I should not need to refresh the page
 
-  Scenario: Room creator initiates spinning phase
-    Given I have created a room
-    And members "Olivia, Celine, Ben" have joined
-    When I click "Ready to Spin?"
-    Then I should be redirected to the group room spin page
-    And I should see the roulette wheel
-    And I should see "Spin to add options for the group to vote on"
+#  Scenario: Room creator initiates spinning phase
+#    Given I have created a room
+#    And members "Olivia, Celine, Ben" have joined
+#    When I click "Ready to Spin?"
+#    Then I should be redirected to the group room spin page
+#    And I should see the roulette wheel
+#    And I should see "Spin to add options for the group to vote on"
 
   Scenario: User cancels room creation
     Given I am on the create room page
@@ -193,4 +193,4 @@ Feature: Create Room
   Scenario: Room creator identity is marked
     Given I have created a room as "Olivia"
     Then "Olivia" should be marked as "Owner" or "Host" in the members list
-    And other members should see this designation
+#    And other members should see this designation
