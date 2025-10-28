@@ -78,22 +78,22 @@ Feature: Create Room
     Then I should see "Please enter your name"
     And the room should not be created
 
+  @javascript
   Scenario: User selects multiple cuisine preferences
     Given I am logged in as "Olivia"
     And I am on the create room page
-    When I click on "Cuisine Preferences" dropdown
-    And I select "Italian"
-    And I select "American"
-    And I select "Mediterranean"
-    Then I should see "Italian" as a selected tag with X button
-    And I should see "American" as a selected tag with X button
-    And I should see "Mediterranean" as a selected tag with X button
+    When I click on the create room "Cuisine Preferences" dropdown
+    And I select "Italian, American, Mediterranean" cuisine
+    Then I should see "Italian" create room tag with X button
+    And I should see "American" create room tag with X button
+    And I should see "Mediterranean" create room tag with X button
 
+  @javascript
   Scenario: User removes a selected cuisine preference
     Given I am logged in as "Maddison"
     And I am on the create room page
-    And I have selected cuisines "Italian, American, Mediterranean"
-    When I click the X button on "American"
+    And I have selected create room cuisines "Italian, American, Mediterranean"
+    When I click the create room X button on "American"
     Then "American" should be removed
     And I should see remaining cuisines "Italian, Mediterranean"
 
@@ -127,15 +127,14 @@ Feature: Create Room
   Scenario: Room code is displayed after creation
     Given I have created a room successfully
     Then I should see "Room Code: 8865"
-    And the room code should have a share icon
+    And the room code should have a copy icon
     And I should see "Members in Room:"
     And I should see "Maddison" as the first member
 
-  Scenario: Room creator can share room code
+  Scenario: Room creator can copy room code
     Given I have created a room with code "8865"
-    When I click the share icon next to the room code
-    Then I should see share options
-    And the share text should include "Join my Restaurant Roulette room with code: 8865"
+    When I click the copy icon next to the room code
+    Then I should see a confirmation that the room code was copied
 
   Scenario: Room displays current members
     Given I have created a room

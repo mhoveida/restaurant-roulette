@@ -61,7 +61,7 @@ end
 # THEN STEPS - Assertions
 # ============================================
 
-Then /I should see "(.*)"/ do |text|
+Then (/^I should see "(.*)"$/) do |text|
   # Check if text exists anywhere on the page (including hidden content)
   page_text = page.text(:all)
   expect(page_text).to include(text), "Expected to find text '#{text}' on the page"

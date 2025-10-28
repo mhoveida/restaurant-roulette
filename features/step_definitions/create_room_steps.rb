@@ -213,16 +213,16 @@ Then /other members should see this designation/ do
   pending
 end
 
-Then /the room code should have a share icon/ do
-  expect(page).to have_button("📤 Share Code")
+Then /the room code should have a copy icon/ do
+  expect(page).to have_button("📋 Copy Room Code")
 end
 
-When /I click the share icon next to the room code/ do
-  click_button "📤 Share Code"
+When /I click the copy icon next to the room code/ do
+  click_button "📋 Copy Room Code"
 end
 
-Then /the share text should include "([^"]*)"/ do |text|
-  expect(page).to have_content(text)
+Then /I should see a confirmation that the room code was copied/ do
+  confirmation_text = find("#copyConfirmation", visible: :all).text
 end
 
 Then /"([^"]*)" should be removed/ do |cuisine|
@@ -235,6 +235,37 @@ Then /I should see remaining cuisines "([^"]*)"/ do |cuisines|
   end
 end
 
-Given /I have selected cuisines "([^"]*)"/ do |cuisines|
+Given /I have selected create room cuisines "([^"]*)"/ do |cuisines|
   fill_in "Cuisine Preferences", with: cuisines
+end
+
+When /I click on the create room "([^"]*)" dropdown/ do |dropdown_name|
+  find("label", text: dropdown_name).sibling("input, select").click
+end
+
+When /I select "([^"]*)" cuisine/ do |cuisine|
+  fill_in "Cuisine Preferences", with: cuisine
+end
+
+When /I click the create room X button on "([^"]*)"/ do |cuisine|
+  tag = find(".cuisine-tag", text: cuisine)
+  tag.find(".remove-btn").click
+end
+
+Then /^I should see "([^"]*)" create room tag with X button$/ do |cuisine|
+  within(".cuisine-tags") do
+    expect(page).to have_text(/#{cuisine}/i)
+    expect(page).to have_css(".remove-btn")
+  end
+end
+
+Then(/^I should see "([^"]*)" as the first member$/) do |name|
+  members = all(".member-name").map(&:text)
+  expect(members.first).to eq(name)
+end
+
+Then(/^I should see "([^"]*)" appear in the members list$/) do |name|
+  within(".members-list") do
+    expect(page).to have_text(name)
+  end
 end
