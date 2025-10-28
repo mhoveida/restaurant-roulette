@@ -90,16 +90,16 @@ You should see the application's homepage.
 This project includes both **RSpec** and **Cucumber** tests.
 
 ## Run All RSpec Tests
-    ```sh
-    bundle exec rspec
-    ```
+```sh
+bundle exec rspec
+```
 
 ## Run Cucumber Feature Tests
-    ```sh
-    bundle exec cucumber
-    ```
+```sh
+bundle exec cucumber
+```
 
 ## Run Specific Feature (Example)
-    ```sh
-    bundle exec cucumber features/home_page.feature
-    ```
+```sh
+bundle exec cucumber features/home_page.feature
+```
