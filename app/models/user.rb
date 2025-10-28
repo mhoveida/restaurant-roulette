@@ -9,6 +9,9 @@ class User < ApplicationRecord
   validates :first_name, presence: true, on: :create
   validates :last_name, presence: true, on: :create
 
+  # Custom validation for login context
+  validate :validate_login_credentials, on: :login
+
   # Helper methods
   def full_name
     "#{first_name} #{last_name}".strip
@@ -16,5 +19,12 @@ class User < ApplicationRecord
 
   def short_name
     first_name
+  end
+
+  private
+
+  def validate_login_credentials
+    errors.add(:email, "is required") if email.blank?
+    errors.add(:password, "is required") if password.blank?
   end
 end
