@@ -65,7 +65,7 @@ Then('I should be on the login page') do
 end
 
 Then('I should be on the sign up page') do
-  expect([new_user_registration_path, '/users']).to include(page.current_path)
+  expect([ new_user_registration_path, '/users' ]).to include(page.current_path)
 end
 
 Then('I should be redirected to the login page') do
@@ -104,7 +104,7 @@ Then('I should remain on the login page') do
 end
 
 Then('I should remain on the sign up page') do
-  expect([new_user_registration_path, '/users']).to include(page.current_path)
+  expect([ new_user_registration_path, '/users' ]).to include(page.current_path)
 end
 
 # Signup & Account Creation
@@ -253,7 +253,7 @@ Then('I should be logged out') do
   # Check for either a Log In button OR a Log In link
   has_login_button = page.has_button?('Log In')
   has_login_link = page.has_link?('Log In')
-  
+
   # Expect either a button OR a link to be present
   expect(has_login_button || has_login_link).to be true
 end
@@ -263,11 +263,11 @@ Then('any entered sign up data should be cleared') do
   # when switching tabs. Instead, we'll verify that:
   # 1. We're now on the login form (not signup)
   # 2. The user can successfully interact with the login form
-  
+
   # Verify we're on the login page/form
   expect(page).to have_current_path(new_user_session_path)
   expect(page).to have_css('[data-auth-form-target="loginForm"]', visible: true)
-  
+
   # Verify the login form is functional by checking we can see its elements
   expect(page).to have_field('Email address', visible: :all)
   expect(page).to have_field('Password', visible: :all)
@@ -285,7 +285,7 @@ Then('I navigate to {string} page') do |page_name|
   else
     raise "Unknown page: #{page_name}"
   end
-  
+
   # Wait for the page to load
   expect(page).to have_current_path(send("#{page_name.downcase.gsub(' ', '_')}_path"))
 end
@@ -305,12 +305,12 @@ Then('I should see real-time validation error') do
   fill_in 'Last name', with: 'User'
   fill_in 'Password', with: 'password123'
   fill_in 'Confirm Password', with: 'password123'
-  
+
   # Click the specific Sign Up button in the signup form (not login form)
   within '[data-auth-form-target="signupForm"]' do
     click_button 'Sign Up'
   end
-  
+
   # Check that we get validation errors for invalid email
   expect(page).to have_css('.validation-message', wait: 5)
 end
