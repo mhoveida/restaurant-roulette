@@ -1,18 +1,18 @@
 class Room < ApplicationRecord
   # Preference validations
-  validates :location, 
+  validates :location,
             presence: { message: "Please enter a location" },
             format: { with: /\A[a-zA-Z\s\-]+\z/, message: "Please enter a valid location" }
-  validates :price, 
+  validates :price,
             presence: { message: "Please select a price range" },
             inclusion: { in: [ "$", "$$", "$$$", "$$$$" ], message: "Please select a valid price range" }
-  validates :owner_name, 
+  validates :owner_name,
             presence: { message: "Please enter your name" }
   # Cuisine preferences are optional
 
   # Code validations (but we'll generate it automatically)
-  validates :code, 
-            presence: true, 
+  validates :code,
+            presence: true,
             uniqueness: true
 
   serialize :categories, coder: JSON
