@@ -4,6 +4,17 @@ A Rails application to help you decide where to eat. This project is built with 
 
 ---
 
+## 👥 Team Members
+
+| Name | UNI |
+|------|-----|
+| Benjamin Benscher | beb2181 |
+| Celine Lee | cl4179 |
+| Maddison Hoveida | mh4572 |
+| Olivia Caulfield | ogc2111 |
+
+---
+
 ## Getting Started
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing.
@@ -71,3 +82,24 @@ To run the application locally:
     [http://localhost:3000](http://localhost:3000)
 
 You should see the application's homepage.
+
+---
+
+### Running Tests
+
+This project includes both **RSpec** and **Cucumber** tests.
+
+## Run All RSpec Tests
+    ```sh
+    bundle exec rspec
+    ```
+
+## Run Cucumber Feature Tests
+    ```sh
+    bundle exec cucumber
+    ```
+
+## Run Specific Feature (Example)
+    ```sh
+    bundle exec cucumber features/home_page.feature
+    ```
