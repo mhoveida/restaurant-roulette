@@ -66,8 +66,11 @@
 
     <% if resource.errors.any? && @signup_attempted %>
       <div class="validation-message">
-        <% resource.errors.full_messages.each do |msg| %>
-          <div><%= msg %></div>
+        <%# Show unique error messages to avoid duplicates %>
+        <% resource.errors.messages.each do |field, messages| %>
+          <% messages.uniq.each do |message| %>
+            <div><%= "#{field.to_s.humanize} #{message}" %></div>
+          <% end %>
         <% end %>
       </div>
     <% end %>

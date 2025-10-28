@@ -8,7 +8,6 @@ class User < ApplicationRecord
   # Validations - only validate names on signup, not login
   validates :first_name, presence: true, on: :create
   validates :last_name, presence: true, on: :create
-  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
 
   # Helper methods
   def full_name
