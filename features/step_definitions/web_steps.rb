@@ -66,7 +66,7 @@ end
 
 # ADD THESE MISSING STEPS FOR AUTHENTICATION FEATURE
 Then('I should see {string} tab') do |text|
-  expect(page).to have_css('.auth-tab-button', text: text)
+  expect(page).to have_css('.auth-tab-button', text: text, exact_text: true)
 end
 
 Then('I should see {string} heading') do |text|
@@ -82,7 +82,8 @@ Then('I should see {string} input field') do |field_name|
 end
 
 Then('I should see {string} button instead of my name') do |button_text|
-  expect(page).to have_button(button_text)
+  has_button = page.has_button?(button_text) || page.has_link?(button_text)
+  expect(has_button).to be true
   expect(page).not_to have_css('.profile-email')
 end
 

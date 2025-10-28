@@ -12,10 +12,10 @@ Feature: User Authentication
 
   Scenario: Login page displays correctly
     Given I am on the login page
-    Then I should see "Sign up" tab
-    And I should see "Log in" tab
+    Then I should see "Sign Up" tab
+    And I should see "Log In" tab
     And the "Log in" tab should be active by default
-    And I should see "Log in" heading
+    And I should see "Log In" heading
     And I should see email input field
     And I should see password input field
     And I should see "Log In" button
@@ -38,11 +38,12 @@ Feature: User Authentication
     And I should see my name "Sarah" in the profile section
     And I should still be logged in
 
+  @javascript
   Scenario: User switches to sign up tab
     Given I am on the login page
-    When I have clicked "Sign up" tab
+    When I have clicked "Sign Up" tab
     Then the sign up form should be displayed
-    And the "Sign up" tab should be active
+    And the "Sign Up" tab should be active
 
   # Login Form Validation Scenarios
 
@@ -162,9 +163,9 @@ Feature: User Authentication
   @javascript
   Scenario: User switches from sign up back to login
     Given I am on the sign up page
-    When I have clicked "Log in" tab
+    When I have clicked "Log In" tab
     Then the login form should be displayed
-    And the "Log in" tab should be active
+    And the "Log In" tab should be active
     And any entered sign up data should be cleared
 
   Scenario: Session persists across page navigation

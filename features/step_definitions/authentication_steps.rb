@@ -15,11 +15,13 @@ Then('I should see the login form') do
 end
 
 Then('the login form should be displayed') do
-  expect(page).to have_current_path(new_user_session_path)
+  expect(page).to have_css('[data-auth-form-target="loginForm"]', visible: true)
+  expect(page).to have_css('[data-auth-form-target="signupForm"]', visible: false)
 end
 
 Then('the sign up form should be displayed') do
-  expect(page).to have_current_path(new_user_registration_path)
+  expect(page).to have_css('[data-auth-form-target="signupForm"]', visible: true)
+  expect(page).to have_css('[data-auth-form-target="loginForm"]', visible: false)
 end
 
 Then('I should see email input field') do
@@ -32,27 +34,37 @@ end
 
 # Tab Navigation
 Given('I have clicked {string} tab') do |tab_name|
+  # Actually click the tab instead of visiting URLs
   case tab_name
-  when 'Sign up'
-    visit new_user_registration_path
-  when 'Log in'
-    visit new_user_session_path
+  when 'Sign Up'
+    find('[data-auth-form-target="signupTab"]').click
+  when 'Log In'
+    find('[data-auth-form-target="loginTab"]').click
   end
+  
+  # Wait for the JavaScript to process
+  sleep 0.5
 end
 
 Then('the {string} tab should be active by default') do |tab_name|
-  if tab_name == 'Log in'
-    expect(page).to have_current_path(new_user_session_path)
-  elsif tab_name == 'Sign up'
-    expect(page).to have_current_path(new_user_registration_path)
+  case tab_name
+  when 'Log In'
+    expect(page).to have_css('[data-auth-form-target="loginTab"].active')
+    expect(page).to have_css('[data-auth-form-target="signupTab"]:not(.active)')
+  when 'Sign Up'
+    expect(page).to have_css('[data-auth-form-target="signupTab"].active')
+    expect(page).to have_css('[data-auth-form-target="loginTab"]:not(.active)')
   end
 end
 
 Then('the {string} tab should be active') do |tab_name|
-  if tab_name == 'Log in'
-    expect(page).to have_current_path(new_user_session_path)
-  elsif tab_name == 'Sign up'
-    expect(page).to have_current_path(new_user_registration_path)
+  case tab_name
+  when 'Log In'
+    expect(page).to have_css('[data-auth-form-target="loginTab"].active')
+    expect(page).to have_css('[data-auth-form-target="signupTab"]:not(.active)')
+  when 'Sign Up'
+    expect(page).to have_css('[data-auth-form-target="signupTab"].active')
+    expect(page).to have_css('[data-auth-form-target="loginTab"]:not(.active)')
   end
 end
 
