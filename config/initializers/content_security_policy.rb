@@ -19,7 +19,7 @@
 # Inside config/initializers/content_security_policy.rb
 
 Rails.application.config.content_security_policy do |policy|
-  policy.img_src  :self, :https, "images.unsplash.com"
+  policy.img_src :self, :https, "images.unsplash.com"
 end
 
 #
