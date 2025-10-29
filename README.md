@@ -27,7 +27,7 @@ Before you begin, ensure you have the following software installed on your machi
 * **Ruby** (version 3.3.9)
 * **Rails** (Version 8.x)
 * **Node.js** (Version 18.x or later recommended)
-* **Yarn:** (Version 1.22.x or later)
+* **Yarn** (Version 1.22.x or later)
 * **Bundler** (gem for managing dependencies)
 * **PostgreSQL** (database server)
 
@@ -53,16 +53,17 @@ Follow these steps to set up your development environment.
 
 4.  **Install Ruby Dependencies**
     Use Bundler to install all the necessary gems specified in the `Gemfile`:
+    Make sure you're using 2.7.2 version of bundler, and 3.3.9 version of ruby.
     ```sh
     bundle install
     ```
     
-5.  **Install JavaScript dependencies:**
+6.  **Install JavaScript dependencies:**
     ```bash
     yarn install
     ```
 
-6.  **Set Up the Database**
+7.  **Set Up the Database**
     This project uses PostgreSQL.
 
     * First, make sure your PostgreSQL server is running. If you installed it with Homebrew, you can start it with:
@@ -75,14 +76,14 @@ Follow these steps to set up your development environment.
         rails db:create
         ```
 
-    * Then, Load seed data (restaurants)n:
-        ```sh
-        rails db:seed
-        ```
-
-    * Finally, run the database migrations to set up the schema:
+    * Then, run the database migrations to set up the schema:
         ```sh
         rails db:migrate
+        ```
+
+    * Then, Load seed data (restaurants):
+        ```sh
+        rails db:seed
         ```
 
 ## Running the Application
