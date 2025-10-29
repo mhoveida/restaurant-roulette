@@ -81,7 +81,7 @@ Follow these steps to set up your development environment.
         rails db:migrate
         ```
 
-    * Then, Load seed data (restaurants)n:
+    * Then, Load seed data (restaurants):
         ```sh
         rails db:seed
         ```
