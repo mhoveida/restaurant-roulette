@@ -14,9 +14,10 @@ A Rails application to help you decide where to eat. This project is built with 
 | Olivia Caulfield | ogc2111 |
 
 ---
+## Heroku Deployment
+https://restaurant-roulette-app-db5e3f7eb0f2.herokuapp.com/
 
-## Getting Started
-
+## Instructions to Run Locally
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing.
 
 ### Prerequisites
@@ -24,10 +25,11 @@ Follow these instructions to get a copy of the project up and running on your lo
 Before you begin, ensure you have the following software installed on your machine:
 
 * **Ruby** (version 3.3.9)
+* **Rails** (Version 8.x)
+* **Node.js** (Version 18.x or later recommended)
+* **Yarn:** (Version 1.22.x or later)
 * **Bundler** (gem for managing dependencies)
-* **Git** (version control)
-* **PostgreSQL** (database)
-    * For macOS users, it is highly recommended to install and manage PostgreSQL using [Homebrew](https://brew.sh/).
+* **PostgreSQL** (database server)
 
 ### Installation
 
@@ -44,13 +46,23 @@ Follow these steps to set up your development environment.
     cd restaurant-roulette
     ```
 
-3.  **Install Ruby Dependencies**
+3.  **Checkout the correct branch**
+    ```sh
+    git checkout proj-iter1
+    ```
+
+4.  **Install Ruby Dependencies**
     Use Bundler to install all the necessary gems specified in the `Gemfile`:
     ```sh
     bundle install
     ```
+    
+5.  **Install JavaScript dependencies:**
+    ```bash
+    yarn install
+    ```
 
-4.  **Set Up the Database**
+6.  **Set Up the Database**
     This project uses PostgreSQL.
 
     * First, make sure your PostgreSQL server is running. If you installed it with Homebrew, you can start it with:
@@ -63,12 +75,17 @@ Follow these steps to set up your development environment.
         rails db:create
         ```
 
+    * Then, Load seed data (restaurants)n:
+        ```sh
+        rails db:seed
+        ```
+
     * Finally, run the database migrations to set up the schema:
         ```sh
         rails db:migrate
         ```
 
-## Usage
+## Running the Application
 
 To run the application locally:
 
@@ -87,19 +104,25 @@ You should see the application's homepage.
 
 ### Running Tests
 
+Make sure your test database is migrated (`rails db:migrate RAILS_ENV=test`) before running tests.
 This project includes both **RSpec** and **Cucumber** tests.
 
-## Run All RSpec Tests
-```sh
-bundle exec rspec
-```
+1.  **Run RSpec (Unit Tests):**
+    ```bash
+    bundle exec rspec
+    ```
 
-## Run Cucumber Feature Tests
-```sh
-bundle exec cucumber
-```
+2.  **Run Cucumber (Feature/Acceptance Tests):**
+    ```bash
+    bundle exec cucumber
+    ```
 
-## Run Specific Feature (Example)
-```sh
-bundle exec cucumber features/home_page.feature
-```
+3.  **Run Both & Check Coverage:**
+    * Run all tests (RSpec and Cucumber) and generate a coverage report:
+      ```bash
+      # Run Cucumber first to generate the report
+      bundle exec cucumber
+      # Then run RSpec
+      bundle exec rspec
+      ```
+    * Open `coverage/index.html` in your browser to view the detailed report.
