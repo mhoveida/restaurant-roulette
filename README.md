@@ -75,14 +75,14 @@ Follow these steps to set up your development environment.
         rails db:create
         ```
 
+    * Then, run the database migrations to set up the schema:
+        ```sh
+        rails db:migrate
+        ```
+
     * Then, Load seed data (restaurants)n:
         ```sh
         rails db:seed
-        ```
-
-    * Finally, run the database migrations to set up the schema:
-        ```sh
-        rails db:migrate
         ```
 
 ## Running the Application
