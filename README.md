@@ -27,7 +27,7 @@ Before you begin, ensure you have the following software installed on your machi
 * **Ruby** (version 3.3.9)
 * **Rails** (Version 8.x)
 * **Node.js** (Version 18.x or later recommended)
-* **Yarn:** (Version 1.22.x or later)
+* **Yarn** (Version 1.22.x or later)
 * **Bundler** (gem for managing dependencies)
 * **PostgreSQL** (database server)
 
