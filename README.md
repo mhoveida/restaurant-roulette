@@ -53,16 +53,17 @@ Follow these steps to set up your development environment.
 
 4.  **Install Ruby Dependencies**
     Use Bundler to install all the necessary gems specified in the `Gemfile`:
+    Make sure you're using 2.7.2 version of bundler, and 3.3.9 version of ruby.
     ```sh
     bundle install
     ```
     
-5.  **Install JavaScript dependencies:**
+6.  **Install JavaScript dependencies:**
     ```bash
     yarn install
     ```
 
-6.  **Set Up the Database**
+7.  **Set Up the Database**
     This project uses PostgreSQL.
 
     * First, make sure your PostgreSQL server is running. If you installed it with Homebrew, you can start it with:
