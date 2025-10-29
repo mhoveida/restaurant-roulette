@@ -8,7 +8,7 @@ class Restaurant < ApplicationRecord
             inclusion: { in: [ "$", "$$", "$$$", "$$$$" ] }
   validates :address, presence: true
 
-  # serialize :categories, coder: JSON
+  serialize :categories, coder: JSON
 
   scope :by_cuisine, ->(cuisine) {
     where("categories LIKE ?", "%#{cuisine}%") if cuisine.present?
