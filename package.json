@@ -1,0 +1,10 @@
+{
+  "name": "restaurant-roulette",
+  "private": true,
+  "dependencies": {
+    "tailwindcss": "^3.0"
+  },
+  "scripts": {
+    "build:css": "tailwindcss -i ./app/assets/tailwind/application.tailwind.css -o ./app/assets/builds/application.css --minify"
+  }
+}
