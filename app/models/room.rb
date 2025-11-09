@@ -35,6 +35,22 @@ class Room < ApplicationRecord
     members_list.map { |m| symbolize_keys(m) }
   end
 
+  def spin_restaurant
+    restaurant = RestaurantService.new.random_restaurant(
+      location: location,
+      categories: categories,
+      price: price
+    )
+
+    if restaurant
+      self.spin_result = restaurant
+      save
+      restaurant
+    else
+      nil
+    end
+  end
+
   private
 
   def symbolize_keys(hash)
