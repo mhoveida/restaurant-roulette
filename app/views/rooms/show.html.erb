@@ -68,11 +68,12 @@
   <div class="members-section">
     <h2>Members in Room:</h2>
     <div class="members-list">
-      <div class="member-item">
-        <span class="member-name"><%= @room.owner_name %></span>
-        <span class="member-badge">Host</span>
-      </div>
-      <!-- Other members would be added here dynamically in real-time -->
+      <% @room.get_all_members.each do |member| %>
+        <div class="member-item">
+          <span class="member-name"><%= member[:name] %></span>
+          <span class="member-badge"><%= (member[:type] || "guest").capitalize %></span>
+        </div>
+      <% end %>
     </div>
   </div>
 

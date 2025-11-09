@@ -80,5 +80,18 @@ class RoomsController < ApplicationController
 
   def join_as_guest
     @room = Room.find(params[:id])
+
+    if request.post?
+      guest_name = params[:guest_name]
+
+      if guest_name.blank?
+        flash.now[:alert] = "Please enter your name"
+        render :join_as_guest
+        return
+      end
+
+      @room.add_guest_member(guest_name)
+      redirect_to @room, notice: "Successfully joined the room!"
+    end
   end
 end

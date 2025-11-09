@@ -19,8 +19,31 @@ class Room < ApplicationRecord
 
   # Generate a 4-digit room code before creating
   before_validation :generate_code, on: :create
+  before_create :initialize_members
+
+  def add_guest_member(guest_name)
+    self.members ||= []
+    self.members << { "name" => guest_name, "type" => "guest", "joined_at" => Time.current }
+    save
+  end
+
+  def get_all_members
+    members_list = [{ "name" => owner_name, "type" => "host", "joined_at" => created_at }]
+    if members.present?
+      members_list.concat(members)
+    end
+    members_list.map { |m| symbolize_keys(m) }
+  end
 
   private
+
+  def symbolize_keys(hash)
+    if hash.is_a?(Hash)
+      hash.transform_keys(&:to_sym)
+    else
+      hash
+    end
+  end
 
   def generate_code
     return if code.present?
@@ -29,5 +52,9 @@ class Room < ApplicationRecord
       new_code = "%04d" % rand(0..9999).to_s
       break new_code unless Room.exists?(code: new_code)
     end
+  end
+
+  def initialize_members
+    self.members = [] if members.nil?
   end
 end
