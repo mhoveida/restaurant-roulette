@@ -28,7 +28,7 @@ class Room < ApplicationRecord
   end
 
   def get_all_members
-    members_list = [{ "name" => owner_name, "type" => "host", "joined_at" => created_at }]
+    members_list = [ { "name" => owner_name, "type" => "host", "joined_at" => created_at } ]
     if members.present?
       members_list.concat(members)
     end
