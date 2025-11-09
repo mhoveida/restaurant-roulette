@@ -8,8 +8,11 @@ Rails.application.routes.draw do
   get "solo_spin", to: "solo_spin#show", as: "solo_spin"
   get "create_room", to: "rooms#new", as: "create_room"
   get "rooms/:id/join_as_guest", to: "rooms#join_as_guest", as: "join_as_guest"
+  post "rooms/:id/join_as_guest", to: "rooms#join_as_guest"
 
-  resources :rooms, only: [ :show, :create ]
+  resources :rooms, only: [ :show, :create ] do
+    post :spin, on: :member
+  end
   post "join_room", to: "rooms#join"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

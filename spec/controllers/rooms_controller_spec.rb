@@ -252,4 +252,73 @@ RSpec.describe RoomsController, type: :controller do
       expect(assigns(:room)).to eq(room)
     end
   end
+
+  describe 'POST #join_as_guest' do
+    let(:room) { FactoryBot.create(:room) }
+
+    context 'with valid guest name' do
+      it 'adds guest to room members' do
+        expect {
+          post :join_as_guest, params: { id: room.id, guest_name: "Alex" }
+        }.to change { room.reload.members.length }.by(1)
+
+        expect(room.reload.members.last["name"]).to eq("Alex")
+        expect(room.reload.members.last["type"]).to eq("guest")
+      end
+
+      it 'redirects to room page' do
+        post :join_as_guest, params: { id: room.id, guest_name: "Alex" }
+        expect(response).to redirect_to(room)
+      end
+
+      it 'shows success notice' do
+        post :join_as_guest, params: { id: room.id, guest_name: "Alex" }
+        expect(flash[:notice]).to eq("Successfully joined the room!")
+      end
+
+      it 'guest appears in get_all_members' do
+        post :join_as_guest, params: { id: room.id, guest_name: "Alex" }
+        members = room.reload.get_all_members
+        guest_member = members.find { |m| m[:name] == "Alex" }
+        expect(guest_member).to be_present
+        expect(guest_member[:type]).to eq("guest")
+      end
+    end
+
+    context 'with blank guest name' do
+      it 'does not add guest to room' do
+        expect {
+          post :join_as_guest, params: { id: room.id, guest_name: "" }
+        }.not_to change { room.reload.members.length }
+      end
+
+      it 'renders the join as guest page' do
+        post :join_as_guest, params: { id: room.id, guest_name: "" }
+        expect(response).to render_template(:join_as_guest)
+      end
+
+      it 'shows error alert' do
+        post :join_as_guest, params: { id: room.id, guest_name: "" }
+        expect(flash.now[:alert]).to eq("Please enter your name")
+      end
+
+      it 'sets @room' do
+        post :join_as_guest, params: { id: room.id, guest_name: "" }
+        expect(assigns(:room)).to eq(room)
+      end
+    end
+
+    context 'with whitespace-only guest name' do
+      it 'does not add guest to room' do
+        expect {
+          post :join_as_guest, params: { id: room.id, guest_name: "   " }
+        }.not_to change { room.reload.members.length }
+      end
+
+      it 'renders the join as guest page' do
+        post :join_as_guest, params: { id: room.id, guest_name: "   " }
+        expect(response).to render_template(:join_as_guest)
+      end
+    end
+  end
 end

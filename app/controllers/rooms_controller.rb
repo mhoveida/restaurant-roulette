@@ -80,5 +80,35 @@ class RoomsController < ApplicationController
 
   def join_as_guest
     @room = Room.find(params[:id])
+
+    if request.post?
+      guest_name = params[:guest_name]
+
+      if guest_name.blank?
+        flash.now[:alert] = "Please enter your name"
+        render :join_as_guest
+        return
+      end
+
+      @room.add_guest_member(guest_name)
+      redirect_to @room, notice: "Successfully joined the room!"
+    end
+  end
+
+  def spin
+    @room = Room.find(params[:id])
+    restaurant = @room.spin_restaurant
+
+    if restaurant
+      # Broadcast the result to all members in the room via ActionCable
+      ActionCable.server.broadcast("room_#{@room.id}", {
+        type: "spin_result",
+        restaurant: restaurant
+      })
+
+      render json: { success: true, restaurant: restaurant }
+    else
+      render json: { success: false, message: "No restaurants found" }, status: :unprocessable_entity
+    end
   end
 end

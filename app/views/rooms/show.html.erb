@@ -1,85 +1,128 @@
 <% content_for :body_class, "bg-black" %>
 
-<div class="room-container">
-  <div class="room-header">
-    <h1>Room Waiting Area</h1>
+<div class="room-container" data-controller="room-spin" data-room-id="<%= @room.id %>">
+  <!-- Page Header -->
+  <div class="room-page-header">
+    <h1 class="room-page-title">Room Waiting Area</h1>
   </div>
 
   <!-- Room Code Section -->
-  <div class="room-code-section">
-    <div class="room-code-card">
-      <div class="code-label">Share this code with your friends</div>
-      <div class="room-code-display">
+  <div class="preference-section">
+    <h2>Share this code with your friends</h2>
+    <p class="subtitle">Invite your friends to join using the room code below</p>
+
+    <div class="room-code-display">
+      <div class="room-code-label">Room Code</div>
+      <div class="room-code-value">
         Room Code: <span class="code-value"><%= @room.code %></span>
       </div>
-      <button id="copyCodeBtn" class="button">📋 Copy Room Code</button>
-      <div id="copyConfirmation" class="copy-confirmation" style="display:none;">
-        Room code <%= @room.code %> copied to clipboard!
-      </div>
-
-      <script>
-        document.addEventListener("DOMContentLoaded", () => {
-          const btn = document.getElementById("copyCodeBtn");
-          const confirmation = document.getElementById("copyConfirmation");
-          const code = "<%= @room.code %>";
-
-          btn.addEventListener("click", () => {
-            navigator.clipboard.writeText(code);
-            confirmation.style.display = "block";
-            setTimeout(() => (confirmation.style.display = "none"), 2500);
-          });
-        });
-      </script>
     </div>
+
+    <button id="copyCodeBtn" class="button button-secondary" style="width: 100%; margin-top: 1rem;">
+      📋 Copy Room Code
+    </button>
+
+    <div id="copyConfirmation" class="copy-confirmation" style="display:none; margin-top: 1rem; text-align: center; color: #22c55e; font-weight: 600;">
+      Room code <%= @room.code %> copied to clipboard!
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("copyCodeBtn");
+        const confirmation = document.getElementById("copyConfirmation");
+        const code = "<%= @room.code %>";
+
+        btn.addEventListener("click", () => {
+          navigator.clipboard.writeText(code);
+          confirmation.style.display = "block";
+          setTimeout(() => (confirmation.style.display = "none"), 2500);
+        });
+      });
+    </script>
   </div>
 
-  <!-- Room Preferences Section -->
-  <div class="preferences-summary">
+  <!-- Group Preferences Section -->
+  <div class="preference-section">
     <h2>Group Preferences</h2>
-    <div class="preference-items">
+    <p class="subtitle">Settings for this spin session</p>
+
+    <div class="preference-grid">
       <div class="preference-item">
-        <span class="label">Owner:</span>
-        <span class="value"><%= @room.owner_name %> (Host)</span>
+        <div class="preference-label">Host</div>
+        <div class="preference-value"><%= @room.owner_name %></div>
       </div>
+
       <div class="preference-item">
-        <span class="label">Location:</span>
-        <span class="value"><%= @room.location %></span>
+        <div class="preference-label">Location</div>
+        <div class="preference-value"><%= @room.location %></div>
       </div>
+
       <div class="preference-item">
-        <span class="label">Price Range:</span>
-        <span class="value"><%= @room.price %></span>
+        <div class="preference-label">Price Range</div>
+        <div class="preference-value"><%= @room.price %></div>
       </div>
-      <div class="preference-item">
-        <span class="label">Cuisines:</span>
-        <span class="value">
-          <% if @room.categories.is_a?(Array) %>
-            <% @room.categories.each do |cuisine| %>
-              <span class="cuisine-badge"><%= cuisine %></span>
-            <% end %>
-          <% else %>
-            <%= @room.categories %>
+    </div>
+
+    <div class="preference-item" style="grid-column: 1 / -1;">
+      <div class="preference-label">Cuisines</div>
+      <div class="cuisine-list">
+        <% if @room.categories.is_a?(Array) %>
+          <% @room.categories.each do |cuisine| %>
+            <span class="cuisine-tag"><%= cuisine %></span>
           <% end %>
-        </span>
+        <% else %>
+          <span class="cuisine-tag"><%= @room.categories %></span>
+        <% end %>
       </div>
     </div>
   </div>
 
   <!-- Members Section -->
-  <div class="members-section">
+  <div class="preference-section">
     <h2>Members in Room:</h2>
+    <p class="subtitle"><%= @room.get_all_members.length %> <%= "person" if @room.get_all_members.length == 1 %><%= "people" if @room.get_all_members.length > 1 %> joined</p>
+
     <div class="members-list">
-      <div class="member-item">
-        <span class="member-name"><%= @room.owner_name %></span>
-        <span class="member-badge">Host</span>
-      </div>
-      <!-- Other members would be added here dynamically in real-time -->
+      <% @room.get_all_members.each do |member| %>
+        <div class="member-item">
+          <div class="member-avatar">👤</div>
+          <div class="member-info">
+            <div class="member-name"><%= member[:name] %></div>
+            <div class="member-type <%= member[:type] == 'host' ? 'host-badge' : 'guest-badge' %>">
+              <% if member[:type] == 'host' %>
+                <span>🏠 Host</span>
+              <% else %>
+                <span>👥 Guest</span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 
-  <!-- Action Buttons -->
-  <div class="room-actions">
-    <button class="button ready-to-spin-btn" data-action="click->room-show#readyToSpin">
-      Ready to Spin?
+  <!-- Wheel Section -->
+  <div class="preference-section wheel-container">
+    <h2>Ready to Spin?</h2>
+    <p class="subtitle">Click the button below to spin the wheel and discover your restaurant</p>
+
+    <div class="wheel-section">
+      <canvas data-room-spin-target="wheel" class="roulette-wheel"></canvas>
+    </div>
+
+    <button class="button button-primary" data-room-spin-target="spinButton" data-action="click->room-spin#readyToSpin">
+      ✨ Ready to Spin?
     </button>
+  </div>
+
+  <!-- Result Modal -->
+  <div class="result-overlay" data-room-spin-target="resultModal" style="display: none;">
+    <div class="result-modal">
+      <button class="close-button" data-action="click->room-spin#closeResult">×</button>
+      <div class="result-header">
+        <h3>Your Restaurant</h3>
+      </div>
+      <div class="restaurant-result" data-room-spin-target="resultContent"></div>
+    </div>
   </div>
 </div>
