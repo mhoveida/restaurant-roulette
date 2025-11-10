@@ -115,6 +115,22 @@
     </button>
   </div>
 
+  <div data-controller="room-vote" data-room-id="<%= @room.id %>" data-voter-name="<%= current_user&.first_name || session[:guest_name] %>">
+    <div data-room-vote-target="list">
+      <div class="restaurant-card">
+        <div class="rc-meta">Sample Restaurant</div>
+        <div class="rc-actions">
+          <button data-action="click->room-vote#vote"
+                  data-restaurant-id="1"
+                  data-value="up">👍</button>
+          <button data-action="click->room-vote#vote"
+                  data-restaurant-id="1"
+                  data-value="down">👎</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Result Modal -->
   <div class="result-overlay" data-room-spin-target="resultModal" style="display: none;">
     <div class="result-modal">

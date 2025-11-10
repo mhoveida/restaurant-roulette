@@ -375,3 +375,16 @@ h1, h2, h3, h4, h5, h6 {
   border-color: var(--color-yellow);
   background-color: rgba(255, 255, 255, 0.1);
 }
+
+button.voted {
+  transform: scale(1.1);
+  background-color: #ffd700;
+}
+
+.restaurant-card.voted-up {
+  border: 2px solid #22c55e;
+}
+
+.restaurant-card.voted-down {
+  border: 2px solid #ef4444;
+}
