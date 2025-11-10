@@ -28,6 +28,31 @@ export default class extends Controller {
   handleBroadcast(data) {
     if (data.type === "spin_result" && data.restaurant) {
       this.displayResult(data.restaurant)
+
+      // Dynamically inject new restaurant into Group Voting section
+      const list = document.querySelector('[data-room-vote-target="list"]')
+      if (list) {
+        const r = data.restaurant
+        const card = document.createElement("div")
+        card.className = "restaurant-card"
+        card.dataset.restaurantId = r.id
+        card.innerHTML = `
+          <div class="rc-body">
+            ${r.image_url ? `<img class="rc-img" src="${r.image_url}" alt="${r.name}">` : ""}
+            <div class="rc-meta">
+              <div class="rc-name">${r.name}</div>
+              <div class="rc-sub">${[r.price, r.rating].filter(Boolean).join(" • ")}</div>
+            </div>
+          </div>
+          <div class="rc-actions">
+            <button data-action="click->room-vote#vote" data-restaurant-id="${r.id}" data-value="up">👍</button>
+            <button data-action="click->room-vote#vote" data-restaurant-id="${r.id}" data-value="down">👎</button>
+            <span class="count-up"></span>
+            <span class="count-down"></span>
+          </div>
+        `
+        list.appendChild(card)
+      }
     }
   }
 
