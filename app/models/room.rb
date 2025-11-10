@@ -21,6 +21,8 @@ class Room < ApplicationRecord
   before_validation :generate_code, on: :create
   before_create :initialize_members
 
+  has_many :votes, dependent: :destroy
+
   def add_guest_member(guest_name)
     self.members ||= []
     self.members << { "name" => guest_name, "type" => "guest", "joined_at" => Time.current }
