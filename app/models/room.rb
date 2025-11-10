@@ -44,14 +44,23 @@ class Room < ApplicationRecord
       price: price
     )
 
-    if restaurant
-      self.spin_result = restaurant
-      save
-      restaurant
-    else
-      nil
+    return nil unless restaurant
+
+    # Initialize spin_results as an array
+    self.spin_results ||= []
+
+    # Append unless already present
+    unless self.spin_results.any? { |r| r["id"] == restaurant["id"] }
+      self.spin_results << restaurant
     end
+
+    # Store the most recent one
+    self.spin_result = restaurant
+
+    save!
+    restaurant
   end
+
 
   private
 

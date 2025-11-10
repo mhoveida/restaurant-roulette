@@ -115,19 +115,42 @@
     </button>
   </div>
 
-  <div data-controller="room-vote" data-room-id="<%= @room.id %>" data-voter-name="<%= current_user&.first_name || session[:guest_name] %>">
+  <!-- Group Voting Section -->
+  <div data-controller="room-vote"
+      data-room-id="<%= @room.id %>"
+      data-voter-name="<%= current_user&.first_name || session[:guest_name] %>">
+
+    <h2 style="margin-top: 2rem;">Group Voting</h2>
+    <p class="subtitle">Vote for your favorite restaurants!</p>
+
     <div data-room-vote-target="list">
-      <div class="restaurant-card">
-        <div class="rc-meta">Sample Restaurant</div>
-        <div class="rc-actions">
-          <button data-action="click->room-vote#vote"
-                  data-restaurant-id="1"
-                  data-value="up">👍</button>
-          <button data-action="click->room-vote#vote"
-                  data-restaurant-id="1"
-                  data-value="down">👎</button>
-        </div>
-      </div>
+      <% if @room.spin_results.present? %>
+        <% @room.spin_results.each do |restaurant| %>
+          <div class="restaurant-card" data-restaurant-id="<%= restaurant["id"] %>">
+            <div class="rc-body">
+              <% if restaurant["image_url"].present? %>
+                <img class="rc-img" src="<%= restaurant["image_url"] %>" alt="<%= restaurant["name"] %>">
+              <% end %>
+              <div class="rc-meta">
+                <div class="rc-name"><%= restaurant["name"] %></div>
+                <div class="rc-sub"><%= [restaurant["price"], restaurant["rating"]].compact.join(" • ") %></div>
+              </div>
+            </div>
+            <div class="rc-actions">
+              <button data-action="click->room-vote#vote"
+                      data-restaurant-id="<%= restaurant["id"] %>"
+                      data-value="up">👍</button>
+              <button data-action="click->room-vote#vote"
+                      data-restaurant-id="<%= restaurant["id"] %>"
+                      data-value="down">👎</button>
+              <span class="count-up"></span>
+              <span class="count-down"></span>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p style="color: gray;">No restaurants spun yet. Click "Ready to Spin" above!</p>
+      <% end %>
     </div>
   </div>
 
