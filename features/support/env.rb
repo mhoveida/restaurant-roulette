@@ -1,4 +1,5 @@
 require 'simplecov'
+SimpleCov.coverage_dir 'coverage/cucumber'
 SimpleCov.start 'rails' do
   add_filter '/spec/'
   add_filter '/features/'
