@@ -20,6 +20,7 @@ gem "tailwindcss-rails"
 gem "jbuilder"
 
 gem "devise"
+gem "omniauth-google-oauth2"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -64,6 +65,8 @@ group :development, :test do
   gem "simplecov", require: false
   gem "rails-controller-testing"
   gem "shoulda-matchers"
+
+  gem "dotenv-rails"
 end
 
 group :development do
