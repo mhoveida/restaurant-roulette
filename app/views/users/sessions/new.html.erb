@@ -54,12 +54,12 @@
     <!-- Social Login (placeholder for future) -->
     <div class="divider">OR</div>
     <div class="social-buttons">
-      <button class="social-button facebook-button" disabled>
-        <span>📱</span> Log in with Facebook
-      </button>
-      <button class="social-button google-button" disabled>
+      <%= button_to user_google_oauth2_omniauth_authorize_path,
+            method: :post,
+            data: { turbo: false },
+            class: "social-button google-button" do %>
         <span>🔍</span> Log in with Google
-      </button>
+      <% end %>
     </div>
   </div>
 
@@ -111,13 +111,12 @@
     <!-- Social Signup (placeholder for future) -->
     <div class="divider">OR</div>
     <div class="social-buttons">
-      <button class="social-button facebook-button" disabled>
-        <span>📱</span> Sign up with Facebook
-      </button>
-      <button class="social-button google-button" disabled>
+      <%= button_to user_google_oauth2_omniauth_authorize_path,
+            method: :post,
+            data: { turbo: false },
+            class: "social-button google-button" do %>
         <span>🔍</span> Sign up with Google
-      </button>
+      <% end %>
     </div>
-  </div>
   </div>
 </div>
