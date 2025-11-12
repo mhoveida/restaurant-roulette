@@ -46,6 +46,15 @@ class RoomsController < ApplicationController
   # This is the "Group Room" page
   def show
     @room = Room.find(params[:id])
+
+    @current_member_name =
+      if current_user
+        current_user.first_name
+      elsif session[:guest_name].present?
+        session[:guest_name]
+      else
+        @room.owner_name
+      end
   end
 
   def join
@@ -82,7 +91,7 @@ class RoomsController < ApplicationController
     @room = Room.find(params[:id])
 
     if request.post?
-      guest_name = params[:guest_name]
+      guest_name = params[:guest_name].to_s.strip
 
       if guest_name.blank?
         flash.now[:alert] = "Please enter your name"
@@ -90,7 +99,13 @@ class RoomsController < ApplicationController
         return
       end
 
+      # Remember guest name across page reloads
+      session[:guest_name] = guest_name
+      session[:joined_at] = Time.current
+
+      # Add guest to the room member list
       @room.add_guest_member(guest_name)
+
       redirect_to @room, notice: "Successfully joined the room!"
     end
   end

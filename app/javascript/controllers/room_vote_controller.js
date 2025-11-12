@@ -5,13 +5,15 @@ export default class extends Controller {
   static targets = ["list"];
 
   connect() {
+    this.voterName = this.element.dataset.voterName;
+    if (!this.voterName) {
+        console.warn("⚠️ No voter name found in dataset!");
+    }
     this.subscribeToRoom();
   }
 
   disconnect() {
-    if (this.subscription) {
-      consumer.subscriptions.remove(this.subscription);
-    }
+    if (this.subscription) consumer.subscriptions.remove(this.subscription);
   }
 
   subscribeToRoom() {
@@ -29,17 +31,15 @@ export default class extends Controller {
   }
 
   updateVoteCounts(counts) {
-    // For now, just log it — we'll display later
     console.log("📊 Live vote counts:", counts);
 
-    // Optional: update the UI if your restaurant cards have data-restaurant-id
     for (const [key, value] of Object.entries(counts)) {
       const [restaurantId, voteType] = key.split(",");
       const count = value;
 
-      const card = this.element
-        .querySelector(`[data-restaurant-id="${restaurantId}"]`)
-        ?.closest(".restaurant-card");
+      const card = this.element.querySelector(
+        `[data-restaurant-id="${restaurantId}"]`
+      )?.closest(".restaurant-card");
       if (!card) continue;
 
       let counter = card.querySelector(`.count-${voteType}`);
@@ -48,6 +48,7 @@ export default class extends Controller {
         counter.classList.add(`count-${voteType}`);
         card.querySelector(`.rc-actions`).appendChild(counter);
       }
+
       counter.textContent = `${voteType === "up" ? "👍" : "👎"} ${count}`;
     }
   }
@@ -58,9 +59,9 @@ export default class extends Controller {
     const restaurantId = button.dataset.restaurantId;
     const value = button.dataset.value;
     const roomId = this.element.dataset.roomId;
-    const voterName = this.element.dataset.voterName || "Guest";
+    const voterName = this.voterName;
 
-    // ✅ Step 1: Disable both buttons for this restaurant after first click
+    // Disable locally only (doesn't affect other clients)
     const restaurantCard = button.closest(".restaurant-card");
     const allButtons = restaurantCard.querySelectorAll(
       "button[data-action*='room-vote#vote']"
@@ -74,7 +75,7 @@ export default class extends Controller {
           "Content-Type": "application/json",
           Accept: "application/json",
           "X-CSRF-Token": document.querySelector("meta[name='csrf-token']")
-            .content,
+            ?.content,
         },
         body: JSON.stringify({
           vote: {
@@ -88,20 +89,21 @@ export default class extends Controller {
       const data = await response.json();
 
       if (data.success) {
-        console.log("✅ Vote recorded:", data.vote);
-        // Small visual feedback
+        console.log(`✅ ${voterName} voted ${value} on ${restaurantId}`);
         button.classList.add("voted");
         restaurantCard.classList.add(
           value === "up" ? "voted-up" : "voted-down"
         );
+      } else if (data.errors?.[0]?.includes("already voted")) {
+        // Backend blocked duplicate vote — show quick feedback
+        alert("You’ve already voted for this restaurant.");
       } else {
         console.warn("Vote failed:", data.errors);
-        // If vote failed (e.g., duplicate), re-enable buttons
+        // Allow retry if backend didn’t save
         allButtons.forEach((b) => (b.disabled = false));
       }
     } catch (err) {
       console.error("Vote request failed:", err);
-      // If error, re-enable buttons so user can retry
       allButtons.forEach((b) => (b.disabled = false));
     }
   }

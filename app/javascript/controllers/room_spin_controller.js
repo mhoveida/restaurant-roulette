@@ -25,6 +25,22 @@ export default class extends Controller {
     )
   }
 
+  updateVoteCounts(data) {
+    const votes_summary = data.counts || {} // fallback to empty object
+
+    Object.entries(votes_summary).forEach(([key, count]) => {
+      const [restaurant_id, value] = key.split(",")
+      const card = document.querySelector(`[data-restaurant-id="${restaurant_id}"]`)
+      if (!card) return
+
+      const upEl = card.querySelector(".count-up")
+      const downEl = card.querySelector(".count-down")
+
+      if (value === "up" && upEl) upEl.textContent = `👍 ${count}`
+      if (value === "down" && downEl) downEl.textContent = `👎 ${count}`
+    })
+  }
+
   handleBroadcast(data) {
     if (data.type === "spin_result" && data.restaurant) {
       this.displayResult(data.restaurant)
@@ -53,6 +69,11 @@ export default class extends Controller {
         `
         list.appendChild(card)
       }
+    }
+
+    // Handle vote updates
+    if (data.type === "vote_update") {
+      this.updateVoteCounts(data)
     }
   }
 

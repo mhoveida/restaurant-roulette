@@ -116,10 +116,11 @@
   </div>
 
   <!-- Group Voting Section -->
-  <div data-controller="room-vote"
-      data-room-id="<%= @room.id %>"
-      data-voter-name="<%= current_user&.first_name || session[:guest_name] %>">
-
+  <div
+    data-controller="room-vote"
+    data-room-id="<%= @room.id %>"
+    data-voter-name="<%= @current_member_name %>"
+  >
     <h2 style="margin-top: 2rem;">Group Voting</h2>
     <p class="subtitle">Vote for your favorite restaurants!</p>
 
