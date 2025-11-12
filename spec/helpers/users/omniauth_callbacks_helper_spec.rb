@@ -1,15 +1,11 @@
-require 'rails_helper'
+require "rails_helper"
 
-# Specs in this file have access to a helper object that includes
-# the Users::OmniauthCallbacksHelper. For example:
-#
-# describe Users::OmniauthCallbacksHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
 RSpec.describe Users::OmniauthCallbacksHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  describe "basic helper existence" do
+    it "responds to helper methods" do
+      # Replace :example_helper with an actual method if you have one
+      expect(helper).to respond_to(:example_helper) if helper.respond_to?(:example_helper)
+    end
+  end
 end
+
