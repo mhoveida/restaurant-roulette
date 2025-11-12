@@ -302,7 +302,6 @@ Devise.setup do |config|
     {
       scope: "userinfo.email,userinfo.profile",
       prompt: "select_account",
-      redirect_uri: "http://localhost:3000/users/auth/google_oauth2/callback",
       access_type: "offline",
       provider_ignores_state: true,
       skip_jwt: true,
