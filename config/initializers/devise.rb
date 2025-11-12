@@ -297,8 +297,8 @@ Devise.setup do |config|
   # config.omniauth_path_prefix = '/my_engine/users/auth'
   config.omniauth_path_prefix = '/users/auth'
   config.omniauth :google_oauth2, 
-    ENV["GOOGLE_CLIENT_ID"], 
-    ENV["GOOGLE_CLIENT_SECRET"],
+    Rails.application.credentials.dig(:google_oauth2, :client_id), 
+    Rails.application.credentials.dig(:google_oauth2, :client_secret),
     {
       scope: 'userinfo.email,userinfo.profile',
       prompt: 'select_account',
