@@ -1,6 +1,6 @@
 require 'simplecov'
-SimpleCov.coverage_dir 'coverage/rspec'
 SimpleCov.start 'rails' do
+  SimpleCov.command_name 'RSpec'
   add_filter '/spec/'
   add_filter '/test/'
   add_filter '/config/'
