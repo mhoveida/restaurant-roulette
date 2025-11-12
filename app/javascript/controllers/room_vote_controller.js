@@ -5,10 +5,20 @@ export default class extends Controller {
   static targets = ["list"];
 
   connect() {
-    this.voterName = this.element.dataset.voterName;
-    if (!this.voterName) {
-        console.warn("⚠️ No voter name found in dataset!");
+    const roomId = this.element.dataset.roomId;
+    const dsName = (this.element.dataset.voterName || "").trim();
+
+    // Per-tab key
+    const key = `room:${roomId}:name`;
+
+    // Prefer dataset; otherwise use per-tab sessionStorage; if still empty, prompt
+    let name = dsName || sessionStorage.getItem(key);
+    if (!name) {
+      name = prompt("Enter your name for voting") || "Guest";
     }
+    sessionStorage.setItem(key, name);
+    this.voterName = name;
+
     this.subscribeToRoom();
   }
 
@@ -31,12 +41,8 @@ export default class extends Controller {
   }
 
   updateVoteCounts(counts) {
-    // console.log("📊 Live vote counts:", counts);
-
     for (const [key, value] of Object.entries(counts)) {
       const [restaurantId, voteType] = key.split(",");
-      const count = value;
-
       const card = this.element.querySelector(
         `[data-restaurant-id="${restaurantId}"]`
       )?.closest(".restaurant-card");
@@ -48,12 +54,10 @@ export default class extends Controller {
         counter.classList.add(`count-${voteType}`);
         card.querySelector(`.rc-actions`).appendChild(counter);
       }
-
-      counter.textContent = `${voteType === "up" ? "👍" : "👎"} ${count}`;
+      counter.textContent = `${voteType === "up" ? "👍" : "👎"} ${value}`;
     }
   }
 
-  // --- Handle user click on 👍 / 👎 ---
   async vote(event) {
     const button = event.currentTarget;
     const restaurantId = button.dataset.restaurantId;
@@ -61,12 +65,9 @@ export default class extends Controller {
     const roomId = this.element.dataset.roomId;
     const voterName = this.voterName;
 
-    // Disable locally only (doesn't affect other clients)
-    const restaurantCard = button.closest(".restaurant-card");
-    const allButtons = restaurantCard.querySelectorAll(
-      "button[data-action*='room-vote#vote']"
-    );
-    allButtons.forEach((b) => (b.disabled = true));
+    const card = button.closest(".restaurant-card");
+    const allButtons = card.querySelectorAll(`button[data-action*='room-vote#vote']`);
+    allButtons.forEach(b => b.disabled = true);
 
     try {
       const response = await fetch(`/rooms/${roomId}/votes`, {
@@ -74,37 +75,22 @@ export default class extends Controller {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']")
-            ?.content,
+          "X-CSRF-Token": document.querySelector("meta[name='csrf-token']")?.content,
         },
         body: JSON.stringify({
-          vote: {
-            restaurant_id: restaurantId,
-            voter_name: voterName,
-            value: value,
-          },
+          vote: { restaurant_id: restaurantId, voter_name: voterName, value }
         }),
       });
 
       const data = await response.json();
-
       if (data.success) {
-        // console.log(`✅ ${voterName} voted ${value} on ${restaurantId}`);
         button.classList.add("voted");
-        restaurantCard.classList.add(
-          value === "up" ? "voted-up" : "voted-down"
-        );
-      } else if (data.errors?.[0]?.includes("already voted")) {
-        // Backend blocked duplicate vote — show quick feedback
-        alert("You’ve already voted for this restaurant.");
+        card.classList.add(value === "up" ? "voted-up" : "voted-down");
       } else {
-        console.warn("Vote failed:", data.errors);
-        // Allow retry if backend didn’t save
-        allButtons.forEach((b) => (b.disabled = false));
+        allButtons.forEach(b => b.disabled = false);
       }
-    } catch (err) {
-      console.error("Vote request failed:", err);
-      allButtons.forEach((b) => (b.disabled = false));
+    } catch (e) {
+      allButtons.forEach(b => b.disabled = false);
     }
   }
 }

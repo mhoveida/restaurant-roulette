@@ -11,7 +11,12 @@ Rails.application.routes.draw do
   post "rooms/:id/join_as_guest", to: "rooms#join_as_guest"
 
   resources :rooms, only: [:show, :create] do
-    post :spin, on: :member
+    member do
+      get  :spin_room        # /rooms/:id/spin_room  (HTML page with wheel + voting)
+      post :start_spin       # host triggers broadcast + redirect
+      post :spin             # returns JSON with restaurant, broadcasts spin_result
+    end
+
     resources :votes, only: [:create]
   end
   

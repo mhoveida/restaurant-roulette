@@ -1,4 +1,6 @@
 class RoomsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:spin] if Rails.env.test?
+  
   def new
     @owner_name = current_user&.first_name || ""
     @location = ""
@@ -155,4 +157,30 @@ class RoomsController < ApplicationController
     end
   end
 
+  # SPIN/VOTING PAGE
+  def spin_room
+    @room = Room.find(params[:id])
+    @current_member_name =
+      if user_signed_in? && current_user.first_name.present?
+        current_user.first_name
+      elsif session[:guest_name].present?
+        session[:guest_name]
+      else
+        @room.owner_name
+      end
+  end
+
+  # HOST triggers: broadcast + redirect host
+  def start_spin
+    @room = Room.find(params[:id])
+
+    # Broadcast to all members in this room that the host started spinning
+    ActionCable.server.broadcast("room_#{@room.id}", {
+      type: "start_spin",
+      url: spin_room_room_path(@room)
+    })
+
+    # Redirect host to spin_room immediately
+    redirect_to spin_room_room_path(@room)
+  end
 end
