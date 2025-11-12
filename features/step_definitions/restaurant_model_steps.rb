@@ -42,7 +42,7 @@ end
 Given('there are {int} open restaurants and {int} closed restaurants') do |open_count, closed_count|
   # Clear existing restaurants to have a clean slate
   Restaurant.delete_all
-  
+
   # Create open restaurants
   open_count.times do |i|
     Restaurant.create!(
@@ -50,7 +50,7 @@ Given('there are {int} open restaurants and {int} closed restaurants') do |open_
       rating: 4.0,
       price: "$$",
       address: "#{i} Open St, New York, NY 10001",
-      categories: ["American"],
+      categories: [ "American" ],
       is_open_now: true
     )
   end
@@ -62,7 +62,7 @@ Given('there are {int} open restaurants and {int} closed restaurants') do |open_
       rating: 4.0,
       price: "$$",
       address: "#{i} Closed St, New York, NY 10002",
-      categories: ["American"],
+      categories: [ "American" ],
       is_open_now: false
     )
   end
@@ -94,7 +94,7 @@ When('I create a restaurant with valid attributes') do
     rating: 4.5,
     price: "$$",
     address: "100 Valid St, New York, NY 10001",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   )
   @save_result = @test_restaurant.save
 end
@@ -104,7 +104,7 @@ When('I create a restaurant without a name') do
     rating: 4.5,
     price: "$$",
     address: "200 No Name St, New York, NY 10001",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   )
   @save_result = @test_restaurant.save
 end
@@ -114,7 +114,7 @@ When('I create a restaurant without a rating') do
     name: "No Rating Restaurant",
     price: "$$",
     address: "300 No Rating St, New York, NY 10001",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   )
   @save_result = @test_restaurant.save
 end
@@ -125,7 +125,7 @@ When('I create a restaurant with rating {string}') do |rating|
     rating: rating.to_f,
     price: "$$",
     address: "400 Bad Rating St, New York, NY 10001",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   )
   @save_result = @test_restaurant.save
 end
@@ -135,7 +135,7 @@ When('I create a restaurant without a price') do
     name: "No Price Restaurant",
     rating: 4.5,
     address: "500 No Price St, New York, NY 10001",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   )
   @save_result = @test_restaurant.save
 end
@@ -146,7 +146,7 @@ When('I create a restaurant with price {string}') do |price|
     rating: 4.5,
     price: price,
     address: "600 Bad Price St, New York, NY 10001",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   )
   @save_result = @test_restaurant.save
 end
@@ -155,14 +155,14 @@ When(/^I create restaurants with prices (.+)$/) do |prices_string|
   @created_restaurants = []
   # Remove quotes and split by comma
   prices = prices_string.gsub('"', '').split(', ')
-  
+
   prices.each_with_index do |price, i|
     restaurant = Restaurant.new(
       name: "Restaurant #{i}",
       rating: 4.0,
       price: price,
       address: "#{700 + i} Price Test St, New York, NY 10001",
-      categories: ["American"]
+      categories: [ "American" ]
     )
     @created_restaurants << restaurant if restaurant.save
   end
@@ -173,7 +173,7 @@ When('I create a restaurant without an address') do
     name: "No Address Restaurant",
     rating: 4.5,
     price: "$$",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   )
   @save_result = @test_restaurant.save
 end
