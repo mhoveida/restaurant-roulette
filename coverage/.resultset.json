@@ -1,31 +1,53 @@
 {
   "RSpec": {
     "coverage": {
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/helpers/application_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/application_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/helpers/home_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/home_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/helpers/rooms_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/rooms_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/helpers/static_pages_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/static_pages_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/controllers/rooms_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/room_channel.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/application_cable/channel.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/rooms_controller.rb": {
         "lines": [
           1,
           1,
@@ -108,25 +130,42 @@
           null,
           null,
           1,
-          2,
+          12,
           null,
-          2,
+          12,
+          10,
+          null,
+          10,
+          6,
+          6,
+          6,
+          null,
+          null,
+          4,
+          4,
+          null,
+          null,
+          null,
+          1,
+          0,
           0,
           null,
           0,
-          0,
-          0,
+          null,
           0,
           null,
           null,
+          null,
+          null,
           0,
+          null,
           0,
           null,
           null,
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/controllers/application_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/application_controller.rb": {
         "lines": [
           1,
           null,
@@ -141,7 +180,7 @@
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
         "lines": [
           null,
           1,
@@ -173,7 +212,7 @@
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/controllers/users/registrations_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/registrations_controller.rb": {
         "lines": [
           1,
           1,
@@ -212,7 +251,7 @@
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
         "lines": [
           1,
           1,
@@ -229,7 +268,7 @@
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/models/restaurant.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/restaurant.rb": {
         "lines": [
           null,
           null,
@@ -248,10 +287,10 @@
           null,
           null,
           1,
-          3,
+          21,
           null,
           null,
-          1,
+          112,
           3,
           null,
           1,
@@ -265,14 +304,14 @@
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/models/application_record.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/application_record.rb": {
         "lines": [
           1,
           1,
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/models/room.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/room.rb": {
         "lines": [
           1,
           null,
@@ -298,31 +337,47 @@
           1,
           null,
           1,
-          0,
-          0,
-          0,
+          4,
+          4,
+          4,
+          null,
+          null,
+          1,
+          1,
+          1,
+          1,
+          null,
+          3,
           null,
           null,
           1,
           0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          0,
+          0,
           0,
           0,
           null,
-          0,
+          null,
+          null,
           null,
           null,
           1,
           null,
           1,
-          0,
-          0,
+          2,
+          2,
           null,
           0,
           null,
           null,
           null,
           1,
-          22,
+          32,
           null,
           14,
           14,
@@ -331,12 +386,12 @@
           null,
           null,
           1,
-          17,
+          27,
           null,
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/models/user.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/user.rb": {
         "lines": [
           1,
           null,
@@ -369,74 +424,74 @@
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/services/restaurant_service.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/services/restaurant_service.rb": {
         "lines": [
           null,
           null,
           1,
           null,
           1,
-          0,
+          86,
           null,
           null,
-          0,
+          86,
           null,
           null,
-          0,
-          0,
-          0,
-          0,
+          86,
+          17,
+          39,
+          39,
           null,
-          0,
-          null,
-          null,
-          null,
-          0,
-          null,
-          null,
-          0,
+          17,
           null,
           null,
           null,
-          1,
-          0,
+          86,
           null,
           null,
-          null,
-          null,
-          null,
-          0,
+          431,
           null,
           null,
           null,
           1,
-          0,
+          58,
           null,
           null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
-          null,
-          0,
           null,
           null,
-          0,
           null,
-          null,
-          0,
-          null,
-          null,
-          0,
-          null,
-          0,
+          58,
           null,
           null,
           null,
           1,
-          0,
+          28,
+          null,
+          null,
+          28,
+          null,
+          28,
+          2,
+          4,
+          4,
+          null,
+          2,
+          null,
+          null,
+          28,
+          null,
+          null,
+          28,
+          null,
+          null,
+          28,
+          null,
+          96,
+          null,
+          null,
+          null,
+          1,
+          25,
           null,
           null,
           1,
@@ -444,7 +499,7 @@
           null,
           1,
           null,
-          0,
+          433,
           null,
           null,
           null,
@@ -462,7 +517,16 @@
           null
         ]
       },
-      "/Users/benji/Desktop/columbia/saas/restaurant-roulette/app/controllers/static_pages_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/application_cable/connection.rb": {
+        "lines": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/static_pages_controller.rb": {
         "lines": [
           0,
           0,
@@ -472,7 +536,7 @@
         "branches": {}
       }
     },
-    "timestamp": 1762715363
+    "timestamp": 1762963317
   },
   "Cucumber Features": {
     "coverage": {
@@ -947,5 +1011,542 @@
       }
     },
     "timestamp": 1762715384
+  },
+  "Cucumber": {
+    "coverage": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/restaurant.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          15,
+          null,
+          null,
+          20,
+          1,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          0,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/application_record.rb": {
+        "lines": [
+          1,
+          1,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/services/restaurant_service.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          null,
+          1,
+          16,
+          null,
+          null,
+          16,
+          null,
+          null,
+          16,
+          10,
+          22,
+          22,
+          null,
+          10,
+          null,
+          null,
+          null,
+          16,
+          null,
+          null,
+          918,
+          null,
+          null,
+          null,
+          1,
+          5,
+          null,
+          null,
+          null,
+          null,
+          null,
+          5,
+          null,
+          null,
+          null,
+          1,
+          3,
+          null,
+          null,
+          3,
+          null,
+          3,
+          3,
+          12,
+          12,
+          null,
+          3,
+          null,
+          null,
+          3,
+          null,
+          null,
+          3,
+          null,
+          null,
+          3,
+          null,
+          6,
+          null,
+          null,
+          null,
+          1,
+          1836,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          null,
+          2729,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/user.rb": {
+        "lines": [
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          50,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          null,
+          1,
+          0,
+          0,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/static_pages_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/application_controller.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/application_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/home_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/rooms_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/static_pages_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          25,
+          null,
+          25,
+          null,
+          null,
+          1,
+          20,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/application_cable/connection.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/room_channel.rb": {
+        "lines": [
+          1,
+          1,
+          13,
+          13,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/application_cable/channel.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/registrations_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          6,
+          null,
+          6,
+          null,
+          6,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          6,
+          6,
+          6,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          6,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
+        "lines": [
+          null,
+          1,
+          1,
+          15,
+          null,
+          null,
+          15,
+          15,
+          15,
+          15,
+          null,
+          null,
+          15,
+          null,
+          4,
+          4,
+          null,
+          0,
+          null,
+          null,
+          4,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/rooms_controller.rb": {
+        "lines": [
+          1,
+          1,
+          17,
+          17,
+          17,
+          17,
+          null,
+          null,
+          1,
+          6,
+          6,
+          6,
+          6,
+          null,
+          null,
+          6,
+          null,
+          null,
+          6,
+          2,
+          null,
+          4,
+          null,
+          null,
+          null,
+          6,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          6,
+          2,
+          null,
+          null,
+          4,
+          4,
+          4,
+          4,
+          4,
+          4,
+          null,
+          null,
+          null,
+          null,
+          1,
+          9,
+          null,
+          null,
+          1,
+          5,
+          5,
+          1,
+          1,
+          1,
+          null,
+          4,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          null,
+          3,
+          null,
+          3,
+          2,
+          1,
+          null,
+          1,
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          null,
+          null,
+          null,
+          1,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null
+        ]
+      },
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/room.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          0,
+          0,
+          0,
+          null,
+          null,
+          1,
+          36,
+          36,
+          0,
+          null,
+          72,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          36,
+          36,
+          null,
+          0,
+          null,
+          null,
+          null,
+          1,
+          14,
+          null,
+          6,
+          6,
+          6,
+          null,
+          null,
+          null,
+          1,
+          10,
+          null,
+          null
+        ]
+      }
+    },
+    "timestamp": 1762963187
   }
 }
