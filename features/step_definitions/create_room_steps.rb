@@ -269,3 +269,13 @@ Then(/^I should see "([^"]*)" appear in the members list$/) do |name|
     expect(page).to have_text(name)
   end
 end
+
+Given /^I am on the join as guest page for the room$/ do
+  visit join_as_guest_path(@room)
+end
+
+Then /^I should see "([^"]*)" in the members list$/ do |member_name|
+  within(".members-list") do
+    expect(page).to have_content(member_name)
+  end
+end

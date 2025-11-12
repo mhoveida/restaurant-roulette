@@ -194,3 +194,53 @@ Feature: Create Room
     Given I have created a room as "Olivia"
     Then "Olivia" should be marked as "Owner" or "Host" in the members list
 #    And other members should see this designation
+
+  @javascript
+  Scenario: Guest joins room and appears in members list
+    Given I have created a room with code "1234"
+    And I am not logged in
+    When I am on the join as guest page for the room
+    And I fill in "guest_name" with "Casey"
+    And I click "Join Room"
+    Then I should see "Successfully joined the room!"
+    And I should see "Casey" in the members list
+
+  Scenario: Guest attempts to join room with blank name
+    Given I have created a room with code "1234"
+    And I am not logged in
+    When I am on the join as guest page for the room
+    And I fill in "guest_name" with ""
+    And I click "Join Room"
+    Then I should see "Please enter your name"
+
+  Scenario: Logged in user joins existing room
+    Given a room exists with code "2345"
+    And I am logged in as "Alex"
+    When I am on the home page
+    And I fill in "Room Code" with "2345"
+    And I click "Join Room"
+    Then I should be redirected to the room
+    And I should see "Room Waiting Area"
+
+  Scenario: Guest user joins existing room and enters guest name
+    Given a room exists with code "3456"
+    And I am not logged in
+    When I am on the home page
+    And I fill in "Room Code" with "3456"
+    And I click "Join Room"
+    Then I should see "Join as Guest"
+    When I fill in "guest_name" with "Taylor"
+    And I click "Join Room"
+    Then I should see "Successfully joined the room!"
+
+  Scenario: User attempts to join with 5-digit code
+    When I am on the home page
+    And I fill in "Room Code" with "12345"
+    And I click "Join Room"
+    Then I should see "Please enter a valid 4-digit room code"
+
+  Scenario: User attempts to join with letters in code
+    When I am on the home page
+    And I fill in "Room Code" with "12a4"
+    And I click "Join Room"
+    Then I should see "Please enter a valid 4-digit room code"

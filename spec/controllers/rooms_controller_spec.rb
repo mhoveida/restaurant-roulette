@@ -321,4 +321,58 @@ RSpec.describe RoomsController, type: :controller do
       end
     end
   end
+
+  describe 'POST #spin' do
+    let(:room) { FactoryBot.create(:room) }
+    let(:restaurant) { { name: "Test Restaurant", rating: 4.5 } }
+
+    context 'when restaurant is found' do
+      before do
+        allow_any_instance_of(RestaurantService).to receive(:random_restaurant).and_return(restaurant)
+        allow(ActionCable.server).to receive(:broadcast)
+      end
+
+      it 'returns success json' do
+        post :spin, params: { id: room.id }, format: :json
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)["success"]).to eq(true)
+      end
+
+      it 'includes restaurant in response' do
+        post :spin, params: { id: room.id }, format: :json
+        parsed_response = JSON.parse(response.body)
+        expect(parsed_response["restaurant"]).to eq("name" => "Test Restaurant", "rating" => 4.5)
+      end
+
+      it 'saves spin result to room' do
+        post :spin, params: { id: room.id }, format: :json
+        expect(room.reload.spin_result).to eq("name" => "Test Restaurant", "rating" => 4.5)
+      end
+
+      it 'broadcasts spin result to ActionCable' do
+        expect(ActionCable.server).to receive(:broadcast).with(
+          "room_#{room.id}",
+          { type: "spin_result", restaurant: restaurant }
+        )
+        post :spin, params: { id: room.id }, format: :json
+      end
+    end
+
+    context 'when no restaurant is found' do
+      before do
+        allow_any_instance_of(RestaurantService).to receive(:random_restaurant).and_return(nil)
+      end
+
+      it 'returns error json' do
+        post :spin, params: { id: room.id }, format: :json
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)["success"]).to eq(false)
+      end
+
+      it 'includes error message' do
+        post :spin, params: { id: room.id }, format: :json
+        expect(JSON.parse(response.body)["message"]).to eq("No restaurants found")
+      end
+    end
+  end
 end
