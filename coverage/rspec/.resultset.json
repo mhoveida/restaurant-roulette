@@ -556,13 +556,11 @@
       "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/omniauth_callbacks_controller.rb": {
         "lines": [
           0,
-          null,
-          null,
-          null,
-          0,
           0,
           null,
           0,
+          null,
+          null,
           0,
           0,
           0,
@@ -572,6 +570,30 @@
           0,
           null,
           0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
           0,
           0,
           0
@@ -579,6 +601,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1762921202
+    "timestamp": 1762964427
   }
 }
