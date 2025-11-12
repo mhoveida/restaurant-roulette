@@ -227,7 +227,9 @@ Given('an account exists linked to Google account {string}') do |email|
     last_name: 'User',
     password: 'TestPassword123',
     password_confirmation: 'TestPassword123',
-    confirmed_at: Time.current
+    confirmed_at: Time.current,
+    provider: 'google_oauth2',
+    uid: '123545'
   )
 end
 

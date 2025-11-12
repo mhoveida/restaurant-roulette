@@ -190,7 +190,7 @@ Feature: User Authentication
     And I should be redirected to the home page
     And I should see "Log In" button instead of my name
 
-  @javascript @google
+  @google
   Scenario: User signs in with an existing Google account
     Given an account exists linked to Google account "testuser@example.com"
     And I am on the login page
