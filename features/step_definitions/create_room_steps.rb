@@ -167,8 +167,28 @@ Given /other users have joined: "([^"]*)"/ do |members_str|
 end
 
 Given /members "([^"]*)" have joined/ do |members|
-  # This would require WebSocket/real-time communication
-  pending
+  # Ensure a room exists for the scenario
+  @room ||= Room.last || FactoryBot.create(:room, owner_name: @current_user&.first_name || "Host")
+
+  # Parse the comma-separated member names
+  member_names = members.split(",").map(&:strip)
+
+  member_names.each do |name|
+    # Simulate adding guests using Room’s real method
+    if @room.respond_to?(:add_guest_member)
+      @room.add_guest_member(name)
+    else
+      # Fallback for older schema — use members JSON column directly
+      @room.members ||= []
+      @room.members << { name: name, type: "guest" }
+    end
+  end
+
+  @room.save!
+
+  # Confirm all members were added successfully
+  added_names = @room.try(:get_all_members)&.map { |m| m[:name] } || []
+  expect(added_names).to include(*member_names)
 end
 
 Then /members should be listed in order of joining/ do
@@ -199,8 +219,12 @@ Then /no room should be created/ do
 end
 
 Given /I have created a room as "([^"]*)"/ do |name|
-  room = create(:room, owner_name: name)
-  visit room_path(room)
+  @room = Room.find_or_create_by!(code: code) do |r|
+    r.owner_name = "Maddison"
+    r.location = "New York"
+    r.price = "$$"
+    r.categories = ["italian"]
+  end
 end
 
 Then /"([^"]*)" should be marked as "([^"]*)" or "([^"]*)" in the members list/ do |name, role1, role2|

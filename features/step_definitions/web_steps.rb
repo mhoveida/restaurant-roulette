@@ -128,7 +128,7 @@ Then /I should see a cuisine preferences dropdown/ do
 end
 
 Then /I should see the roulette wheel$/ do
-  expect(page.has_css?("#roulette-wheel")).to be(true), "Expected to find roulette wheel, but did not."
+  expect(page.has_css?(".roulette-wheel")).to be(true), "Expected to find roulette wheel, but did not."
 end
 
 Then /the name field should display "(.*)"/ do |name|

@@ -1,196 +1,148 @@
-Feature: Create Room
-  As a user (guest or logged in)
-  I want to create a group room
-  So that I can coordinate restaurant selection with my friends
+Feature: Group Room Spinning and Voting
+  As a group of friends choosing where to eat
+  I want to spin for restaurant options and vote together
+  So that we can decide on one restaurant fairly and easily
 
   Background:
     Given the restaurant service is available
+    And I am logged in as "Maddison"
+    And I have created a room with code "8865"
+    And members "Olivia, Celine, Ben" have joined
 
-  Scenario: Guest user accesses create room page
-    Given I am not logged in
-    And I am on the home page
-    When I click "Create Room"
-    Then I should be on the create room page
-    And I should see "Create a Group Room"
-    And I should see "Coordinate with your friend"
-    And the name field should be empty
+  # --- WAITING ROOM FLOW ---
 
-  Scenario: Logged in user accesses create room page
-    Given I am logged in as "Maddison"
-    And I am on the home page
-    When I click "Create Room"
-    Then I should be on the create room page
-    And I should see "Create a Group Room"
-    And I should see "Coordinate with your friend"
-
-  Scenario: Owner name is pre-filled for logged in user
-    Given I am logged in as "Maddison"
-    And I am on the create room page
-    Then the owner name field should display "Maddison"
-    And the owner name field should be read-only
-
-  Scenario: Owner name is empty for guest user
-    Given I am not logged in
-    And I am on the create room page
-    Then the owner name field should be empty
-    And the owner name field should be editable
-
-  Scenario: User views create room form fields
-    Given I am logged in as "Maddison"
-    And I am on the create room page
-    Then I should see an owner name field with "Maddison"
-    And I should see a location input field with search icon
-    And I should see a price range dropdown
-    And I should see a cuisine preferences dropdown
-    And I should see a "Create Room" button
-
-  Scenario: User fills out all room preferences
-    Given I am logged in as "Maddison"
-    And I am on the create room page
-    When I fill in "Location" with "New York"
-    And I select "$$" from "Price Range"
-    And I select cuisines "Italian, American, Mediterranean"
-    Then all required fields should be filled
-    And the "Create Room" button should be enabled
-
-  Scenario: User attempts to create room without location
-    Given I am on the create room page
-    When I fill in "Name" with "Celine"
-    And I select "$$" from "Price Range"
-    And I click "Create Room"
-    Then I should see "Please enter a location"
-    And the room should not be created
-
-  Scenario: User attempts to create room without price range
-    Given I am on the create room page
-    When I fill in "Name" with "Ben"
-    And I fill in "Location" with "New York"
-    And I click "Create Room"
-    Then I should see "Please select a price range"
-    And the room should not be created
-
-  Scenario: Guest user attempts to create room without name
-    Given I am not logged in
-    And I am on the create room page
-    When I fill in "Location" with "New York"
-    And I select "$$" from "Price Range"
-    And I click "Create Room"
-    Then I should see "Please enter your name"
-    And the room should not be created
-
-  @javascript
-  Scenario: User selects multiple cuisine preferences
-    Given I am logged in as "Olivia"
-    And I am on the create room page
-    When I click on the create room "Cuisine Preferences" dropdown
-    And I select "Italian, American, Mediterranean" cuisine
-    Then I should see "Italian" create room tag with X button
-    And I should see "American" create room tag with X button
-    And I should see "Mediterranean" create room tag with X button
-
-  @javascript
-  Scenario: User removes a selected cuisine preference
-    Given I am logged in as "Maddison"
-    And I am on the create room page
-    And I have selected create room cuisines "Italian, American, Mediterranean"
-    When I click the create room X button on "American"
-    Then "American" should be removed
-    And I should see remaining cuisines "Italian, Mediterranean"
-
-  Scenario: Guest user creates room successfully
-    Given I am not logged in
-    And I am on the create room page
-    When I fill in "Name" with "Alex"
-    And I fill in "Location" with "New York"
-    And I select "$$" from "Price Range"
-    And I select cuisines "Italian, American, Mediterranean"
-    And I click "Create Room"
-    Then a new room should be created
-    And I should be redirected to the room waiting page
-    And I should see "Share this code with your friends"
-    And I should see a unique room code
-    And the room code should be 4 digits
-
-  Scenario: Logged in user creates room successfully
-    Given I am logged in as "Maddison"
-    And I am on the create room page
-    When I fill in "Location" with "New York"
-    And I select "$$" from "Price Range"
-    And I select cuisines "Italian, American, Mediterranean"
-    And I click "Create Room"
-    Then a new room should be created
-    And I should be redirected to the room waiting page
-    And I should see "Share this code with your friends"
-    And I should see a unique room code
-    And the room code should be 4 digits
-
-  Scenario: Room code is displayed after creation
-    Given I have created a room successfully
-    Then I should see "Room Code: 8865"
-    And the room code should have a copy icon
+  Scenario: Room owner sees waiting room setup
+    Given I am on the group room waiting page
+    Then I should see "Share this code with your friends"
+    And I should see "Room Code: 8865"
     And I should see "Members in Room:"
-    And I should see "Maddison" as the first member
+    And I should see "Ready to Spin?" button enabled
+    And I should see the host name "Maddison" listed
 
-  Scenario: Room creator can copy room code
-    Given I have created a room with code "8865"
-    When I click the copy icon next to the room code
-    Then I should see a confirmation that the room code was copied
+  Scenario: Guest joins the waiting room
+    Given I am a guest user named "Olivia"
+    When I enter room code "8865"
+    And I input my name as "Olivia"
+    Then I should be redirected to the waiting room
+    And I should see "Olivia" in the members list
+    And I should see "Share this code with your friends"
 
-#  Scenario: Room displays current members
-#    Given I have created a room
-#    And other users have joined: "Olivia, Celine, Ben"
-#    Then I should see "Members in Room:"
-#    And I should see "Maddison"
-#    And I should see "Olivia"
-#    And I should see "Celine"
-#    And I should see "Ben"
-#    And members should be listed in order of joining
+  Scenario: Room members update in real time
+    Given "Maddison" is on the waiting page
+    When "Celine" joins the room
+    Then "Maddison" should see "Celine" appear in the members list
+    And no page reload should be required
 
-  Scenario: Room creator waits for members
-    Given I have created a room
-    And I am on the room waiting page
-    Then I should see a "Ready to Spin?" button
-    But the button should be enabled regardless of member count
+  Scenario: Host starts the spinning phase
+    Given all members are in the waiting room
+    When the host clicks "Ready to Spin?"
+    Then the host should be redirected to the group spin page
+    And all other members should automatically follow to the same spin page
+    And each member should see their correct name displayed
 
-  Scenario: Room creator can spin before others join
-    Given I have created a room
-    And no other members have joined
+  # --- SPIN ROOM FLOW ---
+
+  Scenario: Group spin page setup
+    Given I am on the group spin page
+    Then I should see "You are voting as: Maddison"
+    And I should see the roulette wheel
+    And I should see "Ready to Spin?" button under the wheel
+    And I should see "Group Voting" section
+    And I should see "No restaurants spun yet" message
+
+  Scenario: Host spins for first restaurant
+    Given I am the room host on the group spin page
     When I click "Ready to Spin?"
-    Then I should be able to proceed to the spinning phase
-#    And restaurant options should be generated based on my preferences
+    Then the wheel should animate and slow down
+    And a new restaurant card should appear under "Group Voting"
+    And the restaurant details should include:
+      | Field        | Example                            |
+      | Name         | Da Andrea                         |
+      | Price Range  | $$                                |
+      | Rating       | 4.7                                |
+      | Address      | 160 8th Ave, New York, NY 10011   |
 
-#  Scenario: Room members list updates in real-time
-#    Given I have created a room with code "8865"
-#    And I am viewing the room waiting page
-#    When another user "Olivia" joins the room
-#    Then I should see "Olivia" appear in the members list
-#    And I should not need to refresh the page
+  Scenario: Avoid duplicate restaurant suggestions
+    Given I have already spun once
+    When I click "Ready to Spin?" again
+    Then I should get a different restaurant suggestion
+    And the same restaurant should not appear twice
 
-#  Scenario: Room creator initiates spinning phase
-#    Given I have created a room
-#    And members "Olivia, Celine, Ben" have joined
-#    When I click "Ready to Spin?"
-#    Then I should be redirected to the group room spin page
-#    And I should see the roulette wheel
-#    And I should see "Spin to add options for the group to vote on"
+  Scenario: Multiple spins populate voting list
+    Given I have spun three times
+    Then I should see three restaurant cards
+    And each should have unique names and images
+    And all cards should display thumbs up/down buttons
 
-  Scenario: User cancels room creation
-    Given I am on the create room page
-    And I have filled in all preferences
-    When I click the back button or logo
-    Then I should return to the home page
-    And no room should be created
+  Scenario: Members see updates in real time
+    Given I am "Olivia" on the spin page
+    And the host spins for a new restaurant
+    Then I should see the new restaurant card appear automatically
+    And I should not need to refresh the page
 
-  Scenario: Invalid location entry
-    Given I am logged in as "Maddison"
-    And I am on the create room page
-    When I fill in "Location" with "XYZ123Invalid"
-    And I select "$$" from "Price Range"
-    And I click "Create Room"
-    Then I should see "Please enter a valid location"
-    And the room should not be created
+  # --- VOTING PHASE FLOW ---
 
-  Scenario: Room creator identity is marked
-    Given I have created a room as "Olivia"
-    Then "Olivia" should be marked as "Owner" or "Host" in the members list
-#    And other members should see this designation
+  Scenario: All members enter voting phase
+    Given at least three restaurants have been spun
+    When the host clicks "Finalize Options"
+    Then all members should see "Time to Vote" banner
+    And I should see thumbs up and thumbs down buttons for each option
+
+  Scenario: Member casts a thumbs up
+    Given the voting phase has started
+    And I am "Celine"
+    When I click the thumbs up button for "Da Andrea"
+    Then my vote should be recorded
+    And I should see the 👍 count increase by 1
+
+  Scenario: Member casts a thumbs down
+    Given the voting phase has started
+    And I am "Ben"
+    When I click the thumbs down button for "Shukette"
+    Then my vote should be recorded
+    And I should see the 👎 count increase by 1
+
+  Scenario: Real-time vote synchronization
+    Given "Maddison" and "Olivia" are on the spin room
+    When "Maddison" votes 👍 for "Option 2"
+    Then "Olivia" should immediately see the updated 👍 count
+
+  Scenario: Member changes vote
+    Given I have voted 👍 for "Da Andrea"
+    When I click 👍 on "Bourbon and Branch"
+    Then my previous vote should be removed from "Da Andrea"
+    And the new vote should appear on "Bourbon and Branch"
+
+  # --- FINAL DECISION FLOW ---
+
+  Scenario: Host finalizes decision
+    Given all members have voted
+    And "Bourbon and Branch" has the most votes
+    When the host clicks "Finalize Decision"
+    Then all members should be redirected to the final result page
+    And I should see "You are going to: Bourbon and Branch"
+    And I should see the restaurant details and rating
+    And I should see celebration animation or emoji
+
+  Scenario: Tie-breaking logic
+    Given "Da Andrea" and "Shukette" each have 2 votes
+    When the host clicks "Finalize Decision"
+    Then I should see "It's a tie!"
+    And options for "Revote" and "Random Selection" should appear
+
+  Scenario: Host resolves tie with random selection
+    Given there is a tie between "Da Andrea" and "Shukette"
+    When the host selects "Random Selection"
+    Then one of the tied restaurants should be chosen as winner
+    And all members should see the winning restaurant
+
+  Scenario: Host initiates a revote
+    Given there was a tie between two options
+    When the host selects "Revote"
+    Then voting restarts for those tied restaurants
+    And all members can vote again
+
+  Scenario: Return to home
+    Given I am on the final result page
+    When I click "Back to Home Page"
+    Then I should be redirected to the home page

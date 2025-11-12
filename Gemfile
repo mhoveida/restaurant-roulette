@@ -73,3 +73,7 @@ group :development do
   # Preview emails in development [https://github.com/ryanb/letter_opener]
   gem "letter_opener"
 end
+
+group :test do
+  gem 'database_cleaner-active_record'
+end
