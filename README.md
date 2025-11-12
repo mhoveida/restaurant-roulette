@@ -51,7 +51,13 @@ Follow these steps to set up your development environment.
     git checkout proj-iter1
     ```
 
-4.  **Install Ruby Dependencies**
+4.  **Add Rails Master Key**
+    The app requires a master key for credentials. Run the following command to create it:
+    ```sh
+    echo "f558c8c582db2a805b2c06eec2edc9f0" > config/master.key
+    ```
+
+5.  **Install Ruby Dependencies**
     Use Bundler to install all the necessary gems specified in the `Gemfile`:
     Make sure you're using 2.7.2 version of bundler, and 3.3.9 version of ruby.
     ```sh
