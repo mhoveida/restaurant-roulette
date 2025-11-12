@@ -199,4 +199,26 @@ Feature: User Authentication
     Then after successful Google authentication
     And I should be redirected to the home page
 
+  @google
+  Scenario: User signs in with Google for the first time (new account)
+    Given no account exists linked to Google UID "99999"
+    And OmniAuth mock returns user info with name "John Doe" and email "newuser@example.com"
+    When I authenticate with Google
+    Then a new user record should be created with email "newuser@example.com"
+    And I should be redirected to the home page
+    And I should see "John Doe" in the profile
+
+  @google
+  Scenario: Google authentication fails because user cannot be persisted
+    Given OmniAuth mock returns invalid user data (missing email)
+    When I authenticate with Google
+    Then I should be redirected to the sign up page
+
+  @google
+  Scenario: Google authentication fails at provider level
+    Given OmniAuth is set to return :invalid_credentials
+    When I authenticate with Google
+    Then I should be redirected to the home page
+    And I should see "Authentication failed"
+
 
