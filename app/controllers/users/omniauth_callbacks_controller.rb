@@ -11,6 +11,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     Rails.logger.debug "OmniAuth Params:"
     Rails.logger.debug request.env['omniauth.params'].inspect
     Rails.logger.debug "=" * 80
+
+    Rails.logger.info("[DEBUG] OmniAuth raw info: #{request.env['omniauth.auth'].inspect}")
+    Rails.logger.info("[DEBUG] OmniAuth credentials: #{request.env['omniauth.auth']&.dig('credentials').inspect}")
     
     @user = User.from_omniauth(request.env['omniauth.auth'])
 

@@ -24,13 +24,6 @@ module RestaurantRoulette
     config.load_defaults 8.0
 
     # Force OmniAuth middleware to mount (fixes Devise passthru issue)
-    config.middleware.use OmniAuth::Builder do
-      provider :google_oauth2,
-               ENV["GOOGLE_CLIENT_ID"],
-               ENV["GOOGLE_CLIENT_SECRET"],
-               scope: "email,profile",
-               prompt: "select_account"
-    end
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.

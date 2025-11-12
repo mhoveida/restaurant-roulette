@@ -548,7 +548,7 @@ DEPENDENCIES
   jbuilder
   kamal
   letter_opener
-  omniauth
+  omniauth (~> 2.1)
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
   pg (~> 1.1)

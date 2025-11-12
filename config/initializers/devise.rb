@@ -302,10 +302,28 @@ Devise.setup do |config|
     {
       scope: 'userinfo.email,userinfo.profile',
       prompt: 'select_account',
+      redirect_uri: 'http://localhost:3000/users/auth/google_oauth2/callback',
+      access_type: "offline",
       provider_ignores_state: true,
       skip_jwt: true,
       verify_iss: false
     }
+  
+  Rails.logger.debug "[DEBUG] Loading Devise OmniAuth config..."
+
+  OmniAuth.config.logger = Rails.logger
+
+  OmniAuth.config.on_failure = proc { |env|
+    message = env['omniauth.error']&.message
+    strategy = env['omniauth.strategy']&.name
+    Rails.logger.error "[OMNIAUTH FAILURE] Strategy=#{strategy} Message=#{message}"
+    Rails.logger.error "[OMNIAUTH FAILURE] Full error: #{env['omniauth.error'].inspect}"
+    Rails.logger.error "[OMNIAUTH FAILURE] Params: #{env['omniauth.params'].inspect}"
+    OmniAuth::FailureEndpoint.new(env).redirect_to_failure
+  }
+
+Rails.logger.debug "[DEBUG] OmniAuth Google provider successfully registered!"
+
 
   # ==> Hotwire/Turbo configuration
   # When using Devise with Hotwire/Turbo, the http status for error responses
