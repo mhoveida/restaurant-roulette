@@ -68,7 +68,7 @@ group :development, :test do
   gem "rails-controller-testing"
   gem "shoulda-matchers"
 
-  gem 'dotenv-rails', groups: [:development, :test]
+  gem 'dotenv-rails'
 end
 
 group :development do

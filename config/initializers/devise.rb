@@ -300,8 +300,9 @@ Devise.setup do |config|
     ENV["GOOGLE_CLIENT_ID"], 
     ENV["GOOGLE_CLIENT_SECRET"],
     {
-      scope: 'email,profile',
+      scope: 'userinfo.email,userinfo.profile',
       prompt: 'select_account',
+      provider_ignores_state: true,
       skip_jwt: true,
       verify_iss: false
     }
