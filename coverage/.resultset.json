@@ -539,7 +539,6 @@
         "lines": [
           1,
           1,
-          null,
           1,
           null,
           null,
@@ -600,7 +599,7 @@
         "branches": {}
       }
     },
-    "timestamp": 1762967874
+    "timestamp": 1762968795
   },
   "Cucumber Features": {
     "coverage": {
@@ -1738,7 +1737,6 @@
         "lines": [
           0,
           0,
-          null,
           0,
           null,
           null,
@@ -1782,6 +1780,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1762967935
+    "timestamp": 1762968866
   }
 }
