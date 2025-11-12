@@ -163,6 +163,8 @@ export default class extends Controller {
 
       if (data.success && data.restaurant) {
         this.displayResult(data.restaurant)
+      } else if (data.error === "no_new_restaurants") {
+        alert("All matching restaurants have already been suggested!");
       } else {
         alert("No restaurants found matching your criteria")
       }

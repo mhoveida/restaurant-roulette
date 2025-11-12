@@ -112,10 +112,34 @@ class RoomsController < ApplicationController
 
   def spin
     @room = Room.find(params[:id])
-    restaurant = @room.spin_restaurant
+
+    # Fetch previously spun restaurant IDs (avoid duplicates)
+    seen_ids = Array(@room.spin_results).map { |r| r["id"].to_s }
+
+    # Try spinning up to 10 times to find a new restaurant
+    max_attempts = 10
+    restaurant = nil
+
+    max_attempts.times do
+      candidate = RestaurantService.new.random_restaurant(
+        location: @room.location,
+        categories: @room.categories,
+        price: @room.price
+      )
+
+      # Skip if none found or already seen
+      next if candidate.nil? || seen_ids.include?(candidate["id"].to_s)
+      restaurant = candidate
+      break
+    end
 
     if restaurant
-      # Broadcast the result to all members in the room via ActionCable
+      # Append to spin_results array and persist
+      @room.spin_results ||= []
+      @room.spin_results << restaurant
+      @room.save
+
+      # Broadcast the result to everyone in the room via ActionCable
       ActionCable.server.broadcast("room_#{@room.id}", {
         type: "spin_result",
         restaurant: restaurant
@@ -123,7 +147,12 @@ class RoomsController < ApplicationController
 
       render json: { success: true, restaurant: restaurant }
     else
-      render json: { success: false, message: "No restaurants found" }, status: :unprocessable_entity
+      render json: {
+        success: false,
+        error: "no_new_restaurants",
+        message: "All matching restaurants have already been suggested!"
+      }, status: :ok
     end
   end
+
 end
