@@ -48,7 +48,7 @@ Follow these steps to set up your development environment.
 
 3.  **Checkout the correct branch**
     ```sh
-    git checkout proj-iter1
+    git checkout main
     ```
 
 4.  **Add Rails Master Key**
