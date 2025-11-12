@@ -4,7 +4,8 @@ class VotesController < ApplicationController
   def create
     @room = Room.find(params[:room_id])
 
-    @vote = @room.votes.find_or_initialize_by(
+    @vote = Vote.find_or_initialize_by(
+      room_id: @room.id,
       restaurant_id: vote_params[:restaurant_id],
       voter_name: vote_params[:voter_name]
     )

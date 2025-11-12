@@ -11,7 +11,11 @@ Rails.application.routes.draw do
   post "rooms/:id/join_as_guest", to: "rooms#join_as_guest"
 
   resources :rooms, only: [:show, :create] do
-    post :spin, on: :member
+    member do
+      get :group_spin, to: "rooms#spin_room"
+      post :start_spin
+      post :spin
+    end
     resources :votes, only: [:create]
   end
   

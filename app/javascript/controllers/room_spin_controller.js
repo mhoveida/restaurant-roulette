@@ -42,6 +42,11 @@ export default class extends Controller {
   }
 
   handleBroadcast(data) {
+    if (data.type === "start_spin" && data.url) {
+      // Redirect everyone (except maybe host, who’s already redirected)
+      console.log("url:", data.url);
+      window.location.href = data.url;
+    }
     if (data.type === "spin_result" && data.restaurant) {
       this.displayResult(data.restaurant)
 

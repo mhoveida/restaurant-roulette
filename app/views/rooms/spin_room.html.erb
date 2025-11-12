@@ -1,0 +1,71 @@
+<% turbo_exempts_page_from_cache %>
+<div class="room-container" data-controller="room-spin" data-room-id="<%= @room.id %>">
+  <p style="color: gold; text-align:center;">
+    You are voting as: <%= @current_member_name %>
+  </p>
+  <h1>Group Spin</h1>
+  <!-- Wheel Section -->
+  <div class="preference-section wheel-container">
+    <h2>Ready to Spin?</h2>
+    <p class="subtitle">Click the button below to spin the wheel and discover your restaurant</p>
+
+    <div class="wheel-section">
+      <canvas data-room-spin-target="wheel" class="roulette-wheel"></canvas>
+    </div>
+
+    <button class="button button-primary" data-room-spin-target="spinButton" data-action="click->room-spin#readyToSpin">
+      ✨ Ready to Spin?
+    </button>
+  </div>
+
+  <!-- Group Voting Section -->
+  <div
+    data-controller="room-vote"
+    data-room-id="<%= @room.id %>"
+    data-voter-name="<%= @current_member_name %>"
+  >
+    <h2 style="margin-top: 2rem;">Group Voting</h2>
+    <p class="subtitle">Vote for your favorite restaurants!</p>
+
+    <div data-room-vote-target="list">
+      <% if @room.spin_results.present? %>
+        <% @room.spin_results.each do |restaurant| %>
+          <div class="restaurant-card" data-restaurant-id="<%= restaurant["id"] %>">
+            <div class="rc-body">
+              <% if restaurant["image_url"].present? %>
+                <img class="rc-img" src="<%= restaurant["image_url"] %>" alt="<%= restaurant["name"] %>">
+              <% end %>
+              <div class="rc-meta">
+                <div class="rc-name"><%= restaurant["name"] %></div>
+                <div class="rc-sub"><%= [restaurant["price"], restaurant["rating"]].compact.join(" • ") %></div>
+              </div>
+            </div>
+            <div class="rc-actions">
+              <button data-action="click->room-vote#vote"
+                      data-restaurant-id="<%= restaurant["id"] %>"
+                      data-value="up">👍</button>
+              <button data-action="click->room-vote#vote"
+                      data-restaurant-id="<%= restaurant["id"] %>"
+                      data-value="down">👎</button>
+              <span class="count-up"></span>
+              <span class="count-down"></span>
+            </div>
+          </div>
+        <% end %>
+      <% else %>
+        <p style="color: gray;">No restaurants spun yet. Click "Ready to Spin" above!</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Result Modal -->
+  <div class="result-overlay" data-room-spin-target="resultModal" style="display: none;">
+    <div class="result-modal">
+      <button class="close-button" data-action="click->room-spin#closeResult">×</button>
+      <div class="result-header">
+        <h3>Your Restaurant</h3>
+      </div>
+      <div class="restaurant-result" data-room-spin-target="resultContent"></div>
+    </div>
+  </div>
+</div>

@@ -167,8 +167,18 @@ Given /other users have joined: "([^"]*)"/ do |members_str|
 end
 
 Given /members "([^"]*)" have joined/ do |members|
-  # This would require WebSocket/real-time communication
-  pending
+  # Simulate multiple members joining the room
+  @room ||= Room.last || create(:room, code: "8865", owner_name: "Maddison")
+
+  member_names = members.split(",").map(&:strip)
+  member_names.each do |name|
+    @room.add_guest_member(name)
+  end
+
+  # Extract only member names from stored data
+  stored_names = Array(@room.reload.members).map { |m| m["name"] }
+
+  expect(stored_names).to include(*member_names)
 end
 
 Then /members should be listed in order of joining/ do

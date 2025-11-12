@@ -31,7 +31,7 @@ export default class extends Controller {
   }
 
   updateVoteCounts(counts) {
-    // console.log("📊 Live vote counts:", counts);
+    console.log("📊 Live vote counts:", counts);
 
     for (const [key, value] of Object.entries(counts)) {
       const [restaurantId, voteType] = key.split(",");
@@ -89,7 +89,7 @@ export default class extends Controller {
       const data = await response.json();
 
       if (data.success) {
-        // console.log(`✅ ${voterName} voted ${value} on ${restaurantId}`);
+        console.log(`✅ ${voterName} voted ${value} on ${restaurantId}`);
         button.classList.add("voted");
         restaurantCard.classList.add(
           value === "up" ? "voted-up" : "voted-down"

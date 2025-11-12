@@ -11,7 +11,7 @@ Feature: Group Room Spinning and Voting
 
   Scenario: Room owner initiates spinning phase
     Given I am on the room waiting page
-    When I click "Ready to Spin?"
+    When I click "Start Spin"
     Then I should be redirected to the group spin page
     And I should see the roulette wheel
     And I should see "Share this code with your friends"

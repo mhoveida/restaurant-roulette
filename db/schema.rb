@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_10_204909) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_12_182459) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -75,6 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_10_204909) do
     t.datetime "updated_at", null: false
     t.string "value", null: false
     t.string "voter_name", null: false
+    t.index ["restaurant_id", "voter_name", "room_id"], name: "index_votes_on_restaurant_voter_room_unique", unique: true
     t.index ["room_id", "restaurant_id", "voter_name"], name: "index_votes_on_room_id_and_restaurant_id_and_voter_name", unique: true
     t.index ["room_id"], name: "index_votes_on_room_id"
   end

@@ -1,5 +1,9 @@
 class RoomsController < ApplicationController
   def new
+    # ⚡ Clear any previous guest name when starting fresh
+    session.delete(:guest_name)
+    session.delete(:joined_at)
+    
     @owner_name = current_user&.first_name || ""
     @location = ""
     @price = ""
@@ -155,4 +159,27 @@ class RoomsController < ApplicationController
     end
   end
 
+  def spin_room
+    @room = Room.find(params[:id])
+    @current_member_name =
+      if current_user
+        current_user.first_name
+      elsif session[:guest_name].present?
+        session[:guest_name]
+      else
+        @room.owner_name
+      end
+  end
+
+  def start_spin
+    @room = Room.find(params[:id])
+
+    # Broadcast to all members in this room that the host started spinning
+    ActionCable.server.broadcast("room_#{@room.id}", {
+      type: "start_spin",
+      url: group_spin_room_path(@room)
+    })
+
+    redirect_to group_spin_room_path(@room)
+  end
 end
