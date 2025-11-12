@@ -19,10 +19,27 @@ require 'bundler/setup'
 
 require 'factory_bot_rails'
 require 'cucumber/rails'
-
 require 'capybara/rspec'
 require 'capybara/rspec/matchers'
 require 'rspec/expectations'
+
+OmniAuth.config.test_mode = true
+
+# Add a default mock that can be overridden in step definitions
+OmniAuth.config.add_mock(:google_oauth2, {
+  provider: 'google_oauth2',
+  uid: '123545',
+  info: {
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'User'
+  },
+  credentials: {
+    token: 'mock_token',
+    refresh_token: 'mock_refresh_token'
+  }
+})
+
 
 World(Capybara::RSpecMatchers)
 World(RSpec::Matchers)
