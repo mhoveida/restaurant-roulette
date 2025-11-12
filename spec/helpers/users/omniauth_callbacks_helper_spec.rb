@@ -8,4 +8,3 @@ RSpec.describe Users::OmniauthCallbacksHelper, type: :helper do
     end
   end
 end
-

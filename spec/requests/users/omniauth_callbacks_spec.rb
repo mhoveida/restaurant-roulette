@@ -31,4 +31,3 @@ RSpec.describe "Users::OmniauthCallbacks", type: :request do
     end
   end
 end
-

@@ -295,27 +295,27 @@ Devise.setup do |config|
   # When using OmniAuth, Devise cannot automatically set OmniAuth path,
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
-  config.omniauth_path_prefix = '/users/auth'
-  config.omniauth :google_oauth2, 
-    Rails.application.credentials.dig(:google_oauth2, :client_id), 
+  config.omniauth_path_prefix = "/users/auth"
+  config.omniauth :google_oauth2,
+    Rails.application.credentials.dig(:google_oauth2, :client_id),
     Rails.application.credentials.dig(:google_oauth2, :client_secret),
     {
-      scope: 'userinfo.email,userinfo.profile',
-      prompt: 'select_account',
-      redirect_uri: 'http://localhost:3000/users/auth/google_oauth2/callback',
+      scope: "userinfo.email,userinfo.profile",
+      prompt: "select_account",
+      redirect_uri: "http://localhost:3000/users/auth/google_oauth2/callback",
       access_type: "offline",
       provider_ignores_state: true,
       skip_jwt: true,
       verify_iss: false
     }
-  
+
   Rails.logger.debug "[DEBUG] Loading Devise OmniAuth config..."
 
   OmniAuth.config.logger = Rails.logger
 
   OmniAuth.config.on_failure = proc { |env|
-    message = env['omniauth.error']&.message
-    strategy = env['omniauth.strategy']&.name
+    message = env["omniauth.error"]&.message
+    strategy = env["omniauth.strategy"]&.name
     Rails.logger.error "[OMNIAUTH FAILURE] Strategy=#{strategy} Message=#{message}"
     Rails.logger.error "[OMNIAUTH FAILURE] Full error: #{env['omniauth.error'].inspect}"
     Rails.logger.error "[OMNIAUTH FAILURE] Params: #{env['omniauth.params'].inspect}"
