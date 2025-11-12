@@ -207,41 +207,60 @@ Then('the password should be hidden') do
   expect(password_field[:type]).to eq('password')
 end
 
-# OAuth - all pending for now
-Then('I should be redirected to Facebook authentication') do
-  skip('Facebook OAuth integration not yet implemented')
+# OAuth - Google
+
+# Enable OmniAuth test mode for mocking
+Before('@google') do
+  OmniAuth.config.test_mode = true
 end
 
-Then('I should be redirected to Google authentication') do
-  skip('Google OAuth integration not yet implemented')
+After('@google') do
+  OmniAuth.config.mock_auth[:google_oauth2] = nil
+  OmniAuth.config.test_mode = false
 end
 
-Then('after successful Facebook authentication') do
-  skip('Facebook OAuth integration not yet implemented')
-end
-
-Then('after successful Google authentication') do
-  skip('Google OAuth integration not yet implemented')
-end
-
-When('I cancel the Google authentication') do
-  skip('Google OAuth cancellation not yet implemented')
-end
-
-When('I authenticate with Google account {string}') do |email|
-  skip('Google OAuth authentication not yet implemented')
-end
-
-When('Facebook authentication fails') do
-  skip('Facebook OAuth error handling not yet implemented')
-end
-
+# Create a user linked to a Google account
 Given('an account exists linked to Google account {string}') do |email|
-  pending('Google OAuth account linking not yet implemented')
+  User.create!(
+    email: email,
+    first_name: 'Test',
+    last_name: 'User',
+    password: 'TestPassword123',
+    password_confirmation: 'TestPassword123',
+    confirmed_at: Time.current
+  )
 end
 
+# Mock a successful Google OAuth login
+When('I authenticate with Google account {string}') do |email|
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
+    provider: 'google_oauth2',
+    uid: '123545',
+    info: {
+      email: email,
+      first_name: 'Test',
+      last_name: 'User'
+    },
+    credentials: {
+      token: 'mock_token',
+      refresh_token: 'mock_refresh_token',
+      expires_at: Time.now + 1.week
+    }
+  )
+end
+
+# Verify successful Google authentication
+Then('after successful Google authentication') do
+  using_wait_time 5 do
+    expect(page).to have_current_path(root_path)
+  end
+end
+
+# Verify user is redirected back to login after cancel/failure
 Then('I should be returned to the login page') do
-  expect(page).to have_current_path(new_user_session_path)
+  using_wait_time 5 do
+    expect(page).to have_current_path(new_user_session_path)
+  end
 end
 
 # Other

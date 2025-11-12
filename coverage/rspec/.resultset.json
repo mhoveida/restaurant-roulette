@@ -1,31 +1,37 @@
 {
   "RSpec": {
     "coverage": {
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/application_helper.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/application_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/home_helper.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/home_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/rooms_helper.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/rooms_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/static_pages_helper.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/static_pages_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/room_channel.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/users/omniauth_callbacks_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/channels/room_channel.rb": {
         "lines": [
           1,
           1,
@@ -39,7 +45,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/application_cable/channel.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/channels/application_cable/channel.rb": {
         "lines": [
           1,
           1,
@@ -47,7 +53,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/rooms_controller.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/rooms_controller.rb": {
         "lines": [
           1,
           1,
@@ -165,7 +171,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/application_controller.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/application_controller.rb": {
         "lines": [
           1,
           null,
@@ -180,7 +186,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
         "lines": [
           null,
           1,
@@ -212,7 +218,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/registrations_controller.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/registrations_controller.rb": {
         "lines": [
           1,
           1,
@@ -251,7 +257,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
         "lines": [
           1,
           1,
@@ -268,7 +274,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/restaurant.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/restaurant.rb": {
         "lines": [
           null,
           null,
@@ -304,14 +310,14 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/application_record.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/application_record.rb": {
         "lines": [
           1,
           1,
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/room.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/room.rb": {
         "lines": [
           1,
           null,
@@ -391,12 +397,13 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/user.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/user.rb": {
         "lines": [
           1,
           null,
           null,
           1,
+          null,
           null,
           null,
           null,
@@ -415,6 +422,17 @@
           2,
           null,
           null,
+          null,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
           1,
           null,
           1,
@@ -424,7 +442,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/services/restaurant_service.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/services/restaurant_service.rb": {
         "lines": [
           null,
           null,
@@ -517,7 +535,7 @@
           null
         ]
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/application_cable/connection.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/channels/application_cable/connection.rb": {
         "lines": [
           0,
           0,
@@ -526,7 +544,7 @@
         ],
         "branches": {}
       },
-      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/static_pages_controller.rb": {
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/static_pages_controller.rb": {
         "lines": [
           0,
           0,
@@ -534,8 +552,55 @@
           0
         ],
         "branches": {}
+      },
+      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/omniauth_callbacks_controller.rb": {
+        "lines": [
+          0,
+          0,
+          null,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0
+        ],
+        "branches": {}
       }
     },
-    "timestamp": 1762899813
+    "timestamp": 1762964427
   }
 }
