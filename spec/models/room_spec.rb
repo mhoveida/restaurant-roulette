@@ -69,7 +69,7 @@ RSpec.describe Room, type: :model do
     end
 
     it "is valid with all valid price formats" do
-      ["$", "$$", "$$$", "$$$$"].each do |price|
+      [ "$", "$$", "$$$", "$$$$" ].each do |price|
         room = Room.new(owner_name: "John", location: "NYC", price: price, code: "1234")
         expect(room).to be_valid
       end
@@ -194,8 +194,8 @@ RSpec.describe Room, type: :model do
 
   describe 'categories serialization' do
     it "stores categories as JSON" do
-      room = FactoryBot.create(:room, categories: ["Italian", "French"])
-      expect(room.reload.categories).to eq(["Italian", "French"])
+      room = FactoryBot.create(:room, categories: [ "Italian", "French" ])
+      expect(room.reload.categories).to eq([ "Italian", "French" ])
     end
 
     it "handles empty categories array" do
