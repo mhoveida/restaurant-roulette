@@ -120,20 +120,13 @@ This project includes both **RSpec** and **Cucumber** tests.
     ```bash
     bundle exec rspec
     ```
-
+     * Open `coverage/rspec/index.html` in your browser to view the detailed report.
+     
 2.  **Run Cucumber (Feature/Acceptance Tests):**
     ```bash
     bundle exec cucumber
     ```
+    * Open `coverage/cucumber/index.html` in your browser to view the detailed report.
 
-3.  **Run Both & Check Coverage:**
-    * Run all tests (RSpec and Cucumber) and generate a coverage report:
-      ```bash
-      # Run Cucumber first to generate the report
-      bundle exec cucumber
-      # Then run RSpec
-      bundle exec rspec
-      ```
-    * Open `coverage/index.html` in your browser to view the detailed report.
 
-Note: If you get a 422 error when trying to log in, make sure you have added the rails master key (Installation Step 4).
+**Note: If you get a 422 error when trying to log in, make sure you have added the rails master key (Installation Step 4).**
