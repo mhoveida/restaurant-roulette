@@ -112,8 +112,8 @@ Given /^I have created a room successfully$/ do
 end
 
 Given /I have created a room with code "([^"]*)"/ do |code|
-  room = create(:room, code: code)
-  visit room_path(room)
+  @room = create(:room, code: code)
+  visit room_path(@room)
 end
 
 Given /^I have created a room$/ do
@@ -278,4 +278,8 @@ Then /^I should see "([^"]*)" in the members list$/ do |member_name|
   within(".members-list") do
     expect(page).to have_content(member_name)
   end
+end
+
+Then /^I should remain on the join as guest page$/ do
+  expect(current_path).to include("join_as_guest")
 end
