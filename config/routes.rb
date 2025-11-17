@@ -1,30 +1,51 @@
 Rails.application.routes.draw do
-  get "rooms/new"
-  devise_for :users, controllers: { sessions: "users/sessions", registrations: "users/registrations", omniauth_callbacks: "users/omniauth_callbacks" }
-  get "home/index"
-  # root to: "home#index"
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  devise_for :users, controllers: { 
+    sessions: "users/sessions", 
+    registrations: "users/registrations", 
+    omniauth_callbacks: "users/omniauth_callbacks" 
+  }
+
   root "static_pages#home"
+  
+  # Solo Spin
   get "solo_spin", to: "solo_spin#show", as: "solo_spin"
+  
+  # Room Creation
   get "create_room", to: "rooms#new", as: "create_room"
+  
+  # Guest Joining
   get "rooms/:id/join_as_guest", to: "rooms#join_as_guest", as: "join_as_guest"
   post "rooms/:id/join_as_guest", to: "rooms#join_as_guest"
 
+  # Room Resources
   resources :rooms, only: [ :show, :create ] do
-    post :spin, on: :member
+    member do
+      # Spinning Phase
+      post :start_spinning
+      post :spin
+      
+      # Reveal Phase
+      post :reveal
+      
+      # Voting Phase
+      post :vote
+      post :confirm_vote 
+
+      # Additional Rounds
+      post :new_round
+      
+      # Real-time Status
+      get :status
+    end
   end
+  
+  # Join Room
   post "join_room", to: "rooms#join"
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
+  # Health Check
   get "up" => "rails/health#show", as: :rails_health_check
 
-  # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-  # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-  # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-  # Defines the root path route ("/")
-  # root "posts#index"
+  # Devise OAuth Failure
   devise_scope :user do
     get "/users/auth/failure", to: "users/omniauth_callbacks#failure"
   end

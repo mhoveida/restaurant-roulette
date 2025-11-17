@@ -1,9 +1,26 @@
 <% content_for :body_class, "bg-black" %>
 
-<div class="room-container" data-controller="room-spin" data-room-id="<%= @room.id %>">
+<div class="room-container" data-controller="room-spin" 
+     data-room-id="<%= @room.id %>" 
+     data-room-state="<%= @room.state %>"
+     data-current-member-id="<%= @current_member_id %>"
+     data-is-room-creator="<%= @is_room_creator %>">
+  
   <!-- Page Header -->
   <div class="room-page-header">
-    <h1 class="room-page-title">Room Waiting Area</h1>
+    <h1 class="room-page-title">
+      <% if @room.waiting? %>
+        Room Waiting Area
+      <% elsif @room.spinning? %>
+        Taking Turns Spinning! 🎰
+      <% elsif @room.revealing? %>
+        Get Ready for the Big Reveal! 🎉
+      <% elsif @room.voting? %>
+        Time to Vote! 🗳️
+      <% elsif @room.complete? %>
+        Winner Selected! 🎊
+      <% end %>
+    </h1>
   </div>
 
   <!-- Room Code Section -->
@@ -25,20 +42,6 @@
     <div id="copyConfirmation" class="copy-confirmation" style="display:none; margin-top: 1rem; text-align: center; color: #22c55e; font-weight: 600;">
       Room code <%= @room.code %> copied to clipboard!
     </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const btn = document.getElementById("copyCodeBtn");
-        const confirmation = document.getElementById("copyConfirmation");
-        const code = "<%= @room.code %>";
-
-        btn.addEventListener("click", () => {
-          navigator.clipboard.writeText(code);
-          confirmation.style.display = "block";
-          setTimeout(() => (confirmation.style.display = "none"), 2500);
-        });
-      });
-    </script>
   </div>
 
   <!-- Group Preferences Section -->
@@ -48,7 +51,7 @@
 
     <div class="preference-grid">
       <div class="preference-item">
-        <div class="preference-label">Host</div>
+        <div class="preference-label">Room Creator</div>
         <div class="preference-value"><%= @room.owner_name %></div>
       </div>
 
@@ -80,19 +83,22 @@
   <!-- Members Section -->
   <div class="preference-section">
     <h2>Members in Room:</h2>
-    <p class="subtitle"><%= @room.get_all_members.length %> <%= "person" if @room.get_all_members.length == 1 %><%= "people" if @room.get_all_members.length > 1 %> joined</p>
+    <p class="subtitle">
+      <%= @room.get_all_members.length %> 
+      <%= @room.get_all_members.length == 1 ? "person" : "people" %> joined
+    </p>
 
-    <div class="members-list">
+    <div class="members-list" data-room-spin-target="membersList">
       <% @room.get_all_members.each do |member| %>
-        <div class="member-item">
+        <div class="member-item" data-member-id="<%= member[:id] %>">
           <div class="member-avatar">👤</div>
           <div class="member-info">
             <div class="member-name"><%= member[:name] %></div>
             <div class="member-type <%= member[:type] == 'host' ? 'host-badge' : 'guest-badge' %>">
               <% if member[:type] == 'host' %>
-                <span>🏠 Host</span>
+                <span>🏠 Room Creator</span>
               <% else %>
-                <span>👥 Guest</span>
+                <span>👥 Member</span>
               <% end %>
             </div>
           </div>
@@ -101,28 +107,567 @@
     </div>
   </div>
 
-  <!-- Wheel Section -->
-  <div class="preference-section wheel-container">
-    <h2>Ready to Spin?</h2>
-    <p class="subtitle">Click the button below to spin the wheel and discover your restaurant</p>
-
-    <div class="wheel-section">
-      <canvas data-room-spin-target="wheel" class="roulette-wheel"></canvas>
-    </div>
-
-    <button class="button button-primary" data-room-spin-target="spinButton" data-action="click->room-spin#readyToSpin">
-      ✨ Ready to Spin?
-    </button>
-  </div>
-
-  <!-- Result Modal -->
-  <div class="result-overlay" data-room-spin-target="resultModal" style="display: none;">
-    <div class="result-modal">
-      <button class="close-button" data-action="click->room-spin#closeResult">×</button>
-      <div class="result-header">
-        <h3>Your Restaurant</h3>
+  <!-- ========================================== -->
+  <!-- WAITING PHASE -->
+  <!-- ========================================== -->
+  <% if @room.waiting? %>
+    <div class="preference-section" data-room-spin-target="waitingSection">
+      <!-- SHOW MEMBER COUNT -->
+      <div style="background-color: rgba(254, 228, 64, 0.1); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center;">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👥</div>
+        <h3 style="color: var(--color-yellow); font-size: 1.3rem; margin: 0;">
+          <%= @room.get_all_members.length %> 
+          <%= @room.get_all_members.length == 1 ? "person" : "people" %> in room
+        </h3>
+        <p style="color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem; font-size: 0.9rem;">
+          Everyone in the room will get to spin!
+        </p>
       </div>
-      <div class="restaurant-result" data-room-spin-target="resultContent"></div>
+      
+      <h2>Ready to Start?</h2>
+      <p class="subtitle">
+        <strong>Everyone will take turns spinning!</strong><br>
+        Your choices stay secret until everyone finishes spinning.<br>
+        Then vote together on all options!
+      </p>
+
+      <% if @is_room_creator %>
+        <button class="button button-primary" 
+                data-action="click->room-spin#startSpinning"
+                style="width: 100%; margin-top: 1rem;">
+          ✨ Start Spinning!
+        </button>
+        <p style="text-align: center; margin-top: 1rem; color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+          💡 Wait for everyone to join before starting!
+        </p>
+      <% else %>
+        <div style="text-align: center; padding: 2rem; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;">
+          <p style="font-size: 1.1rem; color: rgba(255, 255, 255, 0.8);">
+            ⏳ Waiting for <%= @room.owner_name %> to start spinning...
+          </p>
+        </div>
+      <% end %>
     </div>
-  </div>
+  <% end %>
+
+  <!-- ========================================== -->
+  <!-- SPINNING PHASE -->
+  <!-- ========================================== -->
+  <% if @room.spinning? %>
+    <div class="preference-section" data-room-spin-target="spinningSection">
+      <h2>Take Turns Spinning! 🎰</h2>
+      
+      <!-- CHECK IF USER IS IN TURN ORDER -->
+      <% if @room.turn_order.include?(@current_member_id) %>
+        <!-- User is in turn order - show normal spinning UI -->
+        <p class="subtitle">
+          <strong>Your spins are secret until everyone finishes!</strong><br>
+          Options will be revealed when everyone completes their spin.
+        </p>
+
+        <!-- Turn Order Display -->
+        <div class="turn-order-section" style="margin: 2rem 0;">
+          <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--color-yellow);">Turn Order:</h3>
+          <div class="turn-order-list">
+            <% @room.turn_order.each_with_index do |member_id, index| %>
+              <% member = @room.get_member_by_id(member_id) %>
+              <% is_current = index == @room.current_turn_index %>
+              <% is_done = index < @room.current_turn_index %>
+              
+              <div class="turn-item <%= 'current-turn' if is_current %> <%= 'completed-turn' if is_done %>"
+                  data-turn-index="<%= index %>"
+                  data-member-id="<%= member_id %>">
+                <div class="turn-number">
+                  <% if is_done %>
+                    ✓
+                  <% elsif is_current %>
+                    ⭐
+                  <% else %>
+                    <%= index + 1 %>
+                  <% end %>
+                </div>
+                <div class="turn-member-name"><%= member[:name] %></div>
+                <div class="turn-status">
+                  <% if is_done %>
+                    <span class="status-done">Done</span>
+                  <% elsif is_current %>
+                    <span class="status-current">Current</span>
+                  <% else %>
+                    <span class="status-waiting">Waiting</span>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Spin Section -->
+        <div class="wheel-section">
+          <% if @room.is_my_turn?(@current_member_id) %>
+            <div class="your-turn-banner" style="background-color: rgba(254, 228, 64, 0.15); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: center;">
+              <h3 style="color: var(--color-yellow); font-size: 1.5rem; margin: 0;">
+                ⭐ Your Turn to Spin! ⭐
+              </h3>
+              <p style="margin: 0.5rem 0 0 0; color: rgba(255, 255, 255, 0.8);">
+                Click the wheel to add your secret option!
+              </p>
+            </div>
+            
+            <canvas data-room-spin-target="wheel" class="roulette-wheel" 
+                    data-action="click->room-spin#spin"></canvas>
+            
+            <button class="button button-primary" 
+                    data-action="click->room-spin#spin"
+                    style="width: 100%; max-width: 300px; margin: 2rem auto; display: block;">
+              🎰 Spin the Wheel!
+            </button>
+          <% else %>
+            <% current_member = @room.current_turn_member %>
+            <div class="waiting-for-turn" style="text-align: center; padding: 3rem 2rem; background-color: rgba(255, 255, 255, 0.03); border-radius: 8px;">
+              <div class="spinning-animation" style="font-size: 4rem; margin-bottom: 1rem;">🎰</div>
+              <h3 style="color: var(--color-yellow); font-size: 1.3rem; margin-bottom: 0.5rem;">
+                <%= current_member[:name] %> is spinning...
+              </h3>
+              <p style="color: rgba(255, 255, 255, 0.7); margin: 0;">
+                ⏳ Waiting for your turn...
+              </p>
+              <% my_turn_index = @room.turn_order.index(@current_member_id) %>
+              <% if my_turn_index && my_turn_index > @room.current_turn_index %>
+                <p style="color: rgba(255, 255, 255, 0.5); margin-top: 1rem; font-size: 0.9rem;">
+                  You're <%= my_turn_index - @room.current_turn_index %> 
+                  <%= my_turn_index - @room.current_turn_index == 1 ? "turn" : "turns" %> away!
+                </p>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+        
+      <% else %>
+        <!-- LATE JOINER MESSAGE - User joined after spinning started -->
+        <div style="text-align: center; padding: 3rem 2rem; background-color: rgba(254, 228, 64, 0.1); border-radius: 12px; border: 2px solid rgba(254, 228, 64, 0.3); margin: 2rem 0;">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">⏰</div>
+          <h3 style="color: var(--color-yellow); font-size: 1.5rem; margin-bottom: 1rem;">
+            You joined during an active round
+          </h3>
+          <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+            The current round is already in progress.<br>
+            You'll be able to participate in the next round!<br>
+            Sit tight and watch the action unfold! 🍿
+          </p>
+          
+          <!-- Show who's currently spinning -->
+          <% current_member = @room.current_turn_member %>
+          <div style="background-color: rgba(0, 0, 0, 0.3); padding: 1rem; border-radius: 8px; margin-top: 1rem;">
+            <p style="color: rgba(255, 255, 255, 0.7); margin: 0;">
+              Currently spinning: <strong style="color: var(--color-yellow);"><%= current_member[:name] %></strong>
+            </p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+    <!-- ========================================== -->
+    <!-- REVEALING PHASE -->
+    <!-- ========================================== -->
+    <% if @room.revealing? %>
+      <div class="preference-section reveal-section" data-room-spin-target="revealSection">
+        <h2>Round <%= @room.current_round %> Complete! 🎉</h2>
+        
+        <!-- CHECK IF USER WAS IN THIS ROUND -->
+        <% if @room.turn_order.include?(@current_member_id) %>
+          <!-- Normal revealing UI for participants -->
+          <p class="subtitle" style="font-size: 1.2rem; color: var(--color-yellow);">
+            Get ready for the big reveal!
+          </p>
+          
+          <div class="countdown-container" style="text-align: center; padding: 3rem; background-color: rgba(254, 228, 64, 0.1); border-radius: 12px; margin: 2rem 0;">
+            <div class="countdown-number" data-room-spin-target="countdown" style="font-size: 5rem; color: var(--color-yellow); font-weight: 700;">
+              3
+            </div>
+            <p style="font-size: 1.2rem; color: rgba(255, 255, 255, 0.8); margin-top: 1rem;">
+              Revealing options...
+            </p>
+          </div>
+
+          <% if @is_room_creator %>
+            <button class="button button-primary" 
+                    data-action="click->room-spin#reveal"
+                    style="width: 100%; max-width: 400px; margin: 0 auto; display: block;">
+              🎊 Reveal All Options!
+            </button>
+          <% end %>
+          
+        <% else %>
+          <!-- LATE JOINER MESSAGE -->
+          <div style="text-align: center; padding: 3rem 2rem; background-color: rgba(254, 228, 64, 0.1); border-radius: 12px; border: 2px solid rgba(254, 228, 64, 0.3); margin: 2rem 0;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">⏰</div>
+            <h3 style="color: var(--color-yellow); font-size: 1.5rem; margin-bottom: 1rem;">
+              You joined after this round finished
+            </h3>
+            <p style="color: rgba(255, 255, 255, 0.8); font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem;">
+              The spinning is complete and options are being revealed.<br>
+              You'll be able to vote and participate in the next round!<br>
+              Hang tight! 🍿
+            </p>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+  <!-- ========================================== -->
+  <!-- VOTING PHASE -->
+  <!-- ========================================== -->
+  <% if @room.voting? %>
+    <div class="preference-section voting-section" data-room-spin-target="votingSection">
+      <h2>Time to Vote! 🗳️</h2>
+      
+      <!-- EVERYONE CAN VOTE -->
+      <% if @current_member_id.present? %>
+        <!-- Normal voting UI for participants -->
+        <p class="subtitle">
+          Vote for your group's favorite restaurant!<br>
+          <small style="color: rgba(255, 255, 255, 0.6);">Options are anonymous - vote based on what you like!</small>
+        </p>
+
+        <div class="voting-board" style="margin-top: 2rem;">
+          <% @room.get_options_for_voting.each_with_index do |spin, index| %>
+            <% restaurant = spin["restaurant"] %>
+            <% vote_counts = @room.get_vote_counts %>
+            <% votes = vote_counts[index] || 0 %>
+            
+            <div class="voting-option <%= 'selected-vote' if @room.get_member_vote(@current_member_id) == index %> <%= 'vote-confirmed' if @room.has_confirmed_vote?(@current_member_id) %>" 
+              data-option-index="<%= index %>"
+              data-action="click->room-spin#voteForOption"
+              style="background-color: rgba(255, 255, 255, 0.03); border: 2px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; cursor: pointer; transition: all 0.3s ease; position: relative;">
+              
+              <div style="display: flex; gap: 1.5rem; align-items: start;">
+                <!-- Restaurant Image -->
+                <% if restaurant["image_url"].present? %>
+                  <div style="flex-shrink: 0; width: 120px; height: 120px; border-radius: 8px; overflow: hidden;">
+                    <img src="<%= restaurant["image_url"] %>" alt="<%= restaurant["name"] %>" 
+                        style="width: 100%; height: 100%; object-fit: cover;">
+                  </div>
+                <% end %>
+
+                <!-- Restaurant Info -->
+                <div style="flex: 1;">
+                  <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
+                    <h3 style="color: var(--color-text); font-size: 1.3rem; margin: 0;">
+                      <%= restaurant["name"] %>
+                    </h3>
+                    <div class="vote-count" style="background-color: rgba(254, 228, 64, 0.2); color: var(--color-yellow); padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700; font-size: 1.1rem;">
+                      <%= votes %> <%= votes == 1 ? "vote" : "votes" %>
+                    </div>
+                  </div>
+
+                  <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem;">
+                    <div class="rating" style="color: var(--color-yellow); font-size: 0.9rem;">
+                      ⭐ <%= restaurant["rating"] %>
+                    </div>
+                    <div class="price" style="color: var(--color-yellow); font-weight: 600;">
+                      <%= restaurant["price"] %>
+                    </div>
+                  </div>
+
+                  <% if restaurant["categories"].present? %>
+                    <div class="cuisine-tags" style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                      <% restaurant["categories"].first(3).each do |category| %>
+                        <span style="background-color: rgba(254, 228, 64, 0.1); color: var(--color-yellow); padding: 0.3rem 0.7rem; border-radius: 4px; font-size: 0.85rem;">
+                          <%= category %>
+                        </span>
+                      <% end %>
+                    </div>
+                  <% end %>
+
+                  <div class="address" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
+                    📍 <%= restaurant["address"] %>
+                  </div>
+
+                  <!-- Feedback Buttons -->
+                  <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button class="feedback-button" 
+                            data-action="click->room-spin#thumbsUp"
+                            data-option-index="<%= index %>"
+                            style="background-color: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                      👍 Like
+                    </button>
+                    <button class="feedback-button" 
+                            data-action="click->room-spin#thumbsDown"
+                            data-option-index="<%= index %>"
+                            style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
+                      👎 Dislike
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %> <!-- closes each_with_index loop -->
+        </div> <!-- closes voting-board div -->
+      <% end %> <!-- closes @current_member_id.present? if -->
+    </div> <!-- closes voting-section div -->
+  <% end %> <!-- closes @room.voting? if -->
+  <!-- ========================================== -->
+  <!-- COMPLETE PHASE (Winner Display) -->
+  <!-- ========================================== -->
+  <% if @room.complete? && @room.winner.present? %>
+    <div class="preference-section winner-section">
+      <div style="text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(254, 228, 64, 0.2) 0%, rgba(254, 228, 64, 0.05) 100%); border-radius: 16px;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🎊 🎉 🎊</div>
+        <h2 style="color: var(--color-yellow); font-size: 2rem; margin: 0 0 0.5rem 0;">
+          You're going to:
+        </h2>
+        
+        <% restaurant = @room.winner["restaurant"] %>
+        <h1 style="font-size: 2.5rem; color: var(--color-text); margin: 1rem 0;">
+          <%= restaurant["name"] %>
+        </h1>
+
+        <div style="background-color: rgba(254, 228, 64, 0.15); padding: 1rem; border-radius: 8px; margin: 1.5rem 0; display: inline-block;">
+          <p style="margin: 0; font-size: 1.1rem; color: var(--color-yellow);">
+            ⭐ Added by: <strong><%= @room.winner["member_name"] %></strong>
+          </p>
+          <p style="margin: 0.5rem 0 0 0; color: rgba(255, 255, 255, 0.8);">
+            Winning votes: <%= @room.winner["votes"] %> out of <%= @room.winner["total_votes"] %>
+          </p>
+        </div>
+
+        <!-- Restaurant Details -->
+        <div style="margin-top: 2rem; text-align: left; background-color: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 12px;">
+          <% if restaurant["image_url"].present? %>
+            <div style="width: 100%; max-width: 500px; margin: 0 auto 1.5rem auto; border-radius: 12px; overflow: hidden;">
+              <img src="<%= restaurant["image_url"] %>" alt="<%= restaurant["name"] %>" 
+                   style="width: 100%; height: auto;">
+            </div>
+          <% end %>
+
+          <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; justify-content: center;">
+            <div style="color: var(--color-yellow); font-size: 1.2rem;">
+              ⭐ <%= restaurant["rating"] %>
+            </div>
+            <div style="color: var(--color-yellow); font-weight: 700; font-size: 1.2rem;">
+              <%= restaurant["price"] %>
+            </div>
+          </div>
+
+          <% if restaurant["categories"].present? %>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
+              <% restaurant["categories"].each do |category| %>
+                <span style="background-color: rgba(254, 228, 64, 0.15); color: var(--color-yellow); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600;">
+                  <%= category %>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div style="text-align: center; color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; line-height: 1.6;">
+            <p style="margin: 0;">📍 <%= restaurant["address"] %></p>
+            <% if restaurant["phone"].present? %>
+              <p style="margin: 0.5rem 0;">📞 <%= restaurant["phone"] %></p>
+            <% end %>
+            <% if restaurant["is_open_now"] %>
+              <p style="margin: 0.5rem 0; color: #22c55e;">
+                ✅ Open Now
+                <% if restaurant["closing_time"].present? %>
+                  • Closes at <%= restaurant["closing_time"] %>
+                <% end %>
+              </p>
+            <% else %>
+              <p style="margin: 0.5rem 0; color: #ef4444;">❌ Currently Closed</p>
+            <% end %>
+          </div>
+
+          <div class="result-actions" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+            <a href="https://www.google.com/maps/search/?api=1&query=<%= ERB::Util.url_encode(restaurant["address"]) %>" 
+              target="_blank"
+              class="button" 
+              style="display: inline-block; text-decoration: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600;">
+              🗺️ View on Map
+            </a>
+            <button class="button share-button" 
+                    onclick="shareWinner(event, this)"
+                    data-restaurant-name="<%= restaurant["name"] %>"
+                    data-restaurant-address="<%= restaurant["address"] %>"
+                    data-restaurant-rating="<%= restaurant["rating"] %>"
+                    data-restaurant-price="<%= restaurant["price"] %>"
+                    style="display: inline-block; background: linear-gradient(135deg, var(--color-yellow) 0%, #ffd700 100%); color: #000; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; border: none; cursor: pointer;">
+              Share
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>
+
+<script>
+  // Copy code functionality
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("copyCodeBtn");
+    const confirmation = document.getElementById("copyConfirmation");
+    const code = "<%= @room.code %>";
+
+    if (btn) {
+      btn.addEventListener("click", () => {
+        navigator.clipboard.writeText(code);
+        confirmation.style.display = "block";
+        setTimeout(() => (confirmation.style.display = "none"), 2500);
+      });
+    }
+  });
+  
+  // Share winner result (matches solo spin exactly)
+  function shareWinner(event, button) {
+    const name = button.dataset.restaurantName;
+    const address = button.dataset.restaurantAddress;
+    const rating = button.dataset.restaurantRating;
+    const price = button.dataset.restaurantPrice;
+    
+    const shareText = `Check out ${name}! 📍 ${address}`;
+
+    if (navigator.share) {
+      // Use native share API if available (mobile)
+      navigator.share({
+        title: "Restaurant Roulette",
+        text: shareText
+      }).catch(err => console.log("Error sharing:", err))
+    } else {
+      // Fallback: Copy to clipboard (desktop)
+      navigator.clipboard.writeText(shareText).then(() => {
+        // Show success feedback
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '✓ Copied!';
+        button.style.background = '#22c55e';
+        
+        setTimeout(() => {
+          button.innerHTML = originalHTML;
+          button.style.background = 'linear-gradient(135deg, var(--color-yellow) 0%, #ffd700 100%)';
+        }, 2000);
+      }).catch(err => {
+        console.log("Error copying to clipboard:", err)
+        alert("Shared text copied to clipboard!")
+      })
+    }
+  }
+</script>
+
+<style>
+  /* Turn Order Styles */
+  .turn-order-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .turn-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .turn-item.current-turn {
+    background-color: rgba(254, 228, 64, 0.15);
+    border-color: var(--color-yellow);
+    box-shadow: 0 0 20px rgba(254, 228, 64, 0.3);
+  }
+
+  .turn-item.completed-turn {
+    opacity: 0.6;
+  }
+
+  .turn-number {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .turn-item.current-turn .turn-number {
+    background-color: var(--color-yellow);
+    color: #000;
+  }
+
+  .turn-member-name {
+    flex: 1;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .turn-status {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .status-done {
+    color: #22c55e;
+  }
+
+  .status-current {
+    color: var(--color-yellow);
+  }
+
+  .status-waiting {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Voting Option Hover */
+  .voting-option:hover {
+    border-color: var(--color-yellow) !important;
+    background-color: rgba(254, 228, 64, 0.05) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(254, 228, 64, 0.2);
+  }
+
+  .voting-option.voted {
+    border-color: var(--color-yellow) !important;
+    background-color: rgba(254, 228, 64, 0.1) !important;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .voting-option > div {
+      flex-direction: column;
+    }
+
+    .voting-option img {
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+
+  .voting-option.selected-vote {
+    border-color: var(--color-yellow) !important;
+    background-color: rgba(254, 228, 64, 0.15) !important;
+    box-shadow: 0 0 20px rgba(254, 228, 64, 0.3) !important;
+  }
+
+  .voting-option.vote-confirmed {
+    pointer-events: none !important;
+    opacity: 0.7 !important;
+  }
+
+  .voting-option.vote-confirmed::after {
+    content: '✅ Confirmed';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #22c55e;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    z-index: 10;
+  }
+</style>

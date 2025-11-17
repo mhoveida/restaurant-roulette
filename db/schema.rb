@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_13_004453) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_17_190955) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,15 +36,24 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_13_004453) do
   end
 
   create_table "rooms", force: :cascade do |t|
-    t.text "categories"
+    t.jsonb "categories", default: []
     t.string "code"
     t.datetime "created_at", null: false
+    t.integer "current_round", default: 0
+    t.integer "current_turn_index", default: 0
     t.string "location"
-    t.json "members", default: []
+    t.jsonb "members", default: []
     t.string "owner_name"
     t.string "price"
+    t.jsonb "reveal_order", default: []
     t.json "spin_result"
+    t.jsonb "spins", default: []
+    t.integer "state", default: 0, null: false
+    t.jsonb "turn_order", default: []
     t.datetime "updated_at", null: false
+    t.jsonb "votes", default: {}
+    t.jsonb "winner"
+    t.index ["state"], name: "index_rooms_on_state"
   end
 
   create_table "solid_cable_messages", force: :cascade do |t|

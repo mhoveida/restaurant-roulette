@@ -1,34 +1,76 @@
 <% content_for :body_class, "bg-black" %>
 
-<div class="join-room-container">
-  <div class="join-room-header">
-    <h1>Join this room</h1>
+<div class="create-room-container">
+  <h1 class="create-room-title">Join Room: <%= @room.code %></h1>
+  
+  <div style="text-align: center; margin-bottom: 2rem;">
+    <p style="color: rgba(255, 255, 255, 0.7); font-size: 1.1rem;">
+      Created by <strong style="color: var(--color-yellow);"><%= @room.owner_name %></strong>
+    </p>
   </div>
 
-  <!-- Room Code Display -->
-  <div class="join-room-info">
-    <p class="room-code-text">Room Code: <span class="code-value"><%= @room.code %></span></p>
-  </div>
+  <% if flash[:alert].present? %>
+    <div class="alert alert-danger">
+      <%= flash[:alert] %>
+    </div>
+  <% end %>
 
-  <!-- Guest Join Form -->
-  <div class="join-form-container">
-    <h2>Enter Your Name</h2>
+  <!-- Preference Form Section -->
+  <div class="preference-section">
+    <h2>Set your preferences</h2>
+    <p class="subtitle">Fill in your details to join the group</p>
 
-    <% if flash[:alert] %>
-      <div class="alert alert-error">
-        <%= flash[:alert] %>
-      </div>
-    <% end %>
-
-    <%= form_with url: join_as_guest_path(@room), method: :post, local: true do |f| %>
+    <%= form_with(url: join_as_guest_path(@room), method: :post, local: true) do |form| %>
       <div class="form-group">
-        <%= f.label :guest_name, "Your Name" %>
-        <%= f.text_field :guest_name, placeholder: "Enter your name", class: "input-field" %>
+        <label for="guest_name">Name</label>
+        <%= form.text_field :guest_name,
+            placeholder: "Your name",
+            required: true %>
       </div>
 
-      <div class="form-actions">
-        <%= f.submit "Join Room", class: "button submit-btn" %>
+      <div class="form-group">
+        <label for="location">Location</label>
+        <div class="location-input-wrapper">
+          <%= form.text_field :location,
+              placeholder: "Enter location",
+              required: true %>
+          <span class="location-icon">📍</span>
+        </div>
+        <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
+          Owner's location: <strong style="color: var(--color-yellow);"><%= @room.location %></strong>
+        </small>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="price">Price Range</label>
+          <%= form.select :price,
+              [['Select price range', ''], ['$', '$'], ['$$', '$$'], ['$$$', '$$$'], ['$$$$', '$$$$']],
+              {},
+              { required: true } %>
+          <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
+            Owner's price: <strong style="color: var(--color-yellow);"><%= @room.price %></strong>
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label for="categories">Cuisine Preferences</label>
+          <%= form.text_field :categories,
+              placeholder: "e.g., Italian, American",
+              required: true %>
+          <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
+            Owner's cuisines: <strong style="color: var(--color-yellow);"><%= @room.categories.join(", ") %></strong>
+          </small>
+        </div>
+      </div>
+
+      <div class="button-group">
+        <%= form.submit "Join Room", class: "button create-button" %>
       </div>
     <% end %>
+    
+    <div style="text-align: center; margin-top: 1.5rem;">
+      <%= link_to "← Back to Home", root_path, style: "color: rgba(255, 255, 255, 0.6); text-decoration: none;" %>
+    </div>
   </div>
 </div>
