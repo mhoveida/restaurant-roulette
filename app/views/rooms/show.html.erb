@@ -212,15 +212,24 @@
                 Click the wheel to add your secret option!
               </p>
             </div>
-            
-            <canvas data-room-spin-target="wheel" class="roulette-wheel" 
-                    data-action="click->room-spin#spin"></canvas>
-            
-            <button class="button button-primary" 
-                    data-action="click->room-spin#spin"
-                    style="width: 100%; max-width: 300px; margin: 2rem auto; display: block;">
-              🎰 Spin the Wheel!
-            </button>
+
+            <!-- Wheel Container -->
+            <div class="wheel-section">
+              <canvas data-room-spin-target="wheel" 
+                      id="roulette-wheel"
+                      width="300" 
+                      height="300"></canvas>
+            </div>
+
+            <!-- Button Below Wheel -->
+            <div class="button-group">
+              <button class="button button-primary spin-button" 
+                      data-action="click->room-spin#spin"
+                      style="width: 100%; max-width: 300px; margin: 0 auto; display: block;">
+                🎰 Spin the Wheel!
+              </button>
+            </div>
+
           <% else %>
             <% current_member = @room.current_turn_member %>
             <div class="waiting-for-turn" style="text-align: center; padding: 3rem 2rem; background-color: rgba(255, 255, 255, 0.03); border-radius: 8px;">
@@ -670,4 +679,55 @@
     font-size: 0.9rem;
     z-index: 10;
   }
+/* Wheel Section Styles (matching solo spin) */
+.wheel-section {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+  padding: 1rem 0;
+}
+
+#roulette-wheel {
+  border: 3px solid var(--color-yellow);
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+#roulette-wheel:hover {
+  box-shadow: 0 0 20px rgba(254, 228, 64, 0.5);
+}
+
+#roulette-wheel.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Button Group (matching solo spin) */
+.button-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+}
+
+.spin-button {
+  font-size: 1.1rem;
+  padding: 15px;
+}
+
+.spin-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 </style>
