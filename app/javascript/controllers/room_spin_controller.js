@@ -576,4 +576,48 @@ updateVoteCountsFromStatus(statusData) {
   getCsrfToken() {
     return document.querySelector('meta[name="csrf-token"]')?.content || ''
   }
+
+
+  copyRoomCode() {
+    const code = this.element.dataset.roomCode
+    navigator.clipboard.writeText(code).then(() => {
+      const confirmation = document.getElementById("copyConfirmation")
+      if (confirmation) {
+        confirmation.style.display = "block"
+        setTimeout(() => {
+          confirmation.style.display = "none"
+        }, 2500)
+      }
+    })
+  }
+
+  // Share winner result
+  shareWinner(event) {
+    const button = event.currentTarget
+    const name = button.dataset.restaurantName
+    const address = button.dataset.restaurantAddress
+
+    const shareText = `Check out ${name}! 📍 ${address}`
+
+    if (navigator.share) {
+      navigator.share({
+        title: "Restaurant Roulette",
+        text: shareText
+      }).catch(err => console.log("Error sharing:", err))
+    } else {
+      navigator.clipboard.writeText(shareText).then(() => {
+        const originalHTML = button.innerHTML
+        button.innerHTML = '✓ Copied!'
+        button.style.background = '#22c55e'
+        
+        setTimeout(() => {
+          button.innerHTML = originalHTML
+          button.style.background = ''
+        }, 2000)
+      }).catch(err => {
+        console.log("Error copying:", err)
+        alert("Copied to clipboard!")
+      })
+    }
+  }
 }

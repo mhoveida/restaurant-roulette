@@ -1,4 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+/*
+ *= require rooms
+ *= require_self
+ */
 
 :root {
   --color-background: #2B2B2B;

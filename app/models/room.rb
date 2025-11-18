@@ -271,9 +271,22 @@ class Room < ApplicationRecord
       vote_counts[option_index] += 1
     end
     
-    # Find winning option
-    winning_index = vote_counts.max_by { |_, count| count }&.first
-    return false if winning_index.nil?
+    return false if vote_counts.empty?
+    
+    # Find the highest vote count
+    max_votes = vote_counts.values.max
+    
+    # Get all options with the highest vote count (handles ties)
+    tied_options = vote_counts.select { |_, count| count == max_votes }.keys
+    
+    # If there's a tie, randomly select one
+    if tied_options.length > 1
+      winning_index = tied_options.sample  # Random selection
+      tie_broken = true
+    else
+      winning_index = tied_options.first
+      tie_broken = false
+    end
     
     # Get the options in the same order they were shown to voters
     voting_options = get_options_for_voting
@@ -285,6 +298,8 @@ class Room < ApplicationRecord
       "member_name" => winning_spin["member_name"],
       "votes" => vote_counts[winning_index],
       "total_votes" => vote_counts.values.sum,
+      "tie_broken" => tie_broken,
+      "tied_count" => tied_options.length,
       "selected_at" => Time.current.to_s
     }
     
