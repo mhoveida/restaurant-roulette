@@ -103,53 +103,56 @@ class Room < ApplicationRecord
   end
 
   def spin_for_member(member_id)
-    return { success: false, error: "Not in spinning phase" } unless spinning?
-    return { success: false, error: "Not your turn" } unless current_turn_member_id == member_id
+    return { success: false, error: "Not in spinning state" } unless spinning?
+    return { success: false, error: "Not your turn" } unless member_id == current_turn_member_id  # FIXED
     
-    # Get the member's preferences
-    member = get_member_by_id(member_id)
+    # Get member's preferences - handle owner separately
+    if member_id == "owner"
+      member_name = owner_name
+      member_location = location
+      member_price = price
+      member_categories = categories
+    else
+      member = members.find { |m| m["id"] == member_id }
+      return { success: false, error: "Member not found" } unless member
+      
+      member_name = member["name"]
+      member_location = member["location"] || location
+      member_price = member["price"] || price
+      member_categories = member["categories"] || categories
+    end
     
-    # Determine which preferences to use
-    member_location = member[:location] || location
-    member_price = member[:price] || price
-    member_categories = member[:categories] || categories
-    
-    # Find a restaurant matching the member's preferences
-    restaurant = find_random_restaurant(
+    # Find restaurant with fallback
+    result = find_random_restaurant(
       location: member_location,
-      price: member_price, 
+      price: member_price,
       categories: member_categories
     )
     
-    return { success: false, error: "No restaurants found" } unless restaurant
+    restaurant = result[:restaurant]
+    match_type = result[:match_type]
     
-    # Record the spin
-    self.spins ||= []
-    self.spins << {
+    if restaurant.nil?
+      return { success: false, error: "No restaurants found. Please try different preferences." }
+    end
+    
+    # Store the spin result with match_type
+    spin_result = {
       "member_id" => member_id,
-      "member_name" => member[:name],
-      "restaurant" => restaurant.as_json(except: [:created_at, :updated_at]),
+      "member_name" => member_name,
+      "restaurant" => restaurant.as_json,
+      "match_type" => match_type,
       "round" => current_round,
       "spun_at" => Time.current.to_s
     }
     
-    # Move to next turn
-    self.current_turn_index += 1
+    self.spins << spin_result
     
-    # Check if round is complete
-    round_complete = current_turn_index >= turn_order.length
-    
-    if round_complete
-      self.state = :revealing
-    end
+    # Move to next turn or reveal phase
+    advance_turn!
     
     save
-    
-    {
-      success: true,
-      restaurant: restaurant.as_json(except: [:created_at, :updated_at]),
-      round_complete: round_complete
-    }
+    { success: true, spin: spin_result }
   end
 
   def advance_turn!
@@ -263,7 +266,6 @@ class Room < ApplicationRecord
   def tally_votes_and_select_winner!
     return false unless voting?
     
-    # Count votes by option_index
     vote_counts = Hash.new(0)
     votes.each do |member_id, vote_data|
       next unless vote_data["confirmed"]
@@ -273,22 +275,17 @@ class Room < ApplicationRecord
     
     return false if vote_counts.empty?
     
-    # Find the highest vote count
     max_votes = vote_counts.values.max
-    
-    # Get all options with the highest vote count (handles ties)
     tied_options = vote_counts.select { |_, count| count == max_votes }.keys
     
-    # If there's a tie, randomly select one
     if tied_options.length > 1
-      winning_index = tied_options.sample  # Random selection
+      winning_index = tied_options.sample
       tie_broken = true
     else
       winning_index = tied_options.first
       tie_broken = false
     end
     
-    # Get the options in the same order they were shown to voters
     voting_options = get_options_for_voting
     winning_spin = voting_options[winning_index]
     
@@ -296,6 +293,7 @@ class Room < ApplicationRecord
       "restaurant" => winning_spin["restaurant"],
       "member_id" => winning_spin["member_id"],
       "member_name" => winning_spin["member_name"],
+      "match_type" => winning_spin["match_type"],  # Add this line!
       "votes" => vote_counts[winning_index],
       "total_votes" => vote_counts.values.sum,
       "tie_broken" => tie_broken,
@@ -391,19 +389,59 @@ class Room < ApplicationRecord
   end
 
   def find_random_restaurant(location:, price:, categories:)
+    # Try exact match first
+    result = search_restaurants(location: location, price: price, categories: categories)
+    return { restaurant: result, match_type: "exact" } if result
+    
+    # Fallback 1: Same location + price, any cuisine
+    result = search_restaurants(location: location, price: price, categories: [])
+    return { restaurant: result, match_type: "location_price" } if result
+    
+    # Fallback 2: Same location + cuisine, any price
+    result = search_restaurants(location: location, price: nil, categories: categories)
+    return { restaurant: result, match_type: "location_cuisine" } if result
+    
+    # Fallback 3: Same location only
+    result = search_restaurants(location: location, price: nil, categories: [])
+    return { restaurant: result, match_type: "location_only" } if result
+    
+    # Fallback 4: Same price + cuisine, any location
+    result = search_restaurants(location: nil, price: price, categories: categories)
+    return { restaurant: result, match_type: "price_cuisine" } if result
+    
+    # Fallback 5: Just cuisine anywhere
+    result = search_restaurants(location: nil, price: nil, categories: categories)
+    return { restaurant: result, match_type: "cuisine_only" } if result
+    
+    # Fallback 6: Just price anywhere
+    result = search_restaurants(location: nil, price: price, categories: [])
+    return { restaurant: result, match_type: "price_only" } if result
+    
+    # Last resort: Any restaurant
+    result = Restaurant.order("RANDOM()").first
+    return { restaurant: result, match_type: "random" } if result
+    
+    { restaurant: nil, match_type: "none" }
+  end
+
+  def search_restaurants(location:, price:, categories:)
     query = Restaurant.all
     
-    # Filter by price
+    if location.present?
+      query = query.where(
+        "LOWER(neighborhood) LIKE LOWER(?) OR LOWER(address) LIKE LOWER(?)",
+        "%#{location}%", "%#{location}%"
+      )
+    end
+    
     query = query.where(price: price) if price.present?
     
-    # Filter by categories (any match)
     if categories.present? && categories.any?
       category_conditions = categories.map { |cat| "categories LIKE ?" }
       category_values = categories.map { |cat| "%#{cat}%" }
       query = query.where(category_conditions.join(" OR "), *category_values)
     end
     
-    # Get random restaurant
     query.order("RANDOM()").first
   end
 end

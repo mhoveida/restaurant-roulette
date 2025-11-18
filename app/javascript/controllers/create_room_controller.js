@@ -1,134 +1,127 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="create-room"
 export default class extends Controller {
   static targets = [
     "ownerNameInput",
-    "locationInput",
+    "locationSelect",
     "priceSelect",
-    "cuisineInput",
-    "cuisineTags",
+    "cuisinesGrid",
+    "categoriesInput",
     "createButton",
-    "validationMessage",
-    "suggestions"
+    "validationMessage"
   ]
 
   connect() {
-    console.log('Create Room Controller Connected!')
-    this.updateCuisineTags()
+    this.selectedCuisines = []
+    this.fetchNeighborhoods()
+    this.fetchCuisines()
+  }
 
-    // Debug: Log all targets
-    console.log('Button element:', this.createButtonTarget)
-    console.log('Button has click handler?', this.createButtonTarget.onclick)
+  async fetchNeighborhoods() {
+    try {
+      const response = await fetch('/neighborhoods')
+      const neighborhoods = await response.json()
+      
+      // Populate the location dropdown
+      const select = this.locationSelectTarget
+      select.innerHTML = '<option value="">Select a neighborhood</option>'
+      
+      neighborhoods.forEach(neighborhood => {
+        const option = document.createElement('option')
+        option.value = neighborhood
+        option.textContent = neighborhood
+        select.appendChild(option)
+      })
+    } catch (error) {
+      console.error('Error fetching neighborhoods:', error)
+    }
+  }
+
+  async fetchCuisines() {
+    try {
+      const response = await fetch('/cuisines')
+      const cuisines = await response.json()
+      
+      // Create checkbox grid
+      const grid = this.cuisinesGridTarget
+      grid.innerHTML = cuisines.map(cuisine => `
+        <label class="cuisine-checkbox">
+          <input type="checkbox" value="${cuisine}" data-action="change->create-room#toggleCuisine">
+          <span class="cuisine-label">${cuisine}</span>
+        </label>
+      `).join('')
+    } catch (error) {
+      console.error('Error fetching cuisines:', error)
+      // Fallback cuisines - UPDATED to match simplified list
+      const fallbackCuisines = [
+        "American", "Chinese", "French", "Indian", "Italian",
+        "Japanese", "Korean", "Mediterranean", "Mexican", "Thai"
+      ]
+      const grid = this.cuisinesGridTarget
+      grid.innerHTML = fallbackCuisines.map(cuisine => `
+        <label class="cuisine-checkbox">
+          <input type="checkbox" value="${cuisine}" data-action="change->create-room#toggleCuisine">
+          <span class="cuisine-label">${cuisine}</span>
+        </label>
+      `).join('')
+    }
+  }
+
+  toggleCuisine(event) {
+    const checkbox = event.target
+    const cuisine = checkbox.value
+    
+    if (checkbox.checked) {
+      if (!this.selectedCuisines.includes(cuisine)) {
+        this.selectedCuisines.push(cuisine)
+      }
+    } else {
+      this.selectedCuisines = this.selectedCuisines.filter(c => c !== cuisine)
+    }
+    
+    // Update hidden input
+    this.categoriesInputTarget.value = this.selectedCuisines.join(',')
+    
+    // Visual feedback
+    checkbox.closest('.cuisine-checkbox').classList.toggle('selected', checkbox.checked)
   }
 
   validateAndCreate(e) {
-    console.log('validateAndCreate clicked!')
     e.preventDefault()
 
     if (!this.validateForm()) {
-      console.log('Validation failed, showing message')
       this.showValidationMessage()
       return
     }
 
-    console.log('Validation passed, submitting form')
     this.hideValidationMessage()
-    const form = e.target.closest("form")
+    const form = this.createButtonTarget.closest("form")
     form.submit()
   }
 
   validateForm() {
-    const ownerName = this.ownerNameInputTarget.value.trim()
-    const location = this.locationInputTarget.value.trim()
+    const name = this.ownerNameInputTarget.value.trim()
+    const location = this.locationSelectTarget.value
     const price = this.priceSelectTarget.value
+    const cuisines = this.selectedCuisines.length > 0
 
-    console.log('Create Room Validation:', { ownerName, location, price })
-    console.log('Valid?', !!(ownerName && location && price))
-
-    return ownerName && location && price
+    console.log('Validation:', { name, location, price, cuisines: this.selectedCuisines })
+    return name && location && price && cuisines
   }
 
   showValidationMessage() {
     this.validationMessageTarget.style.display = "block"
+    this.validationMessageTarget.textContent = "Please fill in all fields and select at least one cuisine"
   }
 
   hideValidationMessage() {
     this.validationMessageTarget.style.display = "none"
   }
 
-  onLocationChange() {
-    this.updateLocationSuggestions()
-  }
-
-  updateLocationSuggestions() {
-    const input = this.locationInputTarget.value.trim()
-    const suggestionsContainer = this.suggestionsTarget
-
-    if (!input) {
-      suggestionsContainer.style.display = "none"
-      return
+  onSubmit(e) {
+    if (!this.validateForm()) {
+      e.preventDefault()
+      this.showValidationMessage()
     }
-
-    const allSuggestions = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Miami"]
-    const filtered = allSuggestions.filter(s =>
-      s.toLowerCase().includes(input.toLowerCase())
-    )
-
-    if (filtered.length === 0) {
-      suggestionsContainer.style.display = "none"
-      return
-    }
-
-    suggestionsContainer.innerHTML = filtered.map(suggestion =>
-      `<div class="location-suggestion" data-location="${suggestion}">${suggestion}</div>`
-    ).join("")
-
-    suggestionsContainer.style.display = "block"
-
-    suggestionsContainer.querySelectorAll(".location-suggestion").forEach(el => {
-      el.addEventListener("click", (e) => {
-        this.locationInputTarget.value = e.target.dataset.location
-        suggestionsContainer.style.display = "none"
-      })
-    })
-  }
-
-  onCuisineChange() {
-    this.updateCuisineTags()
-  }
-
-  updateCuisineTags() {
-    const input = this.cuisineInputTarget.value
-    const tagsContainer = this.cuisineTagsTarget
-
-    if (!input.trim()) {
-      tagsContainer.innerHTML = ""
-      return
-    }
-
-    const cuisines = input.split(",").map(c => c.trim()).filter(c => c)
-    const tagsHtml = cuisines.map((cuisine) =>
-      `<span class="cuisine-tag">
-        ${cuisine}
-        <button type="button" class="remove-btn" data-cuisine="${cuisine}">×</button>
-      </span>`
-    ).join("")
-
-    tagsContainer.innerHTML = tagsHtml
-
-    tagsContainer.querySelectorAll(".remove-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault()
-        const cuisineToRemove = btn.dataset.cuisine
-        const updated = input
-          .split(",")
-          .map(c => c.trim())
-          .filter(c => c !== cuisineToRemove)
-          .join(", ")
-        this.cuisineInputTarget.value = updated
-        this.updateCuisineTags()
-      })
-    })
   }
 }

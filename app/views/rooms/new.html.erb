@@ -24,35 +24,35 @@
             data: { 'create-room-target': 'ownerNameInput' } %>
       </div>
 
+      <!-- Location Dropdown -->
       <div class="form-group">
-        <label for="location">Location</label>
-        <div class="location-input-wrapper">
-          <%= form.text_field :location,
-              value: @location,
-              placeholder: "Enter location",
-              data: { 'create-room-target': 'locationInput', 'action': 'input->create-room#onLocationChange' } %>
-          <span class="location-icon">📍</span>
-        </div>
-        <div class="location-suggestions" data-create-room-target="suggestions" style="display: none;"></div>
+        <label for="location">Neighborhood</label>
+        <%= form.select :location,
+            [],
+            { include_blank: "Select a neighborhood" },
+            { data: { 'create-room-target': 'locationSelect' }, class: 'neighborhood-select' } %>
+        <small style="color: rgba(255, 255, 255, 0.5); display: block; margin-top: 0.5rem; font-size: 0.85rem;">
+          📍 Choose where you want to eat
+        </small>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="price">Price Range</label>
-          <%= form.select :price,
-              [['Select price range', ''], ['$', '$'], ['$$', '$$'], ['$$$', '$$$'], ['$$$$', '$$$$']],
-              { selected: @price },
-              { data: { 'create-room-target': 'priceSelect' } } %>
-        </div>
+      <div class="form-group">
+        <label for="price">Price Range</label>
+        <%= form.select :price,
+            [['Select price range', ''], ['$', '$'], ['$$', '$$'], ['$$$', '$$$'], ['$$$$', '$$$$']],
+            { selected: @price },
+            { data: { 'create-room-target': 'priceSelect' } } %>
+      </div>
 
-        <div class="form-group">
-          <label for="categories">Cuisine Preferences (Optional)</label>
-          <%= form.text_field :categories,
-              value: @categories,
-              placeholder: "e.g., Italian, American",
-              data: { 'create-room-target': 'cuisineInput', 'action': 'input->create-room#onCuisineChange' } %>
-          <div class="cuisine-tags" data-create-room-target="cuisineTags"></div>
+      <!-- Cuisines Multi-Select -->
+      <div class="form-group">
+        <label>Cuisines <small style="color: rgba(255, 255, 255, 0.5);">(Select at least one)</small></label>
+        <div class="cuisines-grid" data-create-room-target="cuisinesGrid">
+          <!-- Will be populated by JavaScript -->
+          <div style="color: rgba(255, 255, 255, 0.5); padding: 1rem;">Loading cuisines...</div>
         </div>
+        <!-- Hidden field to store selected cuisines -->
+        <input type="hidden" name="categories" data-create-room-target="categoriesInput">
       </div>
 
       <div class="button-group">

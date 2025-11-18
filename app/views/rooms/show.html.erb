@@ -398,6 +398,27 @@
                   <div class="address" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
                     📍 <%= restaurant["address"] %>
                   </div>
+                  <!-- Match type indicator -->
+                  <% if spin["match_type"] && spin["match_type"] != "exact" %>
+                    <div style="color: rgba(255, 255, 255, 0.5); font-size: 0.8rem; margin-top: 0.5rem; font-style: italic;">
+                      <% case spin["match_type"] %>
+                      <% when "location_price" %>
+                        📍 Same area & price (different cuisine)
+                      <% when "location_cuisine" %>
+                        📍 Same area & cuisine (different price)
+                      <% when "location_only" %>
+                        📍 Same area only
+                      <% when "price_cuisine" %>
+                        🍽️ Same cuisine & price (different area)
+                      <% when "cuisine_only" %>
+                        🍽️ Same cuisine only
+                      <% when "price_only" %>
+                        💰 Same price only
+                      <% when "random" %>
+                        🎲 Random pick
+                      <% end %>
+                    </div>
+                  <% end %>
                 </div>
               </div>
             </div>
@@ -471,7 +492,6 @@
           <% end %>
           
           <!-- Winner Info -->
-          <!-- Winner Info -->
           <div style="background-color: rgba(254, 228, 64, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: center;">
             <p style="margin: 0; color: var(--color-yellow); font-size: 0.95rem;">
               Added by <strong><%= @room.winner["member_name"] %></strong> • 
@@ -482,6 +502,28 @@
                 </span>
               <% end %>
             </p>
+            
+            <!-- Match type for winner -->
+            <% if @room.winner["match_type"] && @room.winner["match_type"] != "exact" %>
+              <p style="margin: 0.75rem 0 0 0; color: rgba(255, 255, 255, 0.6); font-size: 0.85rem; font-style: italic;">
+                <% case @room.winner["match_type"] %>
+                <% when "location_price" %>
+                  📍 Matched area & price
+                <% when "location_cuisine" %>
+                  📍 Matched area & cuisine
+                <% when "location_only" %>
+                  📍 Matched area
+                <% when "price_cuisine" %>
+                  🍽️ Matched cuisine & price
+                <% when "cuisine_only" %>
+                  🍽️ Matched cuisine
+                <% when "price_only" %>
+                  💰 Matched price
+                <% when "random" %>
+                  🎲 Random selection
+                <% end %>
+              </p>
+            <% end %>
           </div>
         </div>
 

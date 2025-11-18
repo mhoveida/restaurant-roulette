@@ -2,12 +2,21 @@ class RoomsController < ApplicationController
   before_action :set_room, only: [:show, :join_as_guest, :start_spinning, :spin, :reveal, :vote, :confirm_vote, :status, :new_round]
   before_action :set_current_member, only: [:show, :spin, :vote, :confirm_vote]
 
+  def neighborhoods
+    neighborhoods = Restaurant.pluck(:neighborhood).uniq.compact.sort
+    render json: neighborhoods
+  end
 
   def new
     @owner_name = current_user&.first_name || ""
     @location = ""
     @price = ""
     @categories = ""
+  end
+
+  def cuisines
+    cuisines = Restaurant.pluck(:categories).flatten.uniq.compact.sort
+    render json: cuisines
   end
 
   def create
@@ -161,18 +170,18 @@ class RoomsController < ApplicationController
     result = @room.spin_for_member(member_id)
 
     if result[:success]
-      # Broadcast turn change (but NOT the restaurant result)
+      # Broadcast turn change
       broadcast_turn_update
       
-      # If round complete, broadcast reveal ready
-      if result[:round_complete]
+      # Check if we moved to revealing phase
+      if @room.revealing?
         broadcast_state_change("round_complete")
       end
       
       render json: {
         success: true,
-        restaurant: result[:restaurant],
-        round_complete: result[:round_complete],
+        spin: result[:spin],
+        round_complete: @room.revealing?,
         next_turn: @room.current_turn_member
       }
     else

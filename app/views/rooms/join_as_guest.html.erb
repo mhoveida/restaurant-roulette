@@ -1,6 +1,6 @@
 <% content_for :body_class, "bg-black" %>
 
-<div class="create-room-container">
+<div class="create-room-container" data-controller="create-room">
   <h1 class="create-room-title">Join Room: <%= @room.code %></h1>
   
   <div style="text-align: center; margin-bottom: 2rem;">
@@ -20,52 +20,56 @@
     <h2>Set your preferences</h2>
     <p class="subtitle">Fill in your details to join the group</p>
 
-    <%= form_with(url: join_as_guest_path(@room), method: :post, local: true) do |form| %>
+    <%= form_with(url: join_as_guest_path(@room), method: :post, local: true, data: { action: "submit->create-room#onSubmit" }) do |form| %>
       <div class="form-group">
         <label for="guest_name">Name</label>
         <%= form.text_field :guest_name,
             placeholder: "Your name",
-            required: true %>
+            required: true,
+            data: { 'create-room-target': 'ownerNameInput' } %>
       </div>
 
+      <!-- Location Dropdown -->
       <div class="form-group">
-        <label for="location">Location</label>
-        <div class="location-input-wrapper">
-          <%= form.text_field :location,
-              placeholder: "Enter location",
-              required: true %>
-          <span class="location-icon">📍</span>
-        </div>
+        <label for="location">Neighborhood</label>
+        <%= form.select :location,
+            [],
+            { include_blank: "Select a neighborhood" },
+            { data: { 'create-room-target': 'locationSelect' }, class: 'neighborhood-select' } %>
         <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
           Owner's location: <strong style="color: var(--color-yellow);"><%= @room.location %></strong>
         </small>
       </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label for="price">Price Range</label>
-          <%= form.select :price,
-              [['Select price range', ''], ['$', '$'], ['$$', '$$'], ['$$$', '$$$'], ['$$$$', '$$$$']],
-              {},
-              { required: true } %>
-          <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
-            Owner's price: <strong style="color: var(--color-yellow);"><%= @room.price %></strong>
-          </small>
-        </div>
+      <div class="form-group">
+        <label for="price">Price Range</label>
+        <%= form.select :price,
+            [['Select price range', ''], ['$', '$'], ['$$', '$$'], ['$$$', '$$$'], ['$$$$', '$$$$']],
+            {},
+            { data: { 'create-room-target': 'priceSelect' } } %>
+        <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
+          Owner's price: <strong style="color: var(--color-yellow);"><%= @room.price %></strong>
+        </small>
+      </div>
 
-        <div class="form-group">
-          <label for="categories">Cuisine Preferences</label>
-          <%= form.text_field :categories,
-              placeholder: "e.g., Italian, American",
-              required: true %>
-          <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
-            Owner's cuisines: <strong style="color: var(--color-yellow);"><%= @room.categories.join(", ") %></strong>
-          </small>
+      <!-- Cuisines Multi-Select -->
+      <div class="form-group">
+        <label>Cuisines <small style="color: rgba(255, 255, 255, 0.5);">(Select at least one)</small></label>
+        <div class="cuisines-grid" data-create-room-target="cuisinesGrid">
+          <div style="color: rgba(255, 255, 255, 0.5); padding: 1rem;">Loading cuisines...</div>
         </div>
+        <input type="hidden" name="categories" data-create-room-target="categoriesInput">
+        <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
+          Owner's cuisines: <strong style="color: var(--color-yellow);"><%= @room.categories.join(", ") %></strong>
+        </small>
       </div>
 
       <div class="button-group">
-        <%= form.submit "Join Room", class: "button create-button" %>
+        <%= form.submit "Join Room", class: "button create-button", data: { 'create-room-target': 'createButton', action: 'click->create-room#validateAndCreate' } %>
+      </div>
+
+      <div class="validation-message" data-create-room-target="validationMessage" style="display: none;">
+        Please fill in all required fields and select at least one cuisine
       </div>
     <% end %>
     

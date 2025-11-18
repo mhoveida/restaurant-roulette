@@ -45,6 +45,10 @@ Rails.application.routes.draw do
   # Health Check
   get "up" => "rails/health#show", as: :rails_health_check
 
+  get 'neighborhoods', to: 'rooms#neighborhoods'
+
+  get 'cuisines', to: 'rooms#cuisines'
+  
   # Devise OAuth Failure
   devise_scope :user do
     get "/users/auth/failure", to: "users/omniauth_callbacks#failure"

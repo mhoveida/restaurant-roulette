@@ -22,18 +22,23 @@ export default class extends Controller {
   connect() {
     console.log("Room spin controller connected")
     this.roomId = this.element.dataset.roomId
+    this.roomCode = this.element.dataset.roomCode  // ADD THIS
     this.currentMemberId = this.element.dataset.currentMemberId
     this.isRoomCreator = this.element.dataset.isRoomCreator === "true"
     this.myVote = null
+
+    console.log("Room data:", {
+      roomId: this.roomId,
+      roomCode: this.roomCode,
+      currentMemberId: this.currentMemberId,
+      isRoomCreator: this.isRoomCreator
+    })
 
     if (this.hasWheelTarget) {
       this.drawWheel()
     }
     
-    // Subscribe to room channel for real-time updates
     this.subscribeToRoom()
-    
-    // Poll for status updates (fallback if ActionCable not available)
     this.startStatusPolling()
   }
 
@@ -248,12 +253,10 @@ updateVoteCountsFromStatus(statusData) {
   async spin(event) {
     event.preventDefault()
     
-    // Disable button to prevent double spins
     const button = event.target
     button.disabled = true
 
     try {
-      // Show spinning animation
       if (this.hasWheelTarget) {
         this.wheelTarget.classList.add('spinning')
       }
@@ -267,29 +270,30 @@ updateVoteCountsFromStatus(statusData) {
       })
 
       const data = await response.json()
+      console.log("Spin response:", data)  // ADD THIS
 
       if (data.success) {
-        // Match solo spin duration: 2-3 seconds
         const spinDuration = 2000 + Math.random() * 1000
         
         setTimeout(() => {
           if (this.hasWheelTarget) {
             this.wheelTarget.classList.remove('spinning')
           }
-          
-          // Reload to show next turn or revealing phase
           window.location.reload()
         }, spinDuration)
       } else {
-        alert(data.error || "Could not spin")
+        // BETTER ERROR MESSAGE
+        alert(data.error || "Could not spin. Check console for details.")
+        console.error("Spin failed:", data)
         button.disabled = false
         if (this.hasWheelTarget) {
           this.wheelTarget.classList.remove('spinning')
         }
       }
     } catch (error) {
+      // BETTER ERROR MESSAGE
       console.error("Spin error:", error)
-      alert("An error occurred")
+      alert("An error occurred: " + error.message)
       button.disabled = false
       if (this.hasWheelTarget) {
         this.wheelTarget.classList.remove('spinning')
