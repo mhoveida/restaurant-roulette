@@ -269,66 +269,32 @@ updateVoteCountsFromStatus(statusData) {
       const data = await response.json()
 
       if (data.success) {
-        // Show result to spinner for 3 seconds
-        this.showMyResult(data.restaurant)
+        // Match solo spin duration: 2-3 seconds
+        const spinDuration = 2000 + Math.random() * 1000
         
         setTimeout(() => {
-          this.hideMyResult()
-          
-          if (data.round_complete) {
-            // Show round complete message
-            this.showRoundComplete()
-          } else {
-            // Refresh to show next person's turn
-            window.location.reload()
+          if (this.hasWheelTarget) {
+            this.wheelTarget.classList.remove('spinning')
           }
-        }, 3000)
+          
+          // Reload to show next turn or revealing phase
+          window.location.reload()
+        }, spinDuration)
       } else {
         alert(data.error || "Could not spin")
         button.disabled = false
+        if (this.hasWheelTarget) {
+          this.wheelTarget.classList.remove('spinning')
+        }
       }
     } catch (error) {
       console.error("Spin error:", error)
       alert("An error occurred")
       button.disabled = false
-    } finally {
       if (this.hasWheelTarget) {
         this.wheelTarget.classList.remove('spinning')
       }
     }
-  }
-
-  showMyResult(restaurant) {
-    // Show a temporary modal with their result
-    const modal = document.createElement('div')
-    modal.className = 'my-result-modal'
-    modal.innerHTML = `
-      <div class="my-result-content">
-        <h3 style="color: var(--color-yellow); margin-bottom: 1rem;">Your Secret Choice ✅</h3>
-        <h2 style="margin: 1rem 0;">${restaurant.name}</h2>
-        <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
-          This is your pick - remember it!<br>
-          Others won't see this until everyone finishes.
-        </p>
-        <div style="margin-top: 1rem; padding: 1rem; background-color: rgba(254, 228, 64, 0.1); border-radius: 8px;">
-          <div>⭐ ${restaurant.rating} • ${restaurant.price}</div>
-          <div style="margin-top: 0.5rem; font-size: 0.9rem;">${restaurant.address}</div>
-        </div>
-      </div>
-    `
-    document.body.appendChild(modal)
-    this.currentModal = modal
-  }
-
-  hideMyResult() {
-    if (this.currentModal) {
-      this.currentModal.remove()
-      this.currentModal = null
-    }
-  }
-
-  showRoundComplete() {
-    alert("Round complete! Get ready for the reveal!")
   }
 
 

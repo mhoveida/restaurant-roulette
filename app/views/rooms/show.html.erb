@@ -204,32 +204,35 @@
         <!-- Spin Section -->
         <div class="wheel-section">
           <% if @room.is_my_turn?(@current_member_id) %>
-            <div class="your-turn-banner" style="background-color: rgba(254, 228, 64, 0.15); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: center;">
-              <h3 style="color: var(--color-yellow); font-size: 1.5rem; margin: 0;">
-                ⭐ Your Turn to Spin! ⭐
-              </h3>
-              <p style="margin: 0.5rem 0 0 0; color: rgba(255, 255, 255, 0.8);">
-                Click the wheel to add your secret option!
-              </p>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+              <!-- Your Turn Banner (Top) -->
+              <div class="your-turn-banner" style="background-color: rgba(254, 228, 64, 0.15); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: center; width: 100%; max-width: 400px;">
+                <h3 style="color: var(--color-yellow); font-size: 1.5rem; margin: 0;">
+                  ⭐ Your Turn to Spin! ⭐
+                </h3>
+                <p style="margin: 0.5rem 0 0 0; color: rgba(255, 255, 255, 0.8);">
+                  Click the wheel to add your secret option!
+                </p>
+              </div>
+              
+              <!-- Wheel (Middle) -->
+              <div style="margin: 1rem 0;">
+                <canvas data-room-spin-target="wheel" 
+                        id="roulette-wheel"
+                        width="300" 
+                        height="300"
+                        data-action="click->room-spin#spin"></canvas>
+              </div>
+              
+              <!-- Button (Bottom) -->
+              <div style="margin-top: 2rem;">
+                <button class="button button-primary spin-button" 
+                        data-action="click->room-spin#spin"
+                        style="font-size: 1.1rem; padding: 15px 60px;">
+                  🎰 Spin
+                </button>
+              </div>
             </div>
-
-            <!-- Wheel Container -->
-            <div class="wheel-section">
-              <canvas data-room-spin-target="wheel" 
-                      id="roulette-wheel"
-                      width="300" 
-                      height="300"></canvas>
-            </div>
-
-            <!-- Button Below Wheel -->
-            <div class="button-group">
-              <button class="button button-primary spin-button" 
-                      data-action="click->room-spin#spin"
-                      style="width: 100%; max-width: 300px; margin: 0 auto; display: block;">
-                🎰 Spin the Wheel!
-              </button>
-            </div>
-
           <% else %>
             <% current_member = @room.current_turn_member %>
             <div class="waiting-for-turn" style="text-align: center; padding: 3rem 2rem; background-color: rgba(255, 255, 255, 0.03); border-radius: 8px;">
@@ -392,22 +395,6 @@
                   <div class="address" style="color: rgba(255, 255, 255, 0.7); font-size: 0.9rem;">
                     📍 <%= restaurant["address"] %>
                   </div>
-
-                  <!-- Feedback Buttons -->
-                  <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-                    <button class="feedback-button" 
-                            data-action="click->room-spin#thumbsUp"
-                            data-option-index="<%= index %>"
-                            style="background-color: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
-                      👍 Like
-                    </button>
-                    <button class="feedback-button" 
-                            data-action="click->room-spin#thumbsDown"
-                            data-option-index="<%= index %>"
-                            style="background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem;">
-                      👎 Dislike
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -420,89 +407,90 @@
   <!-- COMPLETE PHASE (Winner Display) -->
   <!-- ========================================== -->
   <% if @room.complete? && @room.winner.present? %>
-    <div class="preference-section winner-section">
-      <div style="text-align: center; padding: 2rem; background: linear-gradient(135deg, rgba(254, 228, 64, 0.2) 0%, rgba(254, 228, 64, 0.05) 100%); border-radius: 16px;">
-        <div style="font-size: 3rem; margin-bottom: 1rem;">🎊 🎉 🎊</div>
-        <h2 style="color: var(--color-yellow); font-size: 2rem; margin: 0 0 0.5rem 0;">
-          You're going to:
-        </h2>
-        
-        <% restaurant = @room.winner["restaurant"] %>
-        <h1 style="font-size: 2.5rem; color: var(--color-text); margin: 1rem 0;">
-          <%= restaurant["name"] %>
-        </h1>
-
-        <div style="background-color: rgba(254, 228, 64, 0.15); padding: 1rem; border-radius: 8px; margin: 1.5rem 0; display: inline-block;">
-          <p style="margin: 0; font-size: 1.1rem; color: var(--color-yellow);">
-            ⭐ Added by: <strong><%= @room.winner["member_name"] %></strong>
-          </p>
-          <p style="margin: 0.5rem 0 0 0; color: rgba(255, 255, 255, 0.8);">
-            Winning votes: <%= @room.winner["votes"] %> out of <%= @room.winner["total_votes"] %>
-          </p>
+    <% restaurant = @room.winner["restaurant"] %>
+    
+    <div class="result-overlay" data-controller="winner-result">
+      <div class="result-modal">
+        <div class="result-header">
+          <h3>🎉 You're going to:</h3>
         </div>
 
-        <!-- Restaurant Details -->
-        <div style="margin-top: 2rem; text-align: left; background-color: rgba(0, 0, 0, 0.3); padding: 2rem; border-radius: 12px;">
+        <div class="restaurant-result">
           <% if restaurant["image_url"].present? %>
-            <div style="width: 100%; max-width: 500px; margin: 0 auto 1.5rem auto; border-radius: 12px; overflow: hidden;">
-              <img src="<%= restaurant["image_url"] %>" alt="<%= restaurant["name"] %>" 
-                   style="width: 100%; height: auto;">
+            <div class="restaurant-image">
+              <img src="<%= restaurant["image_url"] %>" alt="<%= restaurant["name"] %>">
             </div>
           <% end %>
 
-          <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; justify-content: center;">
-            <div style="color: var(--color-yellow); font-size: 1.2rem;">
-              ⭐ <%= restaurant["rating"] %>
-            </div>
-            <div style="color: var(--color-yellow); font-weight: 700; font-size: 1.2rem;">
-              <%= restaurant["price"] %>
-            </div>
+          <h2 class="restaurant-name"><%= restaurant["name"] %></h2>
+
+          <!-- Rating -->
+          <div class="restaurant-rating">
+            <span class="stars"><%= "★" * restaurant["rating"].to_i %><%= "☆" * (5 - restaurant["rating"].to_i) %></span>
+            <span class="rating-value">(<%= restaurant["rating"] %>)</span>
           </div>
 
-          <% if restaurant["categories"].present? %>
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; margin-bottom: 1.5rem;">
-              <% restaurant["categories"].each do |category| %>
-                <span style="background-color: rgba(254, 228, 64, 0.15); color: var(--color-yellow); padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; font-weight: 600;">
-                  <%= category %>
-                </span>
-              <% end %>
-            </div>
-          <% end %>
-
-          <div style="text-align: center; color: rgba(255, 255, 255, 0.9); font-size: 1.1rem; line-height: 1.6;">
-            <p style="margin: 0;">📍 <%= restaurant["address"] %></p>
-            <% if restaurant["phone"].present? %>
-              <p style="margin: 0.5rem 0;">📞 <%= restaurant["phone"] %></p>
-            <% end %>
-            <% if restaurant["is_open_now"] %>
-              <p style="margin: 0.5rem 0; color: #22c55e;">
-                ✅ Open Now
-                <% if restaurant["closing_time"].present? %>
-                  • Closes at <%= restaurant["closing_time"] %>
+          <!-- Price and Categories -->
+          <div class="restaurant-meta">
+            <span class="price"><%= restaurant["price"] %></span>
+            <% if restaurant["categories"].present? %>
+              <div class="cuisine-list">
+                <% restaurant["categories"].each do |category| %>
+                  <span class="cuisine-tag"><%= category %></span>
                 <% end %>
-              </p>
-            <% else %>
-              <p style="margin: 0.5rem 0; color: #ef4444;">❌ Currently Closed</p>
+              </div>
             <% end %>
           </div>
 
-          <div class="result-actions" style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
-            <a href="https://www.google.com/maps/search/?api=1&query=<%= ERB::Util.url_encode(restaurant["address"]) %>" 
-              target="_blank"
-              class="button" 
-              style="display: inline-block; text-decoration: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600;">
-              🗺️ View on Map
-            </a>
-            <button class="button share-button" 
-                    onclick="shareWinner(event, this)"
-                    data-restaurant-name="<%= restaurant["name"] %>"
-                    data-restaurant-address="<%= restaurant["address"] %>"
-                    data-restaurant-rating="<%= restaurant["rating"] %>"
-                    data-restaurant-price="<%= restaurant["price"] %>"
-                    style="display: inline-block; background: linear-gradient(135deg, var(--color-yellow) 0%, #ffd700 100%); color: #000; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; border: none; cursor: pointer;">
-              Share
-            </button>
+          <!-- Address -->
+          <div class="restaurant-address">
+            <span class="address-icon">📍</span>
+            <%= restaurant["address"] %>
           </div>
+
+          <!-- Status -->
+          <div class="restaurant-status">
+            <% if restaurant["is_open_now"] %>
+              <span class="status-open">Open</span>
+              <% if restaurant["closing_time"].present? %>
+                <span class="closing-time">Closes at <%= restaurant["closing_time"] %></span>
+              <% end %>
+            <% else %>
+              <span class="status-closed">Closed</span>
+            <% end %>
+          </div>
+
+          <!-- Review Count -->
+          <% if restaurant["review_count"].present? %>
+            <div class="review-count">
+              <%= restaurant["review_count"] %> reviews
+            </div>
+          <% end %>
+          
+          <!-- Winner Info -->
+          <div style="background-color: rgba(254, 228, 64, 0.1); padding: 1rem; border-radius: 8px; margin-top: 1rem; text-align: center;">
+            <p style="margin: 0; color: var(--color-yellow); font-size: 0.95rem;">
+              Added by <strong><%= @room.winner["member_name"] %></strong> • 
+              <%= @room.winner["votes"] %> of <%= @room.winner["total_votes"] %> votes
+            </p>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="result-actions">
+          <a href="https://www.google.com/maps/search/?api=1&query=<%= ERB::Util.url_encode(restaurant["address"]) %>" 
+            target="_blank"
+            class="button spin-again-button">
+            🗺️ View on Map
+          </a>
+          <button class="button share-button" 
+                  onclick="shareWinner(event, this)"
+                  data-restaurant-name="<%= restaurant["name"] %>"
+                  data-restaurant-address="<%= restaurant["address"] %>"
+                  data-restaurant-rating="<%= restaurant["rating"] %>"
+                  data-restaurant-price="<%= restaurant["price"] %>">
+            Share
+          </button>
         </div>
       </div>
     </div>
@@ -713,21 +701,249 @@
   }
 }
 
-/* Button Group (matching solo spin) */
+/* Button Group (centered below wheel) */
 .button-group {
   display: flex;
-  gap: 1rem;
-  margin-top: 2rem;
   justify-content: center;
+  margin-top: 2rem;
 }
 
 .spin-button {
   font-size: 1.1rem;
-  padding: 15px;
+  padding: 15px 40px;
+  min-width: 200px;
 }
 
 .spin-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+/* Result Overlay (matching solo spin) */
+.result-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.result-modal {
+  background-color: var(--color-background);
+  border: 2px solid var(--color-yellow);
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Result Header */
+.result-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.result-header h3 {
+  font-size: 1.5rem;
+  color: var(--color-yellow);
+  margin: 0;
+}
+
+/* Restaurant Result */
+.restaurant-result {
+  margin-bottom: 2rem;
+}
+
+.restaurant-image {
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  max-height: 300px;
+}
+
+.restaurant-image img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+.restaurant-name {
+  font-size: 2rem;
+  color: var(--color-text);
+  margin: 0 0 1rem 0;
+  text-align: center;
+}
+
+/* Rating */
+.restaurant-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.stars {
+  color: var(--color-yellow);
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+}
+
+.rating-value {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Meta Information */
+.restaurant-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.price {
+  background-color: rgba(254, 228, 64, 0.1);
+  color: var(--color-yellow);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.cuisine-list {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Address */
+.restaurant-address {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.address-icon {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+}
+
+/* Status */
+.restaurant-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.status-open {
+  background-color: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.status-closed {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.closing-time {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Review Count */
+.review-count {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+/* Result Actions */
+.result-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.spin-again-button,
+.share-button {
+  flex: 1;
+  font-size: 1rem;
+  padding: 12px;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.spin-again-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: var(--color-text);
+}
+
+.share-button {
+  background-color: var(--color-yellow);
+  border: none;
+  color: #000;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .result-modal {
+    padding: 1.5rem;
+  }
+
+  .restaurant-name {
+    font-size: 1.5rem;
+  }
+
+  .result-actions {
+    flex-direction: column;
+  }
 }
 </style>
