@@ -207,42 +207,138 @@ Then('the password should be hidden') do
   expect(password_field[:type]).to eq('password')
 end
 
-# OAuth - all pending for now
-Then('I should be redirected to Facebook authentication') do
-  skip('Facebook OAuth integration not yet implemented')
+# OAuth - Google
+
+# Enable OmniAuth test mode for mocking
+Before('@google') do
+  OmniAuth.config.test_mode = true
 end
 
-Then('I should be redirected to Google authentication') do
-  skip('Google OAuth integration not yet implemented')
+After('@google') do
+  OmniAuth.config.mock_auth[:google_oauth2] = nil
+  OmniAuth.config.test_mode = false
 end
 
-Then('after successful Facebook authentication') do
-  skip('Facebook OAuth integration not yet implemented')
-end
-
-Then('after successful Google authentication') do
-  skip('Google OAuth integration not yet implemented')
-end
-
-When('I cancel the Google authentication') do
-  skip('Google OAuth cancellation not yet implemented')
-end
-
-When('I authenticate with Google account {string}') do |email|
-  skip('Google OAuth authentication not yet implemented')
-end
-
-When('Facebook authentication fails') do
-  skip('Facebook OAuth error handling not yet implemented')
-end
-
+# Create a user linked to a Google account
 Given('an account exists linked to Google account {string}') do |email|
-  pending('Google OAuth account linking not yet implemented')
+  User.create!(
+    email: email,
+    first_name: 'Test',
+    last_name: 'User',
+    password: 'TestPassword123',
+    password_confirmation: 'TestPassword123',
+    confirmed_at: Time.current,
+    provider: 'google_oauth2',
+    uid: '123545'
+  )
 end
 
-Then('I should be returned to the login page') do
-  expect(page).to have_current_path(new_user_session_path)
+# Mock a successful Google OAuth login
+When('I authenticate with Google account {string}') do |email|
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
+    provider: 'google_oauth2',
+    uid: '123545',
+    info: {
+      email: email,
+      first_name: 'Test',
+      last_name: 'User'
+    },
+    credentials: {
+      token: 'mock_token',
+      refresh_token: 'mock_refresh_token',
+      expires_at: Time.now + 1.week
+    }
+  )
 end
+
+# Verify successful Google authentication
+Then('after successful Google authentication') do
+  using_wait_time 5 do
+    expect(page).to have_current_path(root_path)
+  end
+end
+
+# Verify user is redirected back to login after cancel/failure
+Then('I should be returned to the login page') do
+  using_wait_time 5 do
+    expect(page).to have_current_path(new_user_session_path)
+  end
+end
+
+### --- GOOGLE OMNIAUTH ADDITIONS --- ###
+
+Given("no account exists linked to Google UID {string}") do |uid|
+  User.where(uid: uid, provider: "google_oauth2").destroy_all
+end
+
+Given("OmniAuth mock returns user info with name {string} and email {string}") do |name, email|
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
+    provider: "google_oauth2",
+    uid: "99999",
+    info: {
+      name: name,
+      email: email,
+      first_name: name.split.first,
+      last_name: name.split.last
+    },
+    credentials: { token: "fake-token", refresh_token: "fake-refresh" }
+  )
+end
+
+Given("OmniAuth is set to return :invalid_credentials") do
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:google_oauth2] = :invalid_credentials
+end
+
+Then("a new user record should be created with email {string}") do |email|
+  expect(User.find_by(email: email)).not_to be_nil
+end
+
+Then("I should see {string} in the profile") do |name|
+  expect(page).to have_content(name)
+end
+
+### --- FIXED AND COMPLETED STEPS --- ###
+
+# Covers: "OmniAuth mock returns invalid user data (missing email)"
+Given('OmniAuth mock returns invalid user data \(missing email)') do
+  OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new(
+    provider: 'google_oauth2',
+    uid: '999999999',
+    info: {
+      name: 'No Email User',
+      email: nil, # missing email triggers user persistence failure
+      first_name: 'NoEmail',
+      last_name: 'User'
+    },
+    credentials: {
+      token: 'fake_token_12345',
+      refresh_token: 'fake_refresh_12345',
+      expires_at: Time.now + 3600
+    }
+  )
+end
+
+# Covers: "I authenticate with Google"
+When('I authenticate with Google') do
+  visit user_google_oauth2_omniauth_callback_path
+end
+
+# Covers: "I should be redirected to the sign up page"
+Then('I should be redirected to the sign up page') do
+  expect(current_path).to match(/sign_up|users/)
+end
+
+# Covers inactive-account branch without using allow_any_instance_of
+Given('I simulate an inactive account on signup') do
+  allow(User).to receive(:create).and_wrap_original do |m, *args|
+    user = m.call(*args)
+    user.update(active: false)
+    user
+  end
+end
+
 
 # Other
 # Verify Profile interaction

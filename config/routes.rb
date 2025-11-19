@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get "rooms/new"
-  devise_for :users, controllers: { sessions: "users/sessions", registrations: "users/registrations" }
+  devise_for :users, controllers: { sessions: "users/sessions", registrations: "users/registrations", omniauth_callbacks: "users/omniauth_callbacks" }
   get "home/index"
   # root to: "home#index"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -31,4 +31,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  devise_scope :user do
+    get "/users/auth/failure", to: "users/omniauth_callbacks#failure"
+  end
 end

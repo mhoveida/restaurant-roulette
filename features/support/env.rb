@@ -1,4 +1,5 @@
 require 'simplecov'
+SimpleCov.coverage_dir 'coverage/cucumber'
 SimpleCov.start 'rails' do
   SimpleCov.command_name 'Cucumber'
   add_filter '/spec/'
@@ -19,11 +20,11 @@ require 'bundler/setup'
 
 require 'factory_bot_rails'
 require 'cucumber/rails'
-
 require 'capybara/rspec'
 require 'capybara/rspec/matchers'
 require 'rspec/expectations'
 
+<<<<<<< HEAD
 # ============================================
 # Enable RSpec Mocks for Cucumber
 # ============================================
@@ -39,6 +40,25 @@ After do
   RSpec::Mocks.verify
   RSpec::Mocks.teardown
 end
+=======
+OmniAuth.config.test_mode = true
+
+# Add a default mock that can be overridden in step definitions
+OmniAuth.config.add_mock(:google_oauth2, {
+  provider: 'google_oauth2',
+  uid: '123545',
+  info: {
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'User'
+  },
+  credentials: {
+    token: 'mock_token',
+    refresh_token: 'mock_refresh_token'
+  }
+})
+
+>>>>>>> origin/main
 
 World(Capybara::RSpecMatchers)
 World(RSpec::Matchers)

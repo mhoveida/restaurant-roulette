@@ -1,12 +1,14 @@
 require 'simplecov'
+SimpleCov.coverage_dir 'coverage/rspec'
 SimpleCov.start 'rails' do
-  SimpleCov.command_name 'RSpec'
   add_filter '/spec/'
   add_filter '/test/'
   add_filter '/config/'
   add_filter '/vendor/'
   add_filter 'app/jobs/application_job.rb'
   add_filter 'app/mailers/application_mailer.rb'
+  add_filter 'app/channels/application_cable/connection.rb'
+  add_filter 'app/controllers/static_pages_controller.rb'
 end
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
@@ -18,6 +20,9 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 require 'capybara/rspec'
 # Add additional requires below this line. Rails is not loaded until this point!
+
+require 'omniauth'
+OmniAuth.config.test_mode = true
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are

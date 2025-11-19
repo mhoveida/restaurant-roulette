@@ -48,10 +48,16 @@ Follow these steps to set up your development environment.
 
 3.  **Checkout the correct branch**
     ```sh
-    git checkout proj-iter1
+    git checkout main
     ```
 
-4.  **Install Ruby Dependencies**
+4.  **Add Rails Master Key**
+    The app requires a master key for credentials. Run the following command to create it:
+    ```sh
+    echo "f558c8c582db2a805b2c06eec2edc9f0" > config/master.key
+    ```
+
+5.  **Install Ruby Dependencies**
     Use Bundler to install all the necessary gems specified in the `Gemfile`:
     Make sure you're using 2.7.2 version of bundler, and 3.3.9 version of ruby.
     ```sh
@@ -101,6 +107,8 @@ To run the application locally:
 
 You should see the application's homepage.
 
+Note: If you get a 422 error when trying to log in, make sure you have added the rails master key (Installation Step 4).
+
 ---
 
 ### Running Tests
@@ -112,18 +120,13 @@ This project includes both **RSpec** and **Cucumber** tests.
     ```bash
     bundle exec rspec
     ```
-
+     * Open `coverage/rspec/index.html` in your browser to view the detailed report.
+     
 2.  **Run Cucumber (Feature/Acceptance Tests):**
     ```bash
     bundle exec cucumber
     ```
+    * Open `coverage/cucumber/index.html` in your browser to view the detailed report.
 
-3.  **Run Both & Check Coverage:**
-    * Run all tests (RSpec and Cucumber) and generate a coverage report:
-      ```bash
-      # Run Cucumber first to generate the report
-      bundle exec cucumber
-      # Then run RSpec
-      bundle exec rspec
-      ```
-    * Open `coverage/index.html` in your browser to view the detailed report.
+
+**Note: If you get a 422 error when trying to log in, make sure you have added the rails master key (Installation Step 4).**

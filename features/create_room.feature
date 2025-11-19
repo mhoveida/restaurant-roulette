@@ -194,3 +194,19 @@ Feature: Create Room
     Given I have created a room as "Olivia"
     Then "Olivia" should be marked as "Owner" or "Host" in the members list
 #    And other members should see this designation
+
+  Scenario: Guest attempts to join room with blank name
+    Given I have created a room with code "1234"
+    And I am not logged in
+    When I am on the join as guest page for the room
+    And I fill in "guest_name" with ""
+    And I click "Join Room"
+    Then I should see "Please enter your name"
+
+  Scenario: Guest attempts to join room with whitespace only name
+    Given I have created a room with code "5678"
+    And I am not logged in
+    When I am on the join as guest page for the room
+    And I fill in "guest_name" with "   "
+    And I click "Join Room"
+    Then I should remain on the join as guest page
