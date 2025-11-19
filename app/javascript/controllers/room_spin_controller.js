@@ -7,6 +7,14 @@ export default class extends Controller {
   connect() {
     this.drawWheel()
     this.subscribeToRoom()
+
+    // Listen for simulated broadcast in Cucumber
+    window.addEventListener("room-spin-result", (e) => {
+      this.handleBroadcast({
+        type: "spin_result",
+        restaurant: e.detail
+      })
+    });
   }
 
   disconnect() {

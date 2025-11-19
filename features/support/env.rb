@@ -24,6 +24,22 @@ require 'capybara/rspec'
 require 'capybara/rspec/matchers'
 require 'rspec/expectations'
 
+# ============================================
+# Enable RSpec Mocks for Cucumber
+# ============================================
+require 'rspec/mocks'
+
+World(RSpec::Mocks::ExampleMethods)
+
+Before do
+  RSpec::Mocks.setup
+end
+
+After do
+  RSpec::Mocks.verify
+  RSpec::Mocks.teardown
+end
+
 World(Capybara::RSpecMatchers)
 World(RSpec::Matchers)
 
