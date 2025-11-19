@@ -346,7 +346,8 @@ RSpec.describe RoomsController, type: :controller do
 
       it 'saves spin result to room' do
         post :spin, params: { id: room.id }, format: :json
-        expect(room.reload.spin_result).to eq("name" => "Test Restaurant", "rating" => 4.5)
+        expect(room.reload.spin_results.last)
+          .to eq("name" => "Test Restaurant", "rating" => 4.5)
       end
 
       it 'broadcasts spin result to ActionCable' do
@@ -365,13 +366,18 @@ RSpec.describe RoomsController, type: :controller do
 
       it 'returns error json' do
         post :spin, params: { id: room.id }, format: :json
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)["success"]).to eq(false)
+        expect(response).to have_http_status(:ok)
+
+        parsed = JSON.parse(response.body)
+        expect(parsed["success"]).to eq(false)
+        expect(parsed["error"]).to eq("no_new_restaurants")
+        expect(parsed["message"]).to eq("All matching restaurants have already been suggested!")
       end
 
       it 'includes error message' do
         post :spin, params: { id: room.id }, format: :json
-        expect(JSON.parse(response.body)["message"]).to eq("No restaurants found")
+        parsed = JSON.parse(response.body)
+        expect(parsed["message"]).to eq("All matching restaurants have already been suggested!")
       end
     end
   end
