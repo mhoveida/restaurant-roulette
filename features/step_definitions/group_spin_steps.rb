@@ -10,10 +10,12 @@ Then /^I should see a spinning wheel$/ do
 end
 
 Then /^the wheel should generate a restaurant result$/ do
-  # After spinning, the page should still show the room or navigate to a result page
+  # After spinning, the page should show the room with a popup with restaurant result
   # Check for restaurant result or remain on room page
-  has_result = page.has_content?("You are going to:") || page.has_css?(".restaurant-result") || page.has_content?("Room Waiting Area")
-  expect(has_result).to be_truthy
+  expect(
+    page.has_css?(".restaurant-name", wait: 5) ||
+    page.has_css?(".restaurant-result", wait: 5)
+  ).to be_truthy
 end
 
 Then /^I should be redirected to the room$/ do

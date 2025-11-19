@@ -24,7 +24,6 @@ require 'capybara/rspec'
 require 'capybara/rspec/matchers'
 require 'rspec/expectations'
 
-<<<<<<< HEAD
 # ============================================
 # Enable RSpec Mocks for Cucumber
 # ============================================
@@ -40,7 +39,6 @@ After do
   RSpec::Mocks.verify
   RSpec::Mocks.teardown
 end
-=======
 OmniAuth.config.test_mode = true
 
 # Add a default mock that can be overridden in step definitions
@@ -58,7 +56,6 @@ OmniAuth.config.add_mock(:google_oauth2, {
   }
 })
 
->>>>>>> origin/main
 
 World(Capybara::RSpecMatchers)
 World(RSpec::Matchers)

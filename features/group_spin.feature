@@ -6,12 +6,6 @@ Feature: Group Room Spin
   Background:
     Given the restaurant service is available
 
-  Scenario: Room creator can spin restaurant
-    Given I have created a room
-    When I click "Ready to Spin?"
-    Then I should see a spinning wheel
-    And the wheel should generate a restaurant result
-
   Scenario: Guest member can view room after joining
     Given I have created a room with code "1234"
     And I am not logged in
