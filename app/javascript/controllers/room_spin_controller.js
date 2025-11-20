@@ -1,5 +1,3 @@
-// app/javascript/controllers/room_spin_controller.js
-
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
@@ -20,19 +18,11 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log("Room spin controller connected")
     this.roomId = this.element.dataset.roomId
-    this.roomCode = this.element.dataset.roomCode  // ADD THIS
+    this.roomCode = this.element.dataset.roomCode
     this.currentMemberId = this.element.dataset.currentMemberId
     this.isRoomCreator = this.element.dataset.isRoomCreator === "true"
     this.myVote = null
-
-    console.log("Room data:", {
-      roomId: this.roomId,
-      roomCode: this.roomCode,
-      currentMemberId: this.currentMemberId,
-      isRoomCreator: this.isRoomCreator
-    })
 
     if (this.hasWheelTarget) {
       this.drawWheel()
@@ -93,10 +83,8 @@ export default class extends Controller {
     }
   }
 
-
   subscribeToRoom() {
     if (typeof App === 'undefined' || !App.cable) {
-      console.log("ActionCable not available, using polling only")
       return
     }
 
@@ -104,7 +92,6 @@ export default class extends Controller {
       { channel: "RoomChannel", room_id: this.roomId },
       {
         received: (data) => {
-          console.log("Received:", data)
           this.handleBroadcast(data)
         }
       }
@@ -135,10 +122,8 @@ export default class extends Controller {
   }
 
   startStatusPolling() {
-    // Store current state
     this.lastKnownState = this.element.dataset.roomState
     
-    // Poll every 2 seconds for status updates
     this.pollingInterval = setInterval(() => {
       this.fetchStatus()
     }, 2000)
@@ -151,7 +136,6 @@ export default class extends Controller {
       
       const data = await response.json()
       
-      // Store current state and turn on first load
       if (!this.lastKnownState) {
         this.lastKnownState = data.state
         this.lastKnownTurnIndex = data.current_turn?.turn_index || 0
@@ -159,72 +143,57 @@ export default class extends Controller {
         return
       }
       
-      // Check if state has changed
       if (data.state !== this.lastKnownState) {
-        console.log('🔄 State changed from', this.lastKnownState, 'to', data.state)
         window.location.reload()
         return
       }
       
-      // Check if turn changed during spinning phase
       if (data.state === 'spinning' && data.current_turn) {
         const newTurnIndex = data.current_turn.turn_index || 0
         if (newTurnIndex !== this.lastKnownTurnIndex) {
-          console.log('🔄 Turn changed from', this.lastKnownTurnIndex, 'to', newTurnIndex)
           this.lastKnownTurnIndex = newTurnIndex
           window.location.reload()
           return
         }
       }
       
-      // Check for vote count changes during voting phase
       if (data.state === 'voting') {
         const newVoteCount = data.votes_count || 0
         if (newVoteCount !== this.lastKnownVoteCount) {
-          console.log('🔄 Vote count changed from', this.lastKnownVoteCount, 'to', newVoteCount)
           this.lastKnownVoteCount = newVoteCount
-          
-          // Update vote count displays
           this.updateVoteCountsFromStatus(data)
         }
       }
       
-      // Check if new member joined during waiting
       if (data.state === 'waiting' && data.members) {
         const currentMemberCount = document.querySelectorAll('.member-item').length
         if (data.members.length !== currentMemberCount) {
-          console.log('🔄 New member joined')
           window.location.reload()
           return
         }
       }
       
     } catch (error) {
-      console.error("Status polling error:", error)
+      // Silent fail
     }
   }
 
-updateVoteCountsFromStatus(statusData) {
-  const voteCounts = statusData.vote_counts_by_option || {}
-  
-  document.querySelectorAll('.voting-option').forEach((option) => {
-    const optionIndex = parseInt(option.dataset.optionIndex)
-    const count = voteCounts[optionIndex] || 0
+  updateVoteCountsFromStatus(statusData) {
+    const voteCounts = statusData.vote_counts_by_option || {}
     
-    const voteCountElement = option.querySelector('.vote-count')
-    if (voteCountElement) {
-      voteCountElement.textContent = `${count} ${count === 1 ? 'vote' : 'votes'}`
-    }
-  })
-}
-
+    document.querySelectorAll('.voting-option').forEach((option) => {
+      const optionIndex = parseInt(option.dataset.optionIndex)
+      const count = voteCounts[optionIndex] || 0
+      
+      const voteCountElement = option.querySelector('.vote-count')
+      if (voteCountElement) {
+        voteCountElement.textContent = `${count} ${count === 1 ? 'vote' : 'votes'}`
+      }
+    })
+  }
 
   async startSpinning(event) {
     event.preventDefault()
-    
-    if (!confirm("Start the spinning phase? Everyone will take turns!")) {
-      return
-    }
 
     try {
       const response = await fetch(`/rooms/${this.roomId}/start_spinning`, {
@@ -238,17 +207,12 @@ updateVoteCountsFromStatus(statusData) {
       const data = await response.json()
 
       if (data.success) {
-        // Page will reload or update via broadcast
         window.location.reload()
-      } else {
-        alert(data.error || "Could not start spinning")
       }
     } catch (error) {
-      console.error("Start spinning error:", error)
-      alert("An error occurred")
+      // Silent fail
     }
   }
-
 
   async spin(event) {
     event.preventDefault()
@@ -270,7 +234,6 @@ updateVoteCountsFromStatus(statusData) {
       })
 
       const data = await response.json()
-      console.log("Spin response:", data)  // ADD THIS
 
       if (data.success) {
         const spinDuration = 2000 + Math.random() * 1000
@@ -282,18 +245,12 @@ updateVoteCountsFromStatus(statusData) {
           window.location.reload()
         }, spinDuration)
       } else {
-        // BETTER ERROR MESSAGE
-        alert(data.error || "Could not spin. Check console for details.")
-        console.error("Spin failed:", data)
         button.disabled = false
         if (this.hasWheelTarget) {
           this.wheelTarget.classList.remove('spinning')
         }
       }
     } catch (error) {
-      // BETTER ERROR MESSAGE
-      console.error("Spin error:", error)
-      alert("An error occurred: " + error.message)
       button.disabled = false
       if (this.hasWheelTarget) {
         this.wheelTarget.classList.remove('spinning')
@@ -301,11 +258,9 @@ updateVoteCountsFromStatus(statusData) {
     }
   }
 
-
   async reveal(event) {
     event.preventDefault()
 
-    // Show countdown
     if (this.hasCountdownTarget) {
       let count = 3
       const countdownInterval = setInterval(() => {
@@ -317,7 +272,6 @@ updateVoteCountsFromStatus(statusData) {
       }, 1000)
     }
 
-    // Wait for countdown
     await new Promise(resolve => setTimeout(resolve, 3000))
 
     try {
@@ -332,36 +286,25 @@ updateVoteCountsFromStatus(statusData) {
       const data = await response.json()
 
       if (data.success) {
-        // Reload to show voting interface
         window.location.reload()
-      } else {
-        alert(data.error || "Could not reveal options")
       }
     } catch (error) {
-      console.error("Reveal error:", error)
-      alert("An error occurred")
+      // Silent fail
     }
   }
-
 
   async voteForOption(event) {
     event.preventDefault()
     event.stopPropagation()
     
     const optionIndex = parseInt(event.currentTarget.dataset.optionIndex)
-    const clickedElement = event.currentTarget // ⭐ STORE THIS BEFORE ASYNC!
-    
-    console.log('Voting for option:', optionIndex)
+    const clickedElement = event.currentTarget
     
     try {
       const csrfToken = document.querySelector('[name="csrf-token"]')?.content || 
                       document.querySelector('meta[name="csrf-token"]')?.content
       
-      if (!csrfToken) {
-        console.error('CSRF token not found!')
-        alert('Security token missing. Please refresh the page.')
-        return
-      }
+      if (!csrfToken) return
       
       const response = await fetch(`/rooms/${this.roomId}/vote`, {
         method: 'POST',
@@ -373,34 +316,20 @@ updateVoteCountsFromStatus(statusData) {
         body: JSON.stringify({ option_index: optionIndex })
       })
       
-      console.log('Response status:', response.status)
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+      if (!response.ok) return
       
       const data = await response.json()
-      console.log('Vote response:', data)
       
       if (data.success) {
-        // Remove previous selection styling
         document.querySelectorAll('.voting-option').forEach(opt => {
           opt.classList.remove('selected-vote')
         })
         
-        // Add selection styling to clicked option (use stored reference!)
         clickedElement.classList.add('selected-vote')
-        
-        // Show/update confirm button
         this.showConfirmVoteButton()
-        
-        console.log('Vote recorded successfully!')
-      } else {
-        alert(data.error || 'Failed to record vote')
       }
     } catch (error) {
-      console.error('Vote error:', error)
-      alert('Error casting vote. Please try again.')
+      // Silent fail
     }
   }
 
@@ -408,12 +337,11 @@ updateVoteCountsFromStatus(statusData) {
     let confirmBtn = document.getElementById('confirmVoteBtn')
     
     if (!confirmBtn) {
-      // Create confirm button if it doesn't exist
       const votingSection = document.querySelector('.voting-section')
       confirmBtn = document.createElement('button')
       confirmBtn.id = 'confirmVoteBtn'
       confirmBtn.className = 'button button-primary'
-      confirmBtn.textContent = '✅ Confirm My Vote'
+      confirmBtn.textContent = 'Confirm My Vote'
       confirmBtn.style.cssText = 'width: 100%; max-width: 400px; margin: 2rem auto; display: block; padding: 1rem; font-size: 1.1rem;'
       confirmBtn.onclick = () => this.confirmVote()
       votingSection.appendChild(confirmBtn)
@@ -423,10 +351,6 @@ updateVoteCountsFromStatus(statusData) {
   }
 
   async confirmVote() {
-    if (!confirm('Are you sure? Once confirmed, you cannot change your vote.')) {
-      return
-    }
-    
     try {
       const response = await fetch(`/rooms/${this.roomId}/confirm_vote`, {
         method: 'POST',
@@ -439,27 +363,22 @@ updateVoteCountsFromStatus(statusData) {
       const data = await response.json()
       
       if (data.success) {
-        alert('Vote confirmed! ✅')
-        
-        // Hide confirm button
         const confirmBtn = document.getElementById('confirmVoteBtn')
-        if (confirmBtn) confirmBtn.style.display = 'none'
+        if (confirmBtn) {
+          confirmBtn.textContent = 'Vote Confirmed!'
+          confirmBtn.disabled = true
+          confirmBtn.style.backgroundColor = '#22c55e'
+        }
         
-        // Disable all voting options
         document.querySelectorAll('.voting-option').forEach(opt => {
           opt.style.pointerEvents = 'none'
           opt.style.opacity = '0.6'
         })
         
-        // Fetch updated vote counts immediately
         this.updateVoteCountsFromServer()
-        
-        // Continue polling for other votes
-        console.log('Vote confirmed, waiting for others...')
       }
     } catch (error) {
-      console.error('Confirm vote error:', error)
-      alert('Error confirming vote. Please try again.')
+      // Silent fail
     }
   }
 
@@ -471,30 +390,21 @@ updateVoteCountsFromStatus(statusData) {
       const data = await response.json()
       
       if (data.state === 'voting') {
-        // Update vote count displays
         this.updateVoteCountDisplay(data)
       } else if (data.state === 'complete') {
-        // All votes are in, reload to show winner
         window.location.reload()
       }
     } catch (error) {
-      console.error('Error fetching vote counts:', error)
+      // Silent fail
     }
   }
 
   updateVoteCountDisplay(statusData) {
-    // Get vote counts from status
     const voteCounts = {}
     
     if (statusData.votes_count) {
-      // The status endpoint should return vote counts per option
-      // We need to calculate this from the votes
       document.querySelectorAll('.voting-option').forEach((option, index) => {
         const optionIndex = parseInt(option.dataset.optionIndex)
-        
-        // Count how many votes this option has
-        let count = 0
-        // This will be populated by the polling
         
         const voteCountElement = option.querySelector('.vote-count')
         if (voteCountElement && voteCounts[optionIndex] !== undefined) {
@@ -503,6 +413,7 @@ updateVoteCountsFromStatus(statusData) {
       })
     }
   }
+
   updateVoteCounts(voteCounts) {
     Object.keys(voteCounts).forEach(optionIndex => {
       const count = voteCounts[optionIndex]
@@ -517,34 +428,30 @@ updateVoteCountsFromStatus(statusData) {
   }
 
   async thumbsUp(event) {
-    event.stopPropagation() // Don't trigger vote
+    event.stopPropagation()
     const button = event.currentTarget
     button.style.backgroundColor = 'rgba(34, 197, 94, 0.3)'
     
-    // TODO: Send feedback to server for user preferences
     setTimeout(() => {
       button.style.backgroundColor = 'rgba(34, 197, 94, 0.1)'
     }, 500)
   }
 
   async thumbsDown(event) {
-    event.stopPropagation() // Don't trigger vote
+    event.stopPropagation()
     const button = event.currentTarget
     button.style.backgroundColor = 'rgba(239, 68, 68, 0.3)'
     
-    // TODO: Send feedback to server for user preferences
     setTimeout(() => {
       button.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'
     }, 500)
   }
-
 
   onSpinningStarted(data) {
     window.location.reload()
   }
 
   onTurnChanged(data) {
-    // Update turn indicator without full reload
     const currentTurnElements = document.querySelectorAll('.turn-item')
     currentTurnElements.forEach((el, index) => {
       if (index === data.turn_index) {
@@ -581,7 +488,6 @@ updateVoteCountsFromStatus(statusData) {
     return document.querySelector('meta[name="csrf-token"]')?.content || ''
   }
 
-
   copyRoomCode() {
     const code = this.element.dataset.roomCode
     navigator.clipboard.writeText(code).then(() => {
@@ -595,7 +501,6 @@ updateVoteCountsFromStatus(statusData) {
     })
   }
 
-  // Share winner result
   shareWinner(event) {
     const button = event.currentTarget
     const name = button.dataset.restaurantName
@@ -607,7 +512,7 @@ updateVoteCountsFromStatus(statusData) {
       navigator.share({
         title: "Restaurant Roulette",
         text: shareText
-      }).catch(err => console.log("Error sharing:", err))
+      }).catch(() => {})
     } else {
       navigator.clipboard.writeText(shareText).then(() => {
         const originalHTML = button.innerHTML
@@ -618,10 +523,7 @@ updateVoteCountsFromStatus(statusData) {
           button.innerHTML = originalHTML
           button.style.background = ''
         }, 2000)
-      }).catch(err => {
-        console.log("Error copying:", err)
-        alert("Copied to clipboard!")
-      })
+      }).catch(() => {})
     }
   }
 }

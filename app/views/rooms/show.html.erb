@@ -13,11 +13,11 @@
       <% if @room.waiting? %>
         Room Waiting Area
       <% elsif @room.spinning? %>
-        Taking Turns Spinning! 🎰
+        Taking Turns Spinning!
       <% elsif @room.revealing? %>
-        Get Ready for the Big Reveal! 🎉
+        Get Ready for the Big Reveal!
       <% elsif @room.voting? %>
-        Time to Vote! 🗳️
+        Time to Vote!
       <% elsif @room.complete? %>
         Winner Selected! 🎊
       <% end %>
@@ -99,9 +99,9 @@
             <div class="member-name"><%= member[:name] %></div>
             <div class="member-type <%= member[:type] == 'host' ? 'host-badge' : 'guest-badge' %>">
               <% if member[:type] == 'host' %>
-                <span>🏠 Room Creator</span>
+                <span>Room Creator</span>
               <% else %>
-                <span>👥 Member</span>
+                <span>Member</span>
               <% end %>
             </div>
           </div>
@@ -158,7 +158,7 @@
   <!-- ========================================== -->
   <% if @room.spinning? %>
     <div class="preference-section" data-room-spin-target="spinningSection">
-      <h2>Take Turns Spinning! 🎰</h2>
+      <h2>Take Turns Spinning!</h2>
       
       <!-- CHECK IF USER IS IN TURN ORDER -->
       <% if @room.turn_order.include?(@current_member_id) %>
@@ -211,7 +211,7 @@
               <!-- Your Turn Banner (Top) -->
               <div class="your-turn-banner" style="background-color: rgba(254, 228, 64, 0.15); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; text-align: center; width: 100%; max-width: 400px;">
                 <h3 style="color: var(--color-yellow); font-size: 1.5rem; margin: 0;">
-                  ⭐ Your Turn to Spin! ⭐
+                  Your Turn to Spin!
                 </h3>
                 <p style="margin: 0.5rem 0 0 0; color: rgba(255, 255, 255, 0.8);">
                   Click the wheel to add your secret option!
@@ -232,7 +232,7 @@
                 <button class="button button-primary spin-button" 
                         data-action="click->room-spin#spin"
                         style="font-size: 1.1rem; padding: 15px 60px;">
-                  🎰 Spin
+                  Spin
                 </button>
               </div>
             </div>
@@ -335,7 +335,7 @@
   <!-- ========================================== -->
   <% if @room.voting? %>
     <div class="preference-section voting-section" data-room-spin-target="votingSection">
-      <h2>Time to Vote! 🗳️</h2>
+      <h2>Time to Vote!</h2>
       
       <!-- EVERYONE CAN VOTE -->
       <% if @current_member_id.present? %>

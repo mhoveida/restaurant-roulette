@@ -1,22 +1,99 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Connects to data-controller="solo-spin"
 export default class extends Controller {
   static targets = [
     "nameInput",
-    "locationInput",
+    "locationSelect",
     "priceSelect",
-    "cuisineInput",
-    "cuisineTags",
+    "cuisinesGrid",
+    "categoriesInput",
     "wheel",
     "spinButton",
-    "validationMessage",
-    "suggestions"
+    "validationMessage"
   ]
 
   connect() {
+    this.selectedCuisines = []
+    this.currentRestaurant = null
+    this.fetchNeighborhoods()
+    this.fetchCuisines()
     this.drawWheel()
-    this.updateCuisineTags()
+  }
+
+  async fetchNeighborhoods() {
+    try {
+      const response = await fetch('/neighborhoods')
+      const neighborhoods = await response.json()
+      
+      const select = this.locationSelectTarget
+      select.innerHTML = '<option value="">Select a neighborhood</option>'
+      
+      neighborhoods.forEach(neighborhood => {
+        const option = document.createElement('option')
+        option.value = neighborhood
+        option.textContent = neighborhood
+        select.appendChild(option)
+      })
+    } catch (error) {
+      /*console.error('Error fetching neighborhoods:', error)*/
+      const fallbackNeighborhoods = [
+        "Astoria", "DUMBO", "East Village", "Lower East Side", 
+        "Midtown", "Park Slope", "SoHo", "Upper East Side", 
+        "West Village", "Williamsburg"
+      ]
+      const select = this.locationSelectTarget
+      select.innerHTML = '<option value="">Select a neighborhood</option>'
+      fallbackNeighborhoods.forEach(neighborhood => {
+        const option = document.createElement('option')
+        option.value = neighborhood
+        option.textContent = neighborhood
+        select.appendChild(option)
+      })
+    }
+  }
+
+  async fetchCuisines() {
+    try {
+      const response = await fetch('/cuisines')
+      const cuisines = await response.json()
+      
+      const grid = this.cuisinesGridTarget
+      grid.innerHTML = cuisines.map(cuisine => `
+        <label class="cuisine-checkbox">
+          <input type="checkbox" value="${cuisine}" data-action="change->solo-spin#toggleCuisine">
+          <span class="cuisine-label">${cuisine}</span>
+        </label>
+      `).join('')
+    } catch (error) {
+      /*console.error('Error fetching cuisines:', error)*/
+      const fallbackCuisines = [
+        "American", "Chinese", "French", "Indian", "Italian",
+        "Japanese", "Korean", "Mediterranean", "Mexican", "Thai"
+      ]
+      const grid = this.cuisinesGridTarget
+      grid.innerHTML = fallbackCuisines.map(cuisine => `
+        <label class="cuisine-checkbox">
+          <input type="checkbox" value="${cuisine}" data-action="change->solo-spin#toggleCuisine">
+          <span class="cuisine-label">${cuisine}</span>
+        </label>
+      `).join('')
+    }
+  }
+
+  toggleCuisine(event) {
+    const checkbox = event.target
+    const cuisine = checkbox.value
+    
+    if (checkbox.checked) {
+      if (!this.selectedCuisines.includes(cuisine)) {
+        this.selectedCuisines.push(cuisine)
+      }
+    } else {
+      this.selectedCuisines = this.selectedCuisines.filter(c => c !== cuisine)
+    }
+    
+    this.categoriesInputTarget.value = this.selectedCuisines.join(',')
+    checkbox.closest('.cuisine-checkbox').classList.toggle('selected', checkbox.checked)
   }
 
   drawWheel() {
@@ -46,9 +123,6 @@ export default class extends Controller {
     ctx.arc(radius, radius, radius * 0.15, 0, Math.PI * 2)
     ctx.fillStyle = "#FEE440"
     ctx.fill()
-    ctx.strokeStyle = "#2B2B2B"
-    ctx.lineWidth = 2
-    ctx.stroke()
 
     ctx.beginPath()
     ctx.moveTo(radius, 0)
@@ -59,130 +133,196 @@ export default class extends Controller {
     ctx.fill()
   }
 
-  validateAndSpin(e) {
-    console.log('validateAndSpin clicked!')
-    e.preventDefault()
-
+  async spin(event) {
+    event.preventDefault()
+    
     if (!this.validateForm()) {
-      console.log('Validation failed, showing message')
       this.showValidationMessage()
       return
     }
-
-    console.log('Validation passed, spinning wheel')
+    
     this.hideValidationMessage()
-    this.spinWheel()
+    
+    const location = this.locationSelectTarget.value
+    const price = this.priceSelectTarget.value
+    const categories = this.selectedCuisines
+    
+    // Show spinning animation
+    this.wheelTarget.classList.add('spinning')
+    this.spinButtonTarget.disabled = true
+    
+    try {
+      const response = await fetch('/solo_spin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          location: location,
+          price: price,
+          categories: categories
+        })
+      })
+      
+      const data = await response.json()
+      
+      // Wait for spin animation
+      setTimeout(() => {
+        this.wheelTarget.classList.remove('spinning')
+        this.spinButtonTarget.disabled = false
+        
+        if (data.success) {
+          this.showResult(data.restaurant, data.match_type)
+        } else {
+          alert(data.error || 'No restaurant found')
+        }
+      }, 2000 + Math.random() * 1000)
+      
+    } catch (error) {
+      /*console.error('Spin error:', error)*/
+      alert('An error occurred')
+      this.wheelTarget.classList.remove('spinning')
+      this.spinButtonTarget.disabled = false
+    }
   }
 
   validateForm() {
     const name = this.nameInputTarget.value.trim()
-    const location = this.locationInputTarget.value.trim()
+    const location = this.locationSelectTarget.value
     const price = this.priceSelectTarget.value
-
-    console.log('Solo Spin Validation:', { name, location, price })
-    console.log('Valid?', !!(name && location && price))
-
-    return name && location && price
+    const cuisines = this.selectedCuisines.length > 0
+    
+    return name && location && price && cuisines
   }
 
   showValidationMessage() {
     this.validationMessageTarget.style.display = "block"
+    this.validationMessageTarget.textContent = "Please fill in all fields and select at least one cuisine"
+
   }
 
   hideValidationMessage() {
     this.validationMessageTarget.style.display = "none"
   }
 
-  spinWheel() {
-    const wheel = this.wheelTarget
-    const button = this.spinButtonTarget
+  showResult(restaurant, matchType) {
+    this.currentRestaurant = restaurant
+    
+    const stars = '★'.repeat(Math.floor(restaurant.rating)) + '☆'.repeat(5 - Math.floor(restaurant.rating))
+    
+    const resultHTML = `
+      <div class="result-overlay" id="soloResult">
+        <div class="result-modal">
+          <button class="close-button" id="closeResultBtn">×</button>
+          
+          <div class="result-header">
+            <h3>🎉 You should try:</h3>
+          </div>
 
-    button.disabled = true
-    wheel.classList.add("spinning")
+          <div class="restaurant-result">
+            ${restaurant.image_url ? `
+              <div class="restaurant-image">
+                <img src="${restaurant.image_url}" alt="${restaurant.name}">
+              </div>
+            ` : ''}
 
-    const spinDuration = 2000 + Math.random() * 1000
+            <h2 class="restaurant-name">${restaurant.name}</h2>
 
-    setTimeout(() => {
-      wheel.classList.remove("spinning")
-      button.disabled = false
+            <div class="restaurant-rating">
+              <span class="stars">${stars}</span>
+              <span class="rating-value">(${restaurant.rating})</span>
+            </div>
 
-      const form = button.closest("form")
-      form.submit()
-    }, spinDuration)
-  }
+            <div class="restaurant-meta">
+              <span class="price">${restaurant.price}</span>
+              ${restaurant.categories ? `
+                <div class="cuisine-list">
+                  ${restaurant.categories.map(cat => `<span class="cuisine-tag">${cat}</span>`).join('')}
+                </div>
+              ` : ''}
+            </div>
 
-  onLocationChange() {
-    this.updateLocationSuggestions()
-  }
+            <div class="restaurant-address">
+              <span class="address-icon">📍</span>
+              ${restaurant.address}
+            </div>
+            
+            <div style="text-align: center; margin-top: 0.5rem; color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+              ${restaurant.neighborhood}
+            </div>
 
-  updateLocationSuggestions() {
-    const input = this.locationInputTarget.value.trim()
-    const suggestionsContainer = this.suggestionsTarget
+            ${matchType && matchType !== 'exact' ? `
+              <div style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem; margin-top: 1rem; text-align: center; font-style: italic;">
+                ${this.getMatchTypeText(matchType)}
+              </div>
+            ` : ''}
+          </div>
 
-    if (!input) {
-      suggestionsContainer.style.display = "none"
-      return
-    }
-
-    const allSuggestions = ["New York", "Los Angeles", "Chicago", "Houston", "Phoenix", "Miami"]
-    const filtered = allSuggestions.filter(s =>
-      s.toLowerCase().includes(input.toLowerCase())
-    )
-
-    if (filtered.length === 0) {
-      suggestionsContainer.style.display = "none"
-      return
-    }
-
-    suggestionsContainer.innerHTML = filtered.map(suggestion =>
-      `<div class="location-suggestion" data-location="${suggestion}">${suggestion}</div>`
-    ).join("")
-
-    suggestionsContainer.style.display = "block"
-
-    suggestionsContainer.querySelectorAll(".location-suggestion").forEach(el => {
-      el.addEventListener("click", (e) => {
-        this.locationInputTarget.value = e.target.dataset.location
-        suggestionsContainer.style.display = "none"
-      })
+          <div class="result-actions">
+            <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.address)}" 
+               target="_blank"
+               class="button spin-again-button">
+              🗺️ View on Map
+            </a>
+            <button class="button share-button" id="shareResultBtn">
+              Share
+            </button>
+          </div>
+        </div>
+      </div>
+    `
+    
+    document.body.insertAdjacentHTML('beforeend', resultHTML)
+    
+    // Add event listeners
+    document.getElementById('closeResultBtn').addEventListener('click', () => {
+      document.getElementById('soloResult').remove()
+    })
+    
+    document.getElementById('shareResultBtn').addEventListener('click', () => {
+      this.shareResult()
     })
   }
 
-  onCuisineChange() {
-    this.updateCuisineTags()
+  shareResult() {
+    const restaurant = this.currentRestaurant
+    if (!restaurant) return
+    
+    const shareText = `Check out ${restaurant.name}! 📍 ${restaurant.address}`
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'Restaurant Roulette',
+        text: shareText
+      }).catch(() => {})
+    } else {
+      navigator.clipboard.writeText(shareText).then(() => {
+        const btn = document.getElementById('shareResultBtn')
+        const originalText = btn.textContent
+        btn.textContent = '✓ Copied!'
+        btn.style.backgroundColor = '#22c55e'
+        
+        setTimeout(() => {
+          btn.textContent = originalText
+          btn.style.backgroundColor = ''
+        }, 2000)
+      }).catch(() => {
+        alert('Could not copy to clipboard')
+      })
+    }
   }
 
-  updateCuisineTags() {
-    const input = this.cuisineInputTarget.value
-    const tagsContainer = this.cuisineTagsTarget
-
-    if (!input.trim()) {
-      tagsContainer.innerHTML = ""
-      return
+  getMatchTypeText(matchType) {
+    const texts = {
+      'location_price': '📍 Same area & price (different cuisine)',
+      'location_cuisine': '📍 Same area & cuisine (different price)',
+      'location_only': '📍 Same area only',
+      'price_cuisine': '🍽️ Same cuisine & price (different area)',
+      'cuisine_only': '🍽️ Same cuisine only',
+      'price_only': '💰 Same price only',
+      'random': '🎲 Random pick'
     }
-
-    const cuisines = input.split(",").map(c => c.trim()).filter(c => c)
-    const tagsHtml = cuisines.map((cuisine) =>
-      `<span class="cuisine-tag">
-        ${cuisine}
-        <button type="button" class="remove-btn" data-cuisine="${cuisine}">×</button>
-      </span>`
-    ).join("")
-
-    tagsContainer.innerHTML = tagsHtml
-
-    tagsContainer.querySelectorAll(".remove-btn").forEach(btn => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault()
-        const cuisineToRemove = btn.dataset.cuisine
-        const updated = input
-          .split(",")
-          .map(c => c.trim())
-          .filter(c => c !== cuisineToRemove)
-          .join(", ")
-        this.cuisineInputTarget.value = updated
-        this.updateCuisineTags()
-      })
-    })
+    return texts[matchType] || ''
   }
 }

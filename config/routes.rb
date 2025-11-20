@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   
   # Solo Spin
   get "solo_spin", to: "solo_spin#show", as: "solo_spin"
+  post "solo_spin", to: "solo_spin#spin" 
   
   # Room Creation
   get "create_room", to: "rooms#new", as: "create_room"
