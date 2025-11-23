@@ -79,15 +79,15 @@ Feature: Restaurant Data Service
     And categories should be displayed as tags like "American, Wine Bars, Cocktail Bars"
 
   Scenario: Service provides complete restaurant data
-    Given a restaurant "Da Andrea" is fetched
+    Given a restaurant "Juliana's Pizza" is fetched
     Then the restaurant should have:
-      | Field         | Value                              |
-      | name          | Da Andrea                         |
-      | rating        | 4.7                               |
-      | price         | $$                                |
-      | address       | 160 8th Ave, New York, NY 10011   |
-      | categories    | Italian, Mediterranean            |
-      | is_open_now   | true                              |
+      | Field         | Value                               |
+      | name          | Juliana's Pizza                     |
+      | rating        | 4.7                                 |
+      | price         | $$                                  |
+      | address       | 19 Old Fulton St, Brooklyn, NY 11201|
+      | categories    | Italian                             |
+      | is_open_now   | true                                |
 
   Scenario: Fetch restaurant phone number
     Given a restaurant is fetched from the service
@@ -116,8 +116,8 @@ Feature: Restaurant Data Service
     And all restaurants should match the criteria
 
   Scenario: Parse restaurant address correctly
-    Given restaurant "Bourbon and Branch" is fetched
-    Then the address should be formatted as "155 W 33rd St, New York, NY 10001"
+    Given restaurant "Katz's Delicatessen" is fetched
+    Then the address should be formatted as "205 E Houston St, New York, NY 10002"
     And should include street, city, state, and zip code
 
   Scenario: Service removes duplicate restaurants
@@ -141,11 +141,11 @@ Feature: Restaurant Data Service
 
   Scenario: Filter restaurants by multiple criteria
     Given location is "New York"
-    And cuisine is "Italian"
+    And cuisine is "Mexican"
     And price range is "$$"
     When the system requests restaurants
     Then the service should return only restaurants matching all three criteria
-    And should return "Da Andrea" as a match
+    And should return "Toloache" as a match
 
   Scenario: Service returns realistic restaurant data
     Given restaurants are fetched from the service
@@ -167,7 +167,7 @@ Feature: Restaurant Data Service
   Scenario: Data includes all prototype restaurants
     Given the restaurant service is available
     When all restaurants are fetched
-    Then the dataset should include "Da Andrea"
-    And should include "Bourbon and Branch"
-    And should include "Shukette"
+    Then the dataset should include "Balthazar"
+    And should include "Lilia"
+    And should include "Katz's Delicatessen"
     And should include at least 20 restaurants total
