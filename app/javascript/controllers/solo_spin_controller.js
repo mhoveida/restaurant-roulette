@@ -152,11 +152,13 @@ export default class extends Controller {
     this.spinButtonTarget.disabled = true
     
     try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || ""
+
       const response = await fetch('/solo_spin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          'X-CSRF-Token': csrfToken
         },
         body: JSON.stringify({
           location: location,
@@ -180,8 +182,9 @@ export default class extends Controller {
       }, 2000 + Math.random() * 1000)
       
     } catch (error) {
-      /*console.error('Spin error:', error)*/
-      alert('An error occurred')
+      console.error('Spin error:', error)
+      // We can revert to the simple alert now that we know the issue
+      alert('An error occurred') 
       this.wheelTarget.classList.remove('spinning')
       this.spinButtonTarget.disabled = false
     }

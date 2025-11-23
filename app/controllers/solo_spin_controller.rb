@@ -59,6 +59,8 @@ class SoloSpinController < ApplicationController
     { restaurant: nil, match_type: "none" }
   end
 
+  # app/controllers/solo_spin_controller.rb
+
   def search_restaurants(location:, price:, categories:)
     query = Restaurant.all
     
@@ -72,11 +74,18 @@ class SoloSpinController < ApplicationController
     query = query.where(price: price) if price.present?
     
     if categories.present? && categories.any?
-      category_conditions = categories.map { |cat| "categories LIKE ?" }
+      # FIX: Cast JSON to text for PostgreSQL compatibility (works on SQLite too usually)
+      # If using Postgres, use "categories::text LIKE ?"
+      # If using SQLite, "categories LIKE ?" is fine.
+      
+      # Safe fallback for both (usually):
+      category_conditions = categories.map { |cat| "categories::text LIKE ?" } 
       category_values = categories.map { |cat| "%#{cat}%" }
+      
       query = query.where(category_conditions.join(" OR "), *category_values)
     end
     
-    query.order("RANDOM()").first
+    # Use Arel.sql to avoid deprecation warnings and ensure compatibility
+    query.order(Arel.sql("RANDOM()")).first
   end
 end

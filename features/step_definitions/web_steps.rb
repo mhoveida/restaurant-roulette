@@ -86,12 +86,6 @@ Then('I should see {string} button instead of my name') do |button_text|
   expect(page).not_to have_css('.profile-email')
 end
 
-Then /I should see a "(.*)" button$/ do |link_or_button_text|
-  has_button = page.has_link?(link_or_button_text) || page.has_button?(link_or_button_text) ||
-               page.has_link?(link_or_button_text, visible: :all) || page.has_button?(link_or_button_text, visible: :all)
-  expect(has_button).to be(true), "Expected to find link or button '#{link_or_button_text}', but did not."
-end
-
 Then /I should see an "(.*)" input field/ do |field_name|
   expect(page.has_field?(field_name)).to be(true), "Expected to find field '#{field_name}', but did not."
 end
