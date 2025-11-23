@@ -11,82 +11,65 @@ Feature: Solo Spin
     And I am on the home page
     When I click "Solo Spin"
     Then I should be on the solo spin page
-    And I should see "Set Your Preference"
-    And I should see "Tell us what you're looking for"
+    And I should see "Set Your Preferences"
+    And I should see "Choose your criteria for the perfect restaurant"
+    And I should see a "Name" input field
+    And I should see a "Neighborhood" dropdown
+    And I should see a "Price Range" dropdown
+    And I should see the cuisine selection grid
 
-  Scenario: Logged in user accesses solo spin with pre-filled name
+  Scenario: Logged in user sees pre-filled name
     Given I am logged in as "Maddison"
-    And I am on the home page
-    When I click "Solo Spin"
-    Then I should be on the solo spin page
-    And the name field should display "Maddison"
-    And the name field should be read-only
+    When I visit the solo spin page
+    Then the "Name" field should contain "Maddison"
+    And the "Name" field should be read-only
 
-  Scenario: User views solo spin preference form
+  @javascript
+  Scenario: User sees validation error when fields are empty
     Given I am on the solo spin page
-    Then I should see a name input field
-    And I should see a location input field with search icon
-    And I should see a price range dropdown
-    And I should see a cuisine preferences dropdown
-    And I should see the roulette wheel
-    And I should see a "Spin" button
+    When I click "Spin the Wheel!"
+    Then I should see a validation message "Please fill in all fields"
+    And the wheel should not be spinning
 
-  Scenario: User fills out all preferences successfully
+  @javascript
+  Scenario: User spins the wheel with exact match
     Given I am on the solo spin page
-    When I fill in "Name" with "Maddison"
-    And I fill in "Location" with "New York"
-    And I select "$$" from "Price Range"
-    And I select cuisines "Italian, American, Mediterranean"
-    Then all required fields should be filled
-    And the "Spin" button should be enabled
+    When I fill in "Your Name" with "Guest User"
+    And I select "SoHo" from the "Neighborhood" dropdown
+    And I select "$$$ - Upscale" from the "Price Range" dropdown
+    And I select "French" from the cuisine grid
+    And I click "Spin the Wheel!"
+    Then the wheel should spin
+    And I should see the result modal
+    And I should see "🎉 You should try:"
+    And I should see the restaurant name "Balthazar"
+    And I should see the star rating
+    And I should see the price "$$$"
+    And I should see the address "80 Spring St"
+    And I should see a "View on Map" button
 
-  Scenario: User selects price range options
+  @javascript
+  Scenario: User spins and gets a fuzzy match (Fallback logic)
     Given I am on the solo spin page
-    When I click on "Price Range" dropdown
-    Then I should see "$" option
-    And I should see "$$" option
-    And I should see "$$$" option
-    And I should see "$$$$" option
-
-  Scenario: User spins the wheel successfully
-    Given I am on the solo spin page
-    And I have filled in all required preferences:
-      | Name     | Location | Price Range | Cuisines                    |
-      | Maddison | New York | $$         | Italian, American, Mediterranean |
-    When I click "Spin"
-    Then the wheel should animate and spin
-    And the wheel should slow down gradually
-    And I should see the restaurant result page
-
-  Scenario: User views restaurant result after spinning
-    Given I have completed a solo spin with valid preferences
-    When the wheel stops spinning
-    Then I should see "You are going to:"
+    And the database has limited restaurants
+    When I fill in "Your Name" with "Guest User"
+    And I select "SoHo" from the "Neighborhood" dropdown
+    # Selecting a combination that might not exist exactly, triggering fallback
+    And I select "$$ - Moderate" from the "Price Range" dropdown 
+    And I select "Korean" from the cuisine grid
+    And I click "Spin the Wheel!"
+    Then I should see the result modal
     And I should see the restaurant name
-    And I should see the restaurant image
-    And I should see the restaurant rating with stars
-    And I should see the restaurant address
-    And I should see the price range indicator
-    And I should see cuisine tags
-    And I should see restaurant status "Open" or "Closed"
-    And I should see closing time
-    And I should see distance "10 min by car"
-    And I should see review count link
+    # Checks for the match type text defined in your JS getMatchTypeText()
+    And I should see text indicating a partial match like "Same area" or "Random pick"
 
-  Scenario: Guest user does not see feedback option
-    Given I am not logged in
-    And I am viewing a restaurant result
-    Then I should not see "How was it?" section
-    And I should not see feedback buttons
+  @javascript
+  Scenario: User shares the result
+    Given I have spun the wheel and see a result
+    When I click the "Share" button
+    Then the share button text should change to "✓ Copied!"
 
-  Scenario: Restaurant service returns no results
+  Scenario: User navigates back to home
     Given I am on the solo spin page
-    When I fill in preferences with very specific criteria that match no restaurants
-    And I click "Spin"
-    Then I should see "No restaurants found matching your criteria"
-    And I should see "Try adjusting your preferences"
-
-  Scenario: User navigates back to home page
-    Given I am on the solo spin page
-    When I click on "RESTAURANT ROULETTE" logo
-    Then I should be redirected to the home page
+    When I click "← Back to Home"
+    Then I should be on the home page

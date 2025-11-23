@@ -1,4 +1,5 @@
 class SoloSpinController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:show, :spin], raise: false
   def show
     @name = current_user&.first_name || ""
   end
