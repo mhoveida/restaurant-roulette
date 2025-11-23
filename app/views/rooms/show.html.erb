@@ -309,7 +309,7 @@
             <button class="button button-primary" 
                     data-action="click->room-spin#reveal"
                     style="width: 100%; max-width: 400px; margin: 0 auto; display: block;">
-              🎊 Reveal All Options!
+              Reveal All Options!
             </button>
           <% end %>
           
@@ -543,6 +543,11 @@
                   data-restaurant-price="<%= restaurant["price"] %>">
             Share
           </button>
+        </div>
+
+        <!-- Back Link (styled like solo spin) -->
+        <div style="text-align: center; margin-top: 2rem;">
+          <%= link_to "← Back to Home", root_path, style: "color: rgba(255, 255, 255, 0.6); text-decoration: none;" %>
         </div>
       </div>
     </div>
