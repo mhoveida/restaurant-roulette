@@ -184,7 +184,7 @@ Then /I should be redirected to the group room page/ do
 end
 
 Then /I should be redirected to the join room page/ do
-  expect(page.has_content?("Join this room")).to be(true), "Expected to be on the join room page, but was not."
+  expect(page.has_content?("Set your preferences")).to be(true), "Expected to be on the join room page (looking for 'Set your preferences'), but was not."
 end
 
 Then /I should remain on the home page/ do

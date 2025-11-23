@@ -60,7 +60,9 @@
         </div>
         <input type="hidden" name="categories" data-create-room-target="categoriesInput">
         <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
-          Owner's cuisines: <strong style="color: var(--color-yellow);"><%= @room.categories.join(", ") %></strong>
+          Owner's cuisines: <strong style="color: var(--color-yellow);">
+            <%= @room.categories.respond_to?(:join) ? @room.categories.join(", ") : @room.categories %>
+          </strong>
         </small>
       </div>
 
