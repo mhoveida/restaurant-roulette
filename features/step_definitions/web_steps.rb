@@ -57,6 +57,10 @@ end
 # ============================================
 # ASSERTIONS
 # ============================================
+Then("I should see a {string} button") do |text|
+  # This matches links styled as buttons OR actual buttons
+  expect(page).to have_selector(:link_or_button, text)
+end
 
 Then (/^I should see "(.*)"$/) do |text|
   page_text = page.text(:all)

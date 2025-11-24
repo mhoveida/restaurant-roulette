@@ -123,7 +123,7 @@ Then("I should see the address {string}") do |address_part|
   end
 end
 
-Then("I should see a {string} button") do |text|
+Then("I should see a {string} button in the result modal") do |text|
   within('.result-modal') do
     expect(page).to have_content(text)
   end
