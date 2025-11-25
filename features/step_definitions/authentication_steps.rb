@@ -413,3 +413,21 @@ Then('the {string} button should be disabled') do |button_name|
 
   expect(button.disabled?).to be true
 end
+
+
+Given('I am authenticated as {string}') do |name|
+  names = name.split(' ')
+  first_name = names[0]
+  last_name = names.length > 1 ? names[1..].join(' ') : "User"
+
+  user = User.find_or_create_by!(email: "#{first_name.downcase}@example.com") do |u|
+    u.first_name = first_name
+    u.last_name = last_name
+    u.password = 'TestPassword123'
+    u.password_confirmation = 'TestPassword123'
+    u.confirmed_at = Time.current
+  end
+
+  login_as(user, scope: :user)
+  @current_user = user
+end

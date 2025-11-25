@@ -140,3 +140,11 @@ Before do
   # Initialize restaurant service for all scenarios
   @restaurant_service = RestaurantService.new
 end
+
+# Warden test helpers for Devise authentication
+World(Warden::Test::Helpers)
+Warden.test_mode!
+
+After do
+  Warden.test_reset!
+end

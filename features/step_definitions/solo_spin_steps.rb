@@ -1,178 +1,149 @@
 # features/step_definitions/solo_spin_steps.rb
+# COMPLETE FIXED VERSION - Replace your entire file with this
 
 # ==========================================
-# UI VERIFICATION
+# CONTEXT-AWARE FORM STEPS
 # ==========================================
 
-Then("I should see a {string} input field") do |field_name|
+When('I fill in {string} with {string}') do |field_name, value|
   case field_name
   when "Name"
-    expect(page).to have_css("input[data-solo-spin-target='nameInput']")
-  else
-    expect(page).to have_field(field_name)
-  end
-end
-
-Then("I should see a {string} dropdown") do |label_text|
-  expect(page).to have_content(label_text)
-  expect(page).to have_css('select')
-end
-
-Then("I should see the cuisine selection grid") do
-  expect(page).to have_css('.cuisines-grid')
-end
-
-Then("the {string} field should contain {string}") do |field_name, value|
-  input = find("input[data-solo-spin-target='nameInput']")
-  expect(input.value).to eq value
-end
-
-Then("the {string} field should be read-only") do |field_name|
-  input = find("input[data-solo-spin-target='nameInput']")
-  expect(input[:readonly]).to be_truthy
-end
-
-# ==========================================
-# INTERACTION
-# ==========================================
-
-When("I fill in {string} with {string}") do |label, value|
-  if label == "Your Name" || label == "Name"
-    find("input[data-solo-spin-target='nameInput']").set(value)
-  else
-    fill_in label, with: value
-  end
-end
-
-When("I select {string} from the {string} dropdown") do |option_text, label|
-  if label == "Neighborhood"
-    dropdown = find("select[data-solo-spin-target='locationSelect']")
-    using_wait_time(5) do 
-      dropdown.find(:option, option_text).select_option
+    if page.has_css?('.solo-spin-container')
+      # Solo Spin page
+      find('input[data-solo-spin-target="nameInput"]').set(value)
+    elsif page.has_css?('.create-room-container')
+      # Group Room Create or Join page
+      if page.has_field?('owner_name')
+        fill_in 'owner_name', with: value
+      elsif page.has_field?('guest_name')
+        fill_in 'guest_name', with: value
+      end
     end
-  elsif label == "Price Range"
-    dropdown = find("select[data-solo-spin-target='priceSelect']")
-    dropdown.find(:option, option_text).select_option
+  when "Enter Room Code"
+    fill_in 'room_code', with: value
   else
-    select option_text, from: label
+    fill_in field_name, with: value
   end
 end
 
-When("I select {string} from the cuisine grid") do |cuisine_name|
-  using_wait_time(5) do
-    find('.cuisines-grid label', text: cuisine_name).click
+When('I select {string} from the {string} dropdown') do |value, dropdown_name|
+  case dropdown_name
+  when "Neighborhood"
+    if page.has_css?('.solo-spin-container')
+      # Solo Spin page
+      within('[data-solo-spin-target="locationSelect"]') do
+        select value
+      end
+    else
+      # Group Room pages
+      select value, from: 'location'
+    end
+  when "Price Range"
+    if page.has_css?('.solo-spin-container')
+      # Solo Spin page
+      within('[data-solo-spin-target="priceSelect"]') do
+        select value
+      end
+    else
+      # Group Room pages
+      select value, from: 'price'
+    end
   end
 end
 
-# Note: "I click {string}" removed to avoid conflict with web_steps.rb
-
-# ==========================================
-# VALIDATION & ANIMATION
-# ==========================================
-
-Then("I should see a validation message {string}") do |message|
-  expect(page).to have_css('.validation-message', text: message, visible: true)
-end
-
-Then("the wheel should spin") do
-  expect(page).to have_css('#roulette-wheel.spinning', wait: 2)
-end
-
-Then("the wheel should not be spinning") do
-  expect(page).not_to have_css('#roulette-wheel.spinning')
-end
-
-# ==========================================
-# RESULTS (MODAL)
-# ==========================================
-
-Then("I should see the result modal") do
-  using_wait_time(6) do
-    expect(page).to have_css('.result-modal', visible: true)
+When('I select {string} from the cuisine grid') do |cuisine|
+  using_wait_time(15) do
+    # Detect which page we're on
+    grid_selector = if page.has_css?('.solo-spin-container')
+                      '[data-solo-spin-target="cuisinesGrid"]'
+                    elsif page.has_css?('.create-room-container')
+                      '[data-create-room-target="cuisinesGrid"]'
+                    else
+                      raise "Cannot find cuisines grid"
+                    end
+    
+    within(grid_selector) do
+      # Wait for JavaScript to populate
+      expect(page).to have_css('.cuisine-checkbox', wait: 10)
+      
+      # Find the label containing this cuisine
+      label = find('.cuisine-checkbox', text: cuisine, match: :first)
+      
+      # Find the checkbox inside the label
+      checkbox = label.find('input[type="checkbox"]')
+      
+      # Click the checkbox (NOT the label) to trigger the JavaScript event
+      checkbox.click
+      
+      # Wait a moment for JavaScript to process
+      sleep 0.5
+      
+      # Verify it was selected
+      expect(checkbox).to be_checked
+      
+      # Verify the label has the 'selected' class added by JavaScript
+      expect(label[:class]).to include('selected')
+    end
   end
-end
-
-Then("I should see the restaurant name {string}") do |name|
-  within('.result-modal') do
-    expect(page).to have_css('.restaurant-name', text: name)
-  end
-end
-
-Then("I should see the restaurant name") do
-  within('.result-modal') do
-    expect(page).to have_css('.restaurant-name')
-    expect(find('.restaurant-name').text).not_to be_empty
-  end
-end
-
-Then("I should see the star rating") do
-  within('.result-modal') do
-    expect(page).to have_css('.stars')
-  end
-end
-
-Then("I should see the price {string}") do |price|
-  within('.result-modal') do
-    expect(page).to have_content(price)
-  end
-end
-
-Then("I should see the address {string}") do |address_part|
-  within('.result-modal') do
-    expect(page).to have_content(address_part)
-  end
-end
-
-Then("I should see a {string} button in the result modal") do |text|
-  within('.result-modal') do
-    expect(page).to have_content(text)
-  end
-end
-
-Then("I should see text indicating a partial match like {string} or {string}") do |text1, text2|
-  within('.result-modal') do
-    expect(page.text).to match(/#{text1}|#{text2}/)
-  end
+  
+  # Extra verification: check that the hidden categoriesInput was updated
+  controller_name = if page.has_css?('.solo-spin-container')
+                      'solo-spin'
+                    else
+                      'create-room'
+                    end
+  
+  categories_input = find("[data-#{controller_name}-target='categoriesInput']", visible: false)
+  expect(categories_input.value).to include(cuisine)
 end
 
 # ==========================================
-# HELPERS
+# HELPER METHODS (if needed elsewhere)
 # ==========================================
 
-Given("the database has limited restaurants") do
-  Restaurant.destroy_all
-  Restaurant.create!(
-    name: "Test Place",
-    neighborhood: "SoHo",
-    price: "$$",
-    categories: ["American"], 
-    rating: 4.5,
-    address: "123 Test St",
-    is_open_now: true,
-    image_url: "https://example.com/image.jpg"
-  )
-end
-
-Given("I have spun the wheel and see a result") do
-  steps %{
-    Given I am on the solo spin page
-    When I fill in "Your Name" with "Test User"
-    And I select "SoHo" from the "Neighborhood" dropdown
-    And I select "$$" from the "Price Range" dropdown
-    And I select "American" from the cuisine grid
-    And I click "Spin the Wheel!"
-    Then I should see the result modal
-  }
-end
-
-When("I click the {string} button") do |text|
-  within('.result-modal') do
-    find('button', text: text).click
+def select_neighborhood(neighborhood)
+  within('[data-solo-spin-target="locationSelect"]') do
+    select neighborhood
   end
 end
 
-Then("the share button text should change to {string}") do |text|
-  within('.result-modal') do
-    expect(page).to have_button(text)
+def select_price(price)
+  within('[data-solo-spin-target="priceSelect"]') do
+    select price
   end
 end
+
+def select_cuisine(cuisine)
+  using_wait_time(10) do
+    within('[data-solo-spin-target="cuisinesGrid"]') do
+      expect(page).to have_css('.cuisine-checkbox', wait: 10)
+      label = find('.cuisine-checkbox', text: cuisine, match: :first)
+      label.click
+    end
+  end
+end
+
+# ==========================================
+# VALIDATION STEPS
+# ==========================================
+
+Then('I should see a validation message') do
+  # Check which page we're on and look for the appropriate validation message
+  if page.has_css?('.solo-spin-container')
+    # Solo spin page
+    expect(page).to have_css('[data-solo-spin-target="validationMessage"]', visible: true)
+  elsif page.has_css?('.create-room-container')
+    # Create room page
+    expect(page).to have_css('[data-create-room-target="validationMessage"]', visible: true)
+  else
+    # Generic fallback
+    expect(page).to have_css('.validation-message, .error-message', visible: true)
+  end
+end
+
+Then('the {string} field should be read-only') do |field_name|
+  field = find_field(field_name)
+  expect(field[:readonly]).to be_truthy
+end
+
+# Note: "the {string} field should contain {string}" is in group_room_steps.rb

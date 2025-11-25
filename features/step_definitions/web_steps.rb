@@ -18,10 +18,6 @@ Given "I am on the solo spin page" do
   visit solo_spin_path
 end
 
-Given /a room exists with code "(.*)"/ do |code|
-  FactoryBot.create(:room, code: code)
-end
-
 # ============================================
 # ACTIONS
 # ============================================
