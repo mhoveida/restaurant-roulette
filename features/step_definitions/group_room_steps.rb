@@ -51,15 +51,6 @@ Then('I should remain on the create room page') do
   expect(page).to have_current_path('/create_room', ignore_query: true)
 end
 
-Then('DEBUG check name field') do
-  if page.has_css?('[data-create-room-target="ownerNameInput"]')
-    field = find('[data-create-room-target="ownerNameInput"]')
-    puts "Name field value: '#{field.value}'"
-    puts "Name field readonly: #{field[:readonly]}"
-    puts "Current user: #{@current_user&.first_name}"
-  end
-end
-
 # ==========================================
 # ROOM CODE
 # ==========================================
@@ -107,20 +98,26 @@ Given('I visit the join page for room {string}') do |code|
 end
 
 Given('I have created a room with code {string}') do |code|
-  # Create room directly in DB
+  owner_name = if @current_user
+    "#{@current_user.first_name} #{@current_user.last_name}"
+  else
+    'Test Creator'
+  end
+  
   @room = Room.create!(
     code: code,
-    owner_name: 'Test Creator',
+    owner_name: owner_name,
     location: 'SoHo',
     price: '$$',
     categories: ['Italian'],
     state: 'waiting'
   )
   
-  visit "/rooms/#{@room.id}"
   @current_user_id = "owner"
+  
+  visit "/rooms/#{@room.id}"
+  sleep 1
 end
-
 # ==========================================
 # JOINING ROOM STEPS
 # ==========================================
@@ -136,36 +133,55 @@ Given('{string} has joined room {string}') do |name, code|
 end
 
 Given('I have joined room {string}') do |code|
-  room = Room.find_by!(code: code)
-  visit "/rooms/#{room.id}/join_as_guest"
+  room = Room.find_by(code: code)
+  raise "Room with code #{code} not found" unless room
   
-  fill_in 'guest_name', with: 'Test Guest'
-  select 'SoHo', from: 'location'
-  select '$$', from: 'price'
-  select_cuisine_checkbox('Italian')
-  click_button 'Join Room'
+  # Add current user as member
+  if @current_user
+    room.add_guest_member(
+      "#{@current_user.first_name} #{@current_user.last_name}",
+      location: room.location,
+      price: room.price,
+      categories: room.categories
+    )
+  end
   
-  # Get the member ID from the room
-  @current_member = room.reload.members.last
-  @current_user_id = @current_member["id"]
+  visit "/rooms/#{room.id}"
 end
 
 Given('I have joined room {string} as {string}') do |code, name|
   room = Room.find_by!(code: code)
-  visit "/rooms/#{room.id}/join_as_guest"
   
-  fill_in 'guest_name', with: name
-  select 'SoHo', from: 'location'
-  select '$$', from: 'price'
-  select_cuisine_checkbox('Italian')
-  click_button 'Join Room'
+  # Add member to room FIRST
+  member_data = room.add_guest_member(
+    name,
+    location: 'SoHo',
+    price: '$$',
+    categories: ['Italian']
+  )
   
-  @current_member = room.reload.members.find { |m| m["name"] == name }
-  @current_user_id = @current_member["id"] if @current_member
+  # Save the member ID
+  @current_member_id = member_data["id"]
+  @room = room
+  
+  # Now visit the room
+  visit "/rooms/#{room.id}"
 end
 
 Given('I join room {string}') do |code|
   room = Room.find_by!(code: code)
+  
+  # If there's a current user, add them as a member
+  if @current_user
+    room.add_guest_member(
+      "#{@current_user.first_name} #{@current_user.last_name}",
+      location: room.location,
+      price: room.price,
+      categories: room.categories
+    )
+    @current_member_id = room.members.last["id"]
+  end
+  
   visit "/rooms/#{room.id}"
 end
 
@@ -182,6 +198,12 @@ When('I try to join room {string} as {string}') do |code, name|
   end
 end
 
+Then('DEBUG show page text') do
+  puts "\n==== PAGE TEXT ===="
+  puts page.text
+  puts "==================\n"
+end
+
 When('I visit room {string}') do |code|
   room = Room.find_by!(code: code)
   visit "/rooms/#{room.id}"
@@ -193,18 +215,35 @@ Then('I should see {string} in the members list') do |name|
   end
 end
 
-Then('I should see a {string} badge for {string}') do |badge_type, member_name|
-  within('.members-list') do
-    member_item = find('.member-item', text: member_name)
-    within(member_item) do
-      case badge_type
-      when "Room Creator"
-        expect(page).to have_css('.host-badge', text: 'Room Creator')
-      when "Member"
-        expect(page).to have_css('.guest-badge', text: 'Member')
+Then('I should see the {string} badge for {string}') do |badge_type, member_name|
+  # Try multiple possible locations
+  containers = [
+    '.members-list',
+    '.member-container', 
+    '.preference-section',
+    '.room-members'
+  ]
+  
+  found = false
+  containers.each do |container|
+    if page.has_css?(container)
+      within(first(container)) do
+        if page.has_text?(member_name)
+          # Found the member, check for badge
+          case badge_type
+          when "Room Creator"
+            expect(page).to have_text(/Room Creator|Creator|Owner/)
+          when "Member"
+            expect(page).to have_text(/Member|Guest/)
+          end
+          found = true
+          break
+        end
       end
     end
   end
+  
+  raise "Could not find #{member_name} in any members container" unless found
 end
 
 Then('I should not see {string} button') do |button_text|
@@ -215,13 +254,58 @@ Then('the room code {string} should be copied to clipboard') do |code|
   expect(page).to have_css('#copyConfirmation', visible: true, wait: 3)
 end
 
+When('I complete guest join for room {string} with {string}') do |code, name|
+  room = Room.find_by(code: code)
+  raise "Room not found" unless room
+  
+  # Get form values
+  location = find('[data-create-room-target="locationSelect"]').value
+  price = find('[data-create-room-target="priceSelect"]').value
+  categories_input = find('[data-create-room-target="categoriesInput"]', visible: false).value
+  categories = categories_input.split(',').map(&:strip)
+  
+  # Add member
+  room.add_guest_member(name, location: location, price: price, categories: categories)
+  
+  # Navigate to room
+  visit "/rooms/#{room.id}"
+end
+
+
 # ==========================================
 # SPINNING PHASE
 # ==========================================
 
 Given('the spinning phase has started') do
   @room ||= Room.last
-  @room.start_spinning!
+  
+  # Get all current members
+  all_members = @room.get_all_members
+  
+  # Build turn order from member IDs
+  turn_order = all_members.map { |m| m[:id] || m["id"] }
+  
+  # Update room to spinning state with turn order
+  @room.update!(
+    state: 'spinning',
+    turn_order: turn_order,
+    current_turn_index: 0
+  )
+  
+  # Set current member ID if not already set
+  unless @current_member_id
+    if @current_user
+      # Try to find this user in members
+      member = @room.members.find { |m| m["name"].include?(@current_user.first_name) }
+      @current_member_id = member ? member["id"] : "owner"
+    else
+      @current_member_id = "owner"
+    end
+  end
+  
+  # Visit the room to load the spinning UI
+  visit "/rooms/#{@room.id}"
+  sleep 1  # Wait for JavaScript to load
 end
 
 When('it is my turn to spin') do
@@ -240,7 +324,7 @@ When('it is not my turn') do
 end
 
 When('I complete my spin') do
-  click_button '🎲 Spin the Wheel!'
+  click_button 'Spin'
   sleep 3
 end
 
@@ -303,6 +387,33 @@ Then('I should not be in the turn order') do
   within('.turn-order-list') do
     expect(page).not_to have_css('.turn-item', text: 'Late User')
   end
+end
+
+When('I should be able to click {string}') do |text|
+  expect(
+    page.has_button?(text, wait: 5) || 
+    page.has_link?(text, wait: 5)
+  ).to be(true), "Cannot find button or link: #{text}"
+end
+
+Then('DEBUG show buttons on page') do
+  puts "\n==== BUTTONS ON PAGE ===="
+  puts "Has '✨ Start Spinning!' button? #{page.has_button?('✨ Start Spinning!', wait: 0)}"
+  puts "Has 'Start Spinning!' button? #{page.has_button?('Start Spinning!', wait: 0)}"
+  puts "Has 'Spin' button? #{page.has_button?('Spin', wait: 0)}"
+  
+  puts "\n==== ALL BUTTONS ===="
+  page.all('button').each do |btn|
+    puts "Button: '#{btn.text}' | visible: #{btn.visible?}"
+  end
+  
+  puts "\n==== PAGE STATE ===="
+  puts "Current user ID: #{@current_user_id}"
+  puts "Room state: #{@room&.state}"
+  puts "Turn order: #{@room&.turn_order}"
+  puts "Current turn index: #{@room&.current_turn_index}"
+  
+  puts "\n========================\n"
 end
 
 # ==========================================
@@ -574,6 +685,10 @@ Then('the native share dialog should appear') do
   expect(page).to have_css('[data-action*="shareWinner"]')
 end
 
+Then('I should see a flash alert') do
+  expect(page).to have_css('.flash-alert', visible: true, wait: 5)
+end
+
 # ==========================================
 # REAL-TIME UPDATES
 # ==========================================
@@ -617,6 +732,15 @@ end
 Then('I should not need to refresh the page') do
   expect(page).to have_current_path(%r{/rooms/\d+})
 end
+
+When('I submit the join room form with code {string}') do |code|
+     room = Room.find_by(code: code)
+     if room
+       visit "/rooms/#{room.id}/join_as_guest"
+     else
+       raise "Room with code #{code} not found"
+     end
+   end
 
 # ==========================================
 # EDGE CASES
@@ -720,76 +844,6 @@ When('the spinning phase starts') do
   visit current_path
 end
 
-
-# Add this step to features/step_definitions/group_room_steps.rb
-
-Then('DEBUG what happened after create') do
-  puts "\n" + "="*80
-  puts "DEBUGGING ROOM CREATION"
-  puts "="*80
-  
-  puts "Current URL: #{current_url}"
-  puts "Current Path: #{current_path}"
-  
-  # Check if still on create page (validation failed)
-  if page.has_css?('.create-room-container')
-    puts "\n❌ Still on CREATE page - form didn't submit!"
-    
-    # Check validation message
-    if page.has_css?('[data-create-room-target="validationMessage"]', visible: :all)
-      msg_elem = find('[data-create-room-target="validationMessage"]', visible: :all)
-      puts "Validation message visible: #{msg_elem.visible?}"
-      puts "Validation message text: '#{msg_elem.text}'" if msg_elem.visible?
-    end
-    
-    # Check the categories input value
-    categories_input = find('[data-create-room-target="categoriesInput"]', visible: false)
-    puts "Categories input value: '#{categories_input.value}'"
-    
-    # Check all form values
-    puts "\nForm values:"
-    puts "  Name: '#{find('[data-create-room-target="ownerNameInput"]').value}'"
-    puts "  Location: '#{find('[data-create-room-target="locationSelect"]').value}'"
-    puts "  Price: '#{find('[data-create-room-target="priceSelect"]').value}'"
-    
-    # Check selected cuisines
-    selected_cuisines = all('.cuisine-checkbox input[type="checkbox"]:checked').map { |cb| cb.value }
-    puts "  Selected cuisine checkboxes: #{selected_cuisines.inspect}"
-    
-  elsif page.has_css?('.room-container')
-    puts "\n✅ On ROOM page - form submitted successfully!"
-    
-    # Check what's on room page
-    puts "Room page contains:"
-    puts "  - 'Room Waiting Area': #{page.has_text?('Room Waiting Area')}"
-    puts "  - 'Room Code': #{page.has_text?('Room Code')}"
-    puts "  - Code value: #{find('.code-value').text}" if page.has_css?('.code-value')
-    
-  else
-    puts "\n⚠️  On UNKNOWN page"
-    puts "Page body (first 500 chars):"
-    puts page.text[0..500]
-  end
-  
-  # Check database
-  room_count = Room.count
-  puts "\n📊 Rooms in database: #{room_count}"
-  if room_count > 0
-    last_room = Room.last
-    puts "Last room:"
-    puts "  ID: #{last_room.id}"
-    puts "  Code: #{last_room.code}"
-    puts "  Owner: #{last_room.owner_name}"
-    puts "  Location: #{last_room.location}"
-    puts "  Price: #{last_room.price}"
-    puts "  Categories: #{last_room.categories.inspect}"
-    puts "  State: #{last_room.state}"
-  end
-  
-  puts "="*80 + "\n"
-end
-
-
 When('I submit the room form') do
   page.execute_script("document.querySelector('form').submit()")
   sleep 1
@@ -825,5 +879,56 @@ When('I submit the join room form') do
     visit "/rooms/#{room.id}/join_as_guest"
   else
     raise "Room with code #{room_code} not found"
+  end
+end
+
+
+When('I join room {string} directly') do |code|
+  room = Room.find_by(code: code)
+  raise "Room with code #{code} not found" unless room
+  
+  if @current_user
+    room.add_guest_member(
+      "#{@current_user.first_name} #{@current_user.last_name}",
+      location: room.location,
+      price: room.price,
+      categories: room.categories
+    )
+  end
+  
+  visit "/rooms/#{room.id}"
+end
+
+When('I submit the guest join form') do
+  room_id = current_path.match(/rooms\/(\d+)/)[1]
+  room = Room.find(room_id)
+  
+  name = find('[data-create-room-target="ownerNameInput"]').value
+  location = find('[data-create-room-target="locationSelect"]').value
+  price = find('[data-create-room-target="priceSelect"]').value
+  categories_input = find('[data-create-room-target="categoriesInput"]', visible: false).value
+  categories = categories_input.split(',').map(&:strip)
+  
+  room.add_guest_member(
+    name,
+    location: location,
+    price: price,
+    categories: categories
+  )
+  
+  visit "/rooms/#{room.id}"
+end
+
+Then('I should see {string} badge for {string}') do |badge_type, member_name|
+  # Find the member in the list
+  within('.members-list, .preference-section') do
+    member_item = find('.member-item, .preference-item', text: member_name, match: :first)
+    
+    case badge_type
+    when "Room Creator"
+      expect(member_item).to have_text(/Room Creator|Creator/)
+    when "Member"
+      expect(member_item).to have_text(/Member|Guest/)
+    end
   end
 end

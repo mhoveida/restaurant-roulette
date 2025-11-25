@@ -128,15 +128,11 @@ end
 # ==========================================
 
 Then('I should see a validation message') do
-  # Check which page we're on and look for the appropriate validation message
   if page.has_css?('.solo-spin-container')
-    # Solo spin page
     expect(page).to have_css('[data-solo-spin-target="validationMessage"]', visible: true)
   elsif page.has_css?('.create-room-container')
-    # Create room page
     expect(page).to have_css('[data-create-room-target="validationMessage"]', visible: true)
   else
-    # Generic fallback
     expect(page).to have_css('.validation-message, .error-message', visible: true)
   end
 end

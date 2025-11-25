@@ -23,19 +23,24 @@ end
 # ============================================
 
 # This smart step handles both buttons and links
-When /I click "(.*)"/ do |link_or_button_text|
-  begin
-    visible_form = find('form', visible: true)
-    within(visible_form) do
-      click_button link_or_button_text
-    end
-  rescue Capybara::ElementNotFound
-    begin
-      click_button link_or_button_text
-    rescue Capybara::ElementNotFound
-      click_link link_or_button_text
-    end
+When(/I click "(.*)"/) do |text|
+  # Try button first (most common)
+  if page.has_button?(text, wait: 2)
+    click_button text
+  # Then try link
+  elsif page.has_link?(text, wait: 2)
+    click_link text
+  # Then try any element with data-action (Stimulus buttons)
+  elsif page.has_css?('[data-action]', text: text, wait: 2)
+    find('[data-action]', text: text, match: :first).click
+  # Last resort - any clickable element
+  elsif page.has_css?('button, a, [role="button"]', text: text, wait: 2)
+    find('button, a, [role="button"]', text: text, match: :first).click
+  else
+    raise Capybara::ElementNotFound, "Could not find button, link, or clickable element: #{text}"
   end
+  
+  sleep 0.5
 end
 
 When "I click on the user profile icon" do
