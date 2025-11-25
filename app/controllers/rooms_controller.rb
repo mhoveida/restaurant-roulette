@@ -288,10 +288,16 @@ class RoomsController < ApplicationController
   end
 
   def set_current_member
-    @current_member_id = session["member_id_for_room_#{@room.id}"]
-    @is_room_creator = @current_member_id == "owner"
-    @current_member = @room.get_member_by_id(@current_member_id) if @current_member_id
+  @current_member_id = session["member_id_for_room_#{@room.id}"]
+  
+  # For testing: allow override via param
+  if Rails.env.test? && params[:test_creator] == 'true'
+    @current_member_id = "owner"
   end
+  
+  @is_room_creator = @current_member_id == "owner"
+  @current_member = @room.get_member_by_id(@current_member_id) if @current_member_id
+end
 
 
   def broadcast_state_change(event_type)

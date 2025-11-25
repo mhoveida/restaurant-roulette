@@ -24,12 +24,12 @@ end
 
 # This smart step handles both buttons and links
 When(/I click "(.*)"/) do |text|
-  # Try button first (most common)
+  # Try button first (most common) - ADD match: :first
   if page.has_button?(text, wait: 2)
-    click_button text
+    click_button text, match: :first  # <-- ADD match: :first here
   # Then try link
   elsif page.has_link?(text, wait: 2)
-    click_link text
+    click_link text, match: :first  # <-- ADD match: :first here
   # Then try any element with data-action (Stimulus buttons)
   elsif page.has_css?('[data-action]', text: text, wait: 2)
     find('[data-action]', text: text, match: :first).click
@@ -41,6 +41,10 @@ When(/I click "(.*)"/) do |text|
   end
   
   sleep 0.5
+end
+
+Then('I should be redirected to the home page') do
+  expect(current_path).to eq(root_path)
 end
 
 When "I click on the user profile icon" do

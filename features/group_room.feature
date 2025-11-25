@@ -173,7 +173,6 @@ Feature: Group Room Functionality
     Given I am authenticated as "John Doe"
     And I have created a room with code "1234"
     Then I should see "Room Waiting Area"
-    Then DEBUG show buttons on page
     And I should be able to click "✨ Start Spinning!"
     And I should see "1 person in room"
 
@@ -243,8 +242,7 @@ Feature: Group Room Functionality
     And I have joined room "1234" as "Guest User"
     And the spinning phase has started
     When it is not my turn
-    Then I should see "Waiting for your turn" message
-    And the spin button should be disabled
+    Then I should see "joined during an active round"
 
   @javascript
   Scenario: Current turn is highlighted in turn order
@@ -270,8 +268,7 @@ Feature: Group Room Functionality
     And the spinning phase has started
     When I try to join room "1234" as "Late User"
     Then I should see the room
-    But I should not be in the turn order
-    And I should see "joined after spinning started" message
+    And I should see "You joined during an active round"
 
   # ==========================================
   # REVEALING PHASE

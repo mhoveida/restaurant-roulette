@@ -148,3 +148,13 @@ Warden.test_mode!
 After do
   Warden.test_reset!
 end
+
+def set_session_for_room(room_id, member_id)
+  # This works with Capybara + Selenium
+  Capybara.current_session.driver.browser.manage.add_cookie(
+    name: "_restaurant_roulette_session",
+    value: {
+      "member_id_for_room_#{room_id}" => member_id
+    }.to_json
+  )
+end
