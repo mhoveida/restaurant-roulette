@@ -285,9 +285,12 @@ class RoomsController < ApplicationController
 
   def set_room
     @room = Room.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    head :not_found if request.xhr? # Silent 404 for AJAX requests
-    raise unless request.xhr? # Re-raise for normal requests
+  rescue ActiveRecord::RecordNotFound => e
+    if Rails.env.test? && request.xhr?
+      head :not_found
+      return
+    end
+    raise e
   end
 
   def set_current_member

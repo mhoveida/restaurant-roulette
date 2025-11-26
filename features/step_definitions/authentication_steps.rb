@@ -133,12 +133,12 @@ Given('a user account exists with email {string} and password {string}') do |ema
 end
 
 Given('I am logged in as {string}') do |name|
-  # Extract first and last name from the full name
+  # Extract first and last name
   names = name.split(' ')
   first_name = names[0]
   last_name = names.length > 1 ? names[1..].join(' ') : "User"
 
-  # Create the user directly to avoid Warden mapping issues
+  # Create and log in user programmatically
   user = User.create!(
     email: "#{first_name.downcase}@example.com",
     first_name: first_name,
@@ -148,25 +148,14 @@ Given('I am logged in as {string}') do |name|
     confirmed_at: Time.current
   )
 
-  # Log in the user by filling in the login form
-  visit new_user_session_path
-  # Make sure we're on the login form (click login tab if needed)
-  if page.has_css?('[data-auth-form-target="loginTab"]')
-    page.find('[data-auth-form-target="loginTab"]').click
-  end
-  fill_in 'Email address', with: user.email
-  fill_in 'Password', with: 'TestPassword123'
-  # Click the Log In button in the login form specifically
-  within '[data-auth-form-target="loginForm"]' do
-    click_button 'Log In'
-  end
-  # Wait for redirect and ensure we're on home page
-  begin
-    page.driver.wait_for_network_idle(timeout: 3) if page.driver.respond_to?(:wait_for_network_idle)
-  rescue
-    sleep(0.5)
-  end
-  visit root_path unless page.has_content?('RESTAURANT')
+  # Use Warden to log in programmatically
+  login_as(user, scope: :user)
+  
+  @current_user = user
+  
+  # Visit home page to load the UI with profile icon
+  visit root_path
+  sleep 1
 end
 
 Then('a new account should be created') do

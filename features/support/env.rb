@@ -24,6 +24,8 @@ require 'capybara/rspec'
 require 'capybara/rspec/matchers'
 require 'rspec/expectations'
 
+
+
 OmniAuth.config.test_mode = true
 
 # Add a default mock that can be overridden in step definitions
@@ -122,9 +124,20 @@ Before('@javascript') do
 end
 
 After('@javascript') do
-  # Stop any polling to prevent cleanup errors
-  page.execute_script("if (window.pollInterval) clearInterval(window.pollInterval);") rescue nil
+  # Stop any polling before cleanup
+  begin
+    page.execute_script("
+      if (window.pollInterval) clearInterval(window.pollInterval);
+      if (window.statusPollInterval) clearInterval(window.statusPollInterval);
+    ")
+  rescue => e
+    # Ignore JavaScript errors during cleanup
+  end
+  
   DatabaseCleaner.clean
+  
+  # Give a moment for any final requests to complete
+  sleep 0.5
 end
 
 # ============================================
