@@ -92,29 +92,34 @@ RSpec.describe Room, type: :model do
     it "adds a guest member to the room" do
       expect {
         room.add_guest_member("Alex")
-      }.to change { room.members.length }.by(1)
+      }.to change { room.reload.get_all_members.length }.by(1)
     end
 
     it "sets the guest member type to 'guest'" do
       room.add_guest_member("Alex")
-      expect(room.members.last["type"]).to eq("guest")
+      member = room.reload.get_all_members.find { |m| (m[:name] || m["name"]) == "Alex" }
+      expect(member[:type] || member["type"]).to eq("guest")
     end
 
     it "sets the guest member name correctly" do
       room.add_guest_member("Alex")
-      expect(room.members.last["name"]).to eq("Alex")
+      member = room.reload.get_all_members.find { |m| (m[:name] || m["name"]) == "Alex" }
+      expect(member[:name] || member["name"]).to eq("Alex")
     end
 
     it "records the joined_at timestamp" do
       room.add_guest_member("Alex")
-      expect(room.members.last["joined_at"]).to be_present
+      member = room.reload.get_all_members.find { |m| (m[:name] || m["name"]) == "Alex" }
+      expect(member[:joined_at] || member["joined_at"]).to be_present
     end
 
     it "allows multiple guests to be added" do
       room.add_guest_member("Alex")
       room.add_guest_member("Jordan")
-      expect(room.members.length).to eq(2)
-      expect(room.members.map { |m| m["name"] }).to include("Alex", "Jordan")
+      members = room.reload.get_all_members
+      expect(members.length).to eq(3) # owner + 2 guests
+      names = members.map { |m| m[:name] || m["name"] }
+      expect(names).to include("Alex", "Jordan")
     end
   end
 
@@ -150,48 +155,9 @@ RSpec.describe Room, type: :model do
     end
   end
 
-  describe '#spin_restaurant' do
-    let(:room) { FactoryBot.create(:room) }
-
-    before do
-      allow(RestaurantService).to receive_message_chain(:new, :random_restaurant).and_return({ name: "Test Restaurant" })
-    end
-
-    it "calls RestaurantService with correct parameters" do
-      service = instance_double(RestaurantService)
-      expect(RestaurantService).to receive(:new).and_return(service)
-      expect(service).to receive(:random_restaurant).with(
-        location: room.location,
-        categories: room.categories,
-        price: room.price
-      ).and_return({ name: "Test Restaurant" })
-
-      room.spin_restaurant
-    end
-
-    it "saves spin result to database" do
-      room.spin_restaurant
-      expect(room.reload.spin_result).to eq("name" => "Test Restaurant")
-    end
-
-    it "returns the restaurant" do
-      result = room.spin_restaurant
-      expect(result).to eq({ name: "Test Restaurant" })
-    end
-
-    it "returns nil when no restaurant found" do
-      allow(RestaurantService).to receive_message_chain(:new, :random_restaurant).and_return(nil)
-      result = room.spin_restaurant
-      expect(result).to be_nil
-    end
-
-    it "does not save when restaurant is nil" do
-      allow(RestaurantService).to receive_message_chain(:new, :random_restaurant).and_return(nil)
-      room.spin_restaurant
-      expect(room.reload.spin_result).to be_nil
-    end
-  end
-
+  # REMOVED: spin_restaurant method no longer exists
+  # The app now uses spin_for_member(member_id) instead
+  
   describe 'categories serialization' do
     it "stores categories as JSON" do
       room = FactoryBot.create(:room, categories: [ "Italian", "French" ])
