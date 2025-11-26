@@ -28,8 +28,8 @@ class Room < ApplicationRecord
   before_validation :generate_code, on: :create
   before_create :initialize_room_state
 
-  def add_guest_member(name, location: nil, price: nil, categories: [])
-    member_id = "guest_#{SecureRandom.hex(8)}"
+  def add_guest_member(name, location: nil, price: nil, categories: [], member_id: nil)
+    member_id ||= "guest_#{SecureRandom.hex(8)}"
     
     new_member = {
       "id" => member_id,
@@ -256,7 +256,13 @@ class Room < ApplicationRecord
     
     all_members = get_all_members.map { |m| m[:id].to_s }
     confirmed_votes = votes.select { |_, v| v["confirmed"] == true }.keys
-    
+    # DEBUG
+    Rails.logger.info "=== VOTING CHECK ==="
+    Rails.logger.info "All members: #{all_members.inspect}"
+    Rails.logger.info "Votes keys: #{votes.keys.inspect}"
+    Rails.logger.info "Confirmed votes: #{confirmed_votes.inspect}"
+    Rails.logger.info "===================="
+
     if all_members.all? { |id| confirmed_votes.include?(id) }
       # All members have confirmed - tally votes and select winner
       tally_votes_and_select_winner!

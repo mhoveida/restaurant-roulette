@@ -82,7 +82,7 @@ class RoomsController < ApplicationController
         
         # Check if already in room
         unless @room.members&.any? { |m| m["id"] == member_id }
-          @room.add_guest_member(guest_name)
+          @room.add_guest_member(guest_name, member_id: member_id)
         end
         
         session["member_id_for_room_#{@room.id}"] = member_id

@@ -134,6 +134,21 @@ Given('{string} has joined room {string}') do |name, code|
   )
 end
 
+Given('"Guest User" has joined room {string}') do |code|
+  room = Room.find_by!(code: code)
+  
+  # Add guest member
+  room.add_guest_member(
+    "Guest User",
+    location: 'SoHo',
+    price: '$$',
+    categories: ['Italian']
+  )
+  
+  # If room is already in spinning state, DON'T add to turn order (late joiner)
+  # Otherwise, they should be in turn order when spinning starts
+end
+
 Given('I have joined room {string}') do |code|
   room = Room.find_by(code: code)
   raise "Room with code #{code} not found" unless room
