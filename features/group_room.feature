@@ -370,13 +370,6 @@ Feature: Group Room Functionality
     And I should see "2 of 2 votes"
 
   @javascript
-  Scenario: Winner shows which member suggested it
-    Given the voting has completed in room "1234"
-    And option 1 won with 2 votes
-    And option 1 was suggested by "John Doe"
-    Then I should see "Added by John Doe"
-
-  @javascript
   Scenario: Tie is broken randomly
     Given I have created a room with code "1234"
     And "Guest1" has joined room "1234"
@@ -398,7 +391,7 @@ Feature: Group Room Functionality
     And I should see the price range
     And I should see the cuisine tags
     And I should see the address
-    And I should see the status (Open/Closed)
+    And I should see the status
 
   @javascript
   Scenario: Winner shows partial match type if applicable

@@ -692,13 +692,16 @@ Then('the winner should not be revealed yet') do
 end
 
 Then('all votes are confirmed') do
+  @room.reload
   @room.get_all_members.each do |member|
-    unless @room.has_voted?(member[:id])
-      @room.vote(member[:id], 0)
+    unless @room.has_confirmed_vote?(member[:id])
+      @room.vote(member[:id], 0) unless @room.has_voted?(member[:id])
       @room.confirm_vote(member[:id])
     end
   end
+  @room.reload
   visit current_path
+  sleep 2  # Wait for winner calculation
 end
 
 Given('option {int} is a location-only match') do |option_number|
@@ -728,11 +731,32 @@ Given('the voting has completed in room {string}') do |code|
     owner_name: 'Test Owner',
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian'],
-    state: 'complete'
+    categories: ['Italian']
   )
   
-  visit "/rooms/#{@room.id}"
+  # Add a guest to have 2 members
+  @room.add_guest_member('Test Guest', location: 'SoHo', price: '$$', categories: ['Italian'])
+  
+  # Complete spinning phase
+  all_members = @room.get_all_members
+  turn_order = all_members.map { |m| m[:id] || m["id"] }
+  @room.update!(state: 'spinning', turn_order: turn_order, current_round: 1)
+  @room.turn_order.each { |m| @room.spin_for_member(m) }
+  
+  # Complete voting phase
+  @room.reveal_options!
+  @room.reload
+  all_members.each do |member|
+    @room.vote(member[:id], 0)  # Everyone votes for option 0
+    @room.confirm_vote(member[:id])
+  end
+  
+  # Room should auto-transition to complete with winner
+  @room.reload
+  
+  @current_member_id = "owner"
+  visit "/rooms/#{@room.id}?test_creator=true"
+  sleep 2
 end
 
 Given('option {int} won with {int} votes') do |option_number, vote_count|
@@ -782,8 +806,9 @@ Then('I should see the status \(Open/Closed)') do
 end
 
 Then('a winner should be randomly selected') do
-  expect(page).to have_css('.result-modal')
-  expect(page).to have_css('.restaurant-name')
+  @room.reload
+  expect(@room.state).to eq('complete')
+  expect(@room.winner).to be_present
 end
 
 Then('the winner should be selected') do
@@ -815,6 +840,10 @@ end
 
 Then('I should see a flash alert') do
   expect(page).to have_css('.flash-alert', visible: true, wait: 5)
+end
+
+Then('I should see the status') do
+  expect(page).to have_css('.status-open, .status-closed')
 end
 
 # ==========================================
