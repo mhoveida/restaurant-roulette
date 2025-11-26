@@ -132,9 +132,7 @@ end
 Before do
   # Seed database for tests if empty
   if Restaurant.count == 0
-    puts "Seeding test database with restaurants..."
     load Rails.root.join('db', 'seeds.rb')
-    puts "Loaded #{Restaurant.count} restaurants"
   end
 
   # Initialize restaurant service for all scenarios
@@ -157,4 +155,10 @@ def set_session_for_room(room_id, member_id)
       "member_id_for_room_#{room_id}" => member_id
     }.to_json
   )
+end
+
+After('@javascript') do
+  # Stop any polling to prevent cleanup errors
+  page.execute_script("if (window.pollInterval) clearInterval(window.pollInterval);") rescue nil
+  DatabaseCleaner.clean
 end

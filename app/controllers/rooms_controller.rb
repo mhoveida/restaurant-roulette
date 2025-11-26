@@ -293,6 +293,7 @@ class RoomsController < ApplicationController
   # For testing: allow override via param
   if Rails.env.test? && params[:test_creator] == 'true'
     @current_member_id = "owner"
+    session["member_id_for_room_#{@room.id}"] = "owner"
   end
   
   @is_room_creator = @current_member_id == "owner"

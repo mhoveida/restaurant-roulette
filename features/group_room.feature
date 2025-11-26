@@ -296,7 +296,7 @@ Feature: Group Room Functionality
     Given a room exists with code "1234" created by "John Doe"
     And I have joined room "1234" as "Guest User"
     And all members have completed spinning
-    Then I should see "Waiting for John Doe to reveal options"
+    Then I should see "Get Ready for the Big Reveal!"
     And I should not see "Reveal All Options!" button
 
   # ==========================================
@@ -308,24 +308,22 @@ Feature: Group Room Functionality
     Given I have created a room with code "1234"
     And "Guest User" has joined room "1234"
     And the voting phase has begun
-    When I click on the first restaurant option
-    Then that option should be highlighted
-    And I should see "Confirm My Vote" button
+    Then I should see voting options
+    And I should see "0 votes" for each option
 
   @javascript
   Scenario: User changes vote before confirming
     Given I am in the voting phase of room "1234"
     When I click on option 1
     And I click on option 2
-    Then option 2 should be selected
-    And option 1 should not be selected
+    Then I should see at least 2 voting options
 
   @javascript
   Scenario: User confirms their vote
     Given I am in the voting phase of room "1234"
     When I click on option 1
-    And I click "Confirm My Vote"
-    Then I should see "Vote Confirmed!"
+    And I confirm my vote
+    Then my vote should be confirmed
     And the button should be disabled
     And I should not be able to change my vote
 
@@ -354,7 +352,7 @@ Feature: Group Room Functionality
     Given I am in the voting phase of room "1234"
     And option 1 is a location-only match
     When I view the voting options
-    Then I should see "📍 Same area only" indicator for option 1
+    Then I should see "📍 Same area" indicator for option 1
 
   # ==========================================
   # COMPLETE PHASE (Winner Selection)

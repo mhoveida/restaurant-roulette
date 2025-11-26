@@ -1023,9 +1023,3 @@ restaurants_data = [
 restaurants_data.each do |restaurant_attrs|
   Restaurant.create!(restaurant_attrs)
 end
-
-puts "Created #{Restaurant.count} restaurants!"
-puts ""
-puts "Cuisines: #{Restaurant.pluck(:categories).flatten.uniq.sort.join(', ')}"
-puts ""
-puts "Neighborhoods: #{Restaurant.pluck(:neighborhood).uniq.sort.join(', ')}"
