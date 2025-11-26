@@ -122,6 +122,8 @@ Before('@javascript') do
 end
 
 After('@javascript') do
+  # Stop any polling to prevent cleanup errors
+  page.execute_script("if (window.pollInterval) clearInterval(window.pollInterval);") rescue nil
   DatabaseCleaner.clean
 end
 

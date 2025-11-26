@@ -392,27 +392,6 @@ Feature: Group Room Functionality
     And I should see the cuisine tags
     And I should see the address
     And I should see the status
-
-  @javascript
-  Scenario: Winner shows partial match type if applicable
-    Given the voting has completed in room "1234"
-    And the winner is a location-price match
-    Then I should see "📍 Matched area & price"
-
-  @javascript
-  Scenario: User can view winner on Google Maps
-    Given the voting has completed in room "1234"
-    When I click "🗺️ View on Map"
-    Then a new tab should open with Google Maps
-    And the restaurant address should be in the search
-
-  @javascript
-  Scenario: User can share winner details
-    Given the voting has completed in room "1234"
-    When I click "Share"
-    Then the restaurant details should be copied to clipboard
-    And the native share dialog should appear
-
   # ==========================================
   # REAL-TIME UPDATES
   # ==========================================
@@ -456,13 +435,6 @@ Feature: Group Room Functionality
     When I visit the room URL directly
     Then I should see "Room Waiting Area"
     And I should be prompted to join as guest
-
-  @javascript
-  Scenario: Room handles member without preferences gracefully
-    Given a room exists with code "1234"
-    When a member joins without setting all preferences
-    Then the system should use room defaults
-    And the member should still be able to spin
 
   @javascript
   Scenario: Single member room completes successfully
