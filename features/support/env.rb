@@ -24,7 +24,32 @@ require 'capybara/rspec'
 require 'capybara/rspec/matchers'
 require 'rspec/expectations'
 
+class CapybaraAppWrapper
+  def initialize(app)
+    @app = app
+  end
 
+  def call(env)
+    @app.call(env)
+  rescue ActiveRecord::RecordNotFound
+    # Only suppress errors for AJAX/XHR requests or specific polling endpoints
+    if env['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' || env['PATH_INFO'] =~ %r{/status$}
+      # Return a 404 to the browser instead of crashing the test runner
+      [404, {'Content-Type' => 'application/json'}, [{ error: 'Record not found (test cleanup)' }.to_json]]
+    else
+      # If it's a real page load failure, let it crash so we know something is wrong
+      raise
+    end
+  end
+end
+
+# Apply the wrapper
+Capybara.app = CapybaraAppWrapper.new(Rails.application)
+
+# Reduce log noise
+if Rails.env.test?
+  ActiveSupport::Notifications.unsubscribe("sql.active_record")
+end
 
 OmniAuth.config.test_mode = true
 
@@ -60,6 +85,9 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   options.add_argument('--no-sandbox')
   options.add_argument('--disable-dev-shm-usage')
   options.add_argument('--disable-gpu')
+  
+  # Ensure clean exit
+  options.add_argument('--disable-application-cache')
 
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
@@ -98,21 +126,6 @@ rescue NameError
   raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
 end
 
-# You may also want to configure DatabaseCleaner to use different strategies for certain features and scenarios.
-# See the DatabaseCleaner documentation for details. Example:
-#
-#   Before('@no-txn,@selenium,@culerity,@celerity,@javascript') do
-#     # { except: [:widgets] } may not do what you expect here
-#     # as Cucumber::Rails::Database.javascript_strategy overrides
-#     # this setting.
-#     DatabaseCleaner.strategy = :truncation
-#   end
-#
-#   Before('not @no-txn', 'not @selenium', 'not @culerity', 'not @celerity', 'not @javascript') do
-#     DatabaseCleaner.strategy = :transaction
-#   end
-#
-
 # Possible values are :truncation and :transaction
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
@@ -124,20 +137,25 @@ Before('@javascript') do
 end
 
 After('@javascript') do
-  # Stop any polling before cleanup
+  # Stop any polling before cleanup to reduce race conditions
   begin
     page.execute_script("
       if (window.pollInterval) clearInterval(window.pollInterval);
       if (window.statusPollInterval) clearInterval(window.statusPollInterval);
+      // Attempt to stop any other intervals
+      var highestIntervalId = setInterval(';');
+      for (var i = 0 ; i < highestIntervalId ; i++) {
+        clearInterval(i); 
+      }
     ")
   rescue => e
-    # Ignore JavaScript errors during cleanup
+    # Ignore JavaScript errors during cleanup (e.g. if browser is already closed)
   end
   
   DatabaseCleaner.clean
   
   # Give a moment for any final requests to complete
-  sleep 0.5
+  sleep 0.1
 end
 
 # ============================================
@@ -173,7 +191,7 @@ def set_session_for_room(room_id, member_id)
 end
 
 After('@javascript') do
-  # Stop any polling to prevent cleanup errors
+  # Extra safety cleanup
   page.execute_script("if (window.pollInterval) clearInterval(window.pollInterval);") rescue nil
   DatabaseCleaner.clean
 end
