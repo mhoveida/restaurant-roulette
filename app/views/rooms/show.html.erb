@@ -5,7 +5,8 @@
      data-room-code="<%= @room.code %>"
      data-room-state="<%= @room.state %>"
      data-current-member-id="<%= @current_member_id %>"
-     data-is-room-creator="<%= @is_room_creator %>">
+     data-is-room-creator="<%= @is_room_creator %>"
+     data-vote-confirmed="<%= @room.has_confirmed_vote?(@current_member_id) %>">
   
   <!-- Page Header -->
   <div class="room-page-header">

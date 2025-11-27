@@ -18,21 +18,82 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log('🚀 ROOM SPIN CONTROLLER VERSION 3.0 - WITH ALERTS')
+    console.log('🚀 ROOM SPIN CONTROLLER - FINAL ROBUST VERSION')
     this.roomId = this.element.dataset.roomId
     this.roomCode = this.element.dataset.roomCode
     this.currentMemberId = this.element.dataset.currentMemberId
     this.isRoomCreator = this.element.dataset.isRoomCreator === "true"
-    this.myVote = null  // ADD: Track current vote
-    this.voteConfirmed = false  // ADD: Track if vote is confirmed
+    
+    // 1. Read confirmation state from the HTML data attribute
+    this.voteConfirmed = this.element.dataset.voteConfirmed === "true"
     this.myVote = null
 
     if (this.hasWheelTarget) {
       this.drawWheel()
     }
     
+    // 2. CHECK: If confirmed, lock everything immediately
+    if (this.voteConfirmed) {
+      this.lockVotingUI()
+    } 
+    // 3. RESTORE: If NOT confirmed, but we see a selection (from Rails rendering), show the button!
+    else if (document.querySelector('.selected-vote')) {
+      console.log('🔄 Restoring Confirm Button after reload')
+      this.showConfirmVoteButton()
+    }
+    
     this.subscribeToRoom()
     this.startStatusPolling()
+  }
+
+  // Helper to visually and functionally lock the interface
+  lockVotingUI() {
+    console.log('🔒 Locking Voting UI')
+    
+    // Disable all options
+    document.querySelectorAll('.voting-option').forEach(opt => {
+      opt.removeAttribute('data-action')
+      opt.style.pointerEvents = 'none'
+      opt.style.opacity = '0.6'
+      opt.style.cursor = 'not-allowed'
+      
+      // Highlight the winner/selected option
+      if (opt.classList.contains('selected-vote') || opt.classList.contains('vote-confirmed')) {
+        opt.style.border = '3px solid #22c55e'
+        opt.style.opacity = '1'
+        opt.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.5)'
+        
+        if (!opt.querySelector('.lock-icon')) {
+          const lockIcon = document.createElement('div')
+          lockIcon.className = 'lock-icon'
+          lockIcon.textContent = '🔒'
+          lockIcon.style.cssText = 'position: absolute; top: 10px; right: 10px; font-size: 2rem; z-index: 10;'
+          opt.style.position = 'relative'
+          opt.appendChild(lockIcon)
+        }
+      }
+    })
+
+    // Hide button
+    const confirmBtn = document.getElementById('confirmVoteBtn')
+    if (confirmBtn) {
+      confirmBtn.style.display = 'none'
+    }
+
+    // Show "Waiting" message
+    const votingSection = document.querySelector('.voting-section')
+    if (votingSection && !document.getElementById('voteConfirmedMessage')) {
+      const msg = document.createElement('div')
+      msg.id = 'voteConfirmedMessage'
+      msg.style.cssText = 'background: #22c55e; color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem auto; max-width: 500px; text-align: center; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'
+      msg.innerHTML = '<div style="font-size: 2rem; margin-bottom: 0.5rem;">✓</div>Your vote has been confirmed!<br><span style="font-size: 0.9rem; opacity: 0.9;">Waiting for other members...</span>'
+      
+      if (confirmBtn) {
+        votingSection.insertBefore(msg, confirmBtn)
+      } else {
+        votingSection.appendChild(msg)
+      }
+    }
   }
 
   drawWheel() {
@@ -118,14 +179,11 @@ export default class extends Controller {
         this.onRevealOptions(data)
         break
       case "vote_update":
-        console.log('🗳️ Vote update broadcast!')
         this.onVoteUpdate(data)
         break
       case "voting_complete":
         this.onVotingComplete(data)
         break
-      default:
-        console.log('⚠️ Unknown broadcast type:', data.type)
     }
   }
 
@@ -169,7 +227,7 @@ export default class extends Controller {
         const newVoteCount = data.votes_count || 0
         if (newVoteCount !== this.lastKnownVoteCount) {
           this.lastKnownVoteCount = newVoteCount
-          this.updateVoteCountsFromStatus(data)
+          // We intentionally do NOT reload here to prevent disrupting voters
         }
       }
       
@@ -187,88 +245,60 @@ export default class extends Controller {
   }
 
   updateVoteCountsFromStatus(statusData) {
-    console.log('📊 Status update - vote counts hidden during voting')
-    // Vote counts are intentionally not displayed during voting
-    // They will be shown on the winner screen after all votes are confirmed
+    // Hidden during voting
   }
 
   async startSpinning(event) {
     event.preventDefault()
-
     try {
       const response = await fetch(`/rooms/${this.roomId}/start_spinning`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': this.getCsrfToken()
-        }
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': this.getCsrfToken() }
       })
-
       const data = await response.json()
-
-      if (data.success) {
-        window.location.reload()
-      }
-    } catch (error) {
-      // Silent fail
-    }
+      if (data.success) window.location.reload()
+    } catch (error) { }
   }
 
   async spin(event) {
     event.preventDefault()
-    
     const button = event.target
     button.disabled = true
 
     try {
-      if (this.hasWheelTarget) {
-        this.wheelTarget.classList.add('spinning')
-      }
+      if (this.hasWheelTarget) this.wheelTarget.classList.add('spinning')
 
       const response = await fetch(`/rooms/${this.roomId}/spin`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': this.getCsrfToken()
-        }
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': this.getCsrfToken() }
       })
 
       const data = await response.json()
 
       if (data.success) {
         const spinDuration = 2000 + Math.random() * 1000
-        
         setTimeout(() => {
-          if (this.hasWheelTarget) {
-            this.wheelTarget.classList.remove('spinning')
-          }
+          if (this.hasWheelTarget) this.wheelTarget.classList.remove('spinning')
           window.location.reload()
         }, spinDuration)
       } else {
         button.disabled = false
-        if (this.hasWheelTarget) {
-          this.wheelTarget.classList.remove('spinning')
-        }
+        if (this.hasWheelTarget) this.wheelTarget.classList.remove('spinning')
       }
     } catch (error) {
       button.disabled = false
-      if (this.hasWheelTarget) {
-        this.wheelTarget.classList.remove('spinning')
-      }
+      if (this.hasWheelTarget) this.wheelTarget.classList.remove('spinning')
     }
   }
 
   async reveal(event) {
     event.preventDefault()
-
     if (this.hasCountdownTarget) {
       let count = 3
       const countdownInterval = setInterval(() => {
         this.countdownTarget.textContent = count
         count--
-        if (count < 0) {
-          clearInterval(countdownInterval)
-        }
+        if (count < 0) clearInterval(countdownInterval)
       }, 1000)
     }
 
@@ -277,40 +307,32 @@ export default class extends Controller {
     try {
       const response = await fetch(`/rooms/${this.roomId}/reveal`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': this.getCsrfToken()
-        }
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': this.getCsrfToken() }
       })
-
       const data = await response.json()
-
-      if (data.success) {
-        window.location.reload()
-      }
-    } catch (error) {
-      // Silent fail
-    }
+      if (data.success) window.location.reload()
+    } catch (error) { }
   }
 
   async voteForOption(event) {
     event.preventDefault()
     event.stopPropagation()
     
-    // CRITICAL: Prevent voting if already confirmed
-    if (this.voteConfirmed) {
-      console.log('❌ Cannot vote - already confirmed')
-      return false
-    }
+    // Stop if confirmed
+    if (this.voteConfirmed) return false
     
     const optionIndex = parseInt(event.currentTarget.dataset.optionIndex)
     const clickedElement = event.currentTarget
     
     try {
-      const csrfToken = document.querySelector('[name="csrf-token"]')?.content || 
-                      document.querySelector('meta[name="csrf-token"]')?.content
+      // FIX: Use robust CSRF token check (matches your original code)
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || 
+                        document.querySelector('input[name="csrf-token"]')?.value || ''
       
-      if (!csrfToken) return
+      if (!csrfToken) {
+        console.error('CSRF token not found')
+        return
+      }
       
       const response = await fetch(`/rooms/${this.roomId}/vote`, {
         method: 'POST',
@@ -322,40 +344,40 @@ export default class extends Controller {
         body: JSON.stringify({ option_index: optionIndex })
       })
       
-      if (!response.ok) return
+      if (!response.ok) {
+        console.error('Vote failed:', response.status)
+        return
+      }
       
       const data = await response.json()
       
       if (data.success) {
-        // Update UI to show selection (but NOT vote counts)
         document.querySelectorAll('.voting-option').forEach(opt => {
           opt.classList.remove('selected-vote')
         })
-        
         clickedElement.classList.add('selected-vote')
         this.myVote = optionIndex
         this.showConfirmVoteButton()
-        
-        // NOTE: Vote counts will ONLY update when someone confirms their vote
-        // We do NOT update vote counts here
       }
     } catch (error) {
       console.error('Vote error:', error)
     }
-    
     return false
   }
 
   showConfirmVoteButton() {
-    // FIX: Don't show/reset button if vote is already confirmed
-    if (this.voteConfirmed) {
-      return
-    }
+    if (this.voteConfirmed) return
     
     let confirmBtn = document.getElementById('confirmVoteBtn')
     
     if (!confirmBtn) {
       const votingSection = document.querySelector('.voting-section')
+      // Safety check (logging if missing)
+      if (!votingSection) {
+        console.error('Voting section not found')
+        return
+      }
+
       confirmBtn = document.createElement('button')
       confirmBtn.id = 'confirmVoteBtn'
       confirmBtn.className = 'button button-primary'
@@ -365,18 +387,16 @@ export default class extends Controller {
       votingSection.appendChild(confirmBtn)
     }
     
-    // FIX: Reset button to enabled state if user changes vote
     confirmBtn.disabled = false
     confirmBtn.textContent = 'Confirm My Vote'
-    confirmBtn.style.backgroundColor = ''
     confirmBtn.style.display = 'block'
+    
+    // FIX: Scroll to button so user definitely sees it
+    confirmBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }
 
   async confirmVote() {
-    // FIX: Prevent double-clicking
-    if (this.voteConfirmed) {
-      return
-    }
+    if (this.voteConfirmed) return
     
     const confirmBtn = document.getElementById('confirmVoteBtn')
     if (confirmBtn) {
@@ -387,88 +407,27 @@ export default class extends Controller {
     try {
       const response = await fetch(`/rooms/${this.roomId}/confirm_vote`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': this.getCsrfToken()
-        }
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': this.getCsrfToken() }
       })
       
       const data = await response.json()
       
       if (data.success) {
-        // FIX: Set flag to prevent further voting
         this.voteConfirmed = true
-        
-        if (confirmBtn) {
-          // FIX: More obvious visual feedback
-          confirmBtn.textContent = '✓ Vote Confirmed!'
-          confirmBtn.disabled = true
-          confirmBtn.style.backgroundColor = '#22c55e'
-          confirmBtn.style.color = 'white'
-          confirmBtn.style.transform = 'scale(1.05)'
-          setTimeout(() => {
-            if (confirmBtn) {
-              confirmBtn.style.transform = 'scale(1)'
-            }
-          }, 200)
-        }
-        
-        // FIX: Disable ALL voting options with clear visual feedback
-        document.querySelectorAll('.voting-option').forEach(opt => {
-          // CRITICAL: Remove the click handler completely
-          opt.removeAttribute('data-action')
-          opt.style.pointerEvents = 'none'
-          opt.style.opacity = '0.6'
-          opt.style.cursor = 'not-allowed'
-          
-          // Add lock indicator to selected option
-          if (opt.classList.contains('selected-vote')) {
-            opt.style.border = '3px solid #22c55e'
-            opt.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.5)'
-            
-            // Add lock icon if not already there
-            if (!opt.querySelector('.lock-icon')) {
-              const lockIcon = document.createElement('div')
-              lockIcon.className = 'lock-icon'
-              lockIcon.textContent = '🔒'
-              lockIcon.style.cssText = 'position: absolute; top: 10px; right: 10px; font-size: 2rem; z-index: 10;'
-              opt.style.position = 'relative'
-              opt.appendChild(lockIcon)
-            }
-          }
-        })
-        
-        // FIX: Show confirmation message
-        const votingSection = document.querySelector('.voting-section')
-        if (votingSection) {
-          let confirmMessage = document.getElementById('voteConfirmedMessage')
-          if (!confirmMessage) {
-            confirmMessage = document.createElement('div')
-            confirmMessage.id = 'voteConfirmedMessage'
-            confirmMessage.style.cssText = 'background: #22c55e; color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem auto; max-width: 500px; text-align: center; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'
-            confirmMessage.innerHTML = '<div style="font-size: 2rem; margin-bottom: 0.5rem;">✓</div>Your vote has been confirmed!<br><span style="font-size: 0.9rem; opacity: 0.9;">Waiting for other members...</span>'
-            votingSection.insertBefore(confirmMessage, confirmBtn)
-          }
-        }
-        
-        console.log('✅ Vote confirmed, updating counts...')
+        this.lockVotingUI() 
         this.updateVoteCountsFromServer()
       } else {
-        // FIX: Re-enable button on error
         this.voteConfirmed = false
         if (confirmBtn) {
           confirmBtn.disabled = false
           confirmBtn.textContent = 'Confirm My Vote'
-          confirmBtn.style.backgroundColor = ''
         }
       }
     } catch (error) {
-      // FIX: Re-enable button on error
       this.voteConfirmed = false
       if (confirmBtn) {
         confirmBtn.disabled = false
         confirmBtn.textContent = 'Confirm My Vote'
-        confirmBtn.style.backgroundColor = ''
       }
     }
   }
@@ -477,62 +436,16 @@ export default class extends Controller {
     try {
       const response = await fetch(`/rooms/${this.roomId}/status`)
       if (!response.ok) return
-      
       const data = await response.json()
-      
       if (data.state === 'voting') {
-        this.updateVoteCountsFromStatus(data)  // FIX: Use correct method
+        this.updateVoteCountsFromStatus(data)
       } else if (data.state === 'complete') {
         window.location.reload()
       }
-    } catch (error) {
-      // Silent fail
-    }
+    } catch (error) { }
   }
 
-  updateVoteCountDisplay(statusData) {
-    const voteCounts = {}
-    
-    if (statusData.votes_count) {
-      document.querySelectorAll('.voting-option').forEach((option, index) => {
-        const optionIndex = parseInt(option.dataset.optionIndex)
-        
-        const voteCountElement = option.querySelector('.vote-count')
-        if (voteCountElement && voteCounts[optionIndex] !== undefined) {
-          voteCountElement.textContent = `${voteCounts[optionIndex]} ${voteCounts[optionIndex] === 1 ? 'vote' : 'votes'}`
-        }
-      })
-    }
-  }
-
-  updateVoteCounts(voteCounts) {
-    console.log('🔄 Vote counts updated (not displayed in UI)', voteCounts)
-    // Vote counts are intentionally hidden during voting for fairness
-  }
-
-  async thumbsUp(event) {
-    event.stopPropagation()
-    const button = event.currentTarget
-    button.style.backgroundColor = 'rgba(34, 197, 94, 0.3)'
-    
-    setTimeout(() => {
-      button.style.backgroundColor = 'rgba(34, 197, 94, 0.1)'
-    }, 500)
-  }
-
-  async thumbsDown(event) {
-    event.stopPropagation()
-    const button = event.currentTarget
-    button.style.backgroundColor = 'rgba(239, 68, 68, 0.3)'
-    
-    setTimeout(() => {
-      button.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'
-    }, 500)
-  }
-
-  onSpinningStarted(data) {
-    window.location.reload()
-  }
+  onSpinningStarted(data) { window.location.reload() }
 
   onTurnChanged(data) {
     const currentTurnElements = document.querySelectorAll('.turn-item')
@@ -549,28 +462,21 @@ export default class extends Controller {
     })
   }
 
-  onRoundComplete(data) {
-    window.location.reload()
-  }
-
-  onRevealOptions(data) {
-    window.location.reload()
-  }
-
+  onRoundComplete(data) { window.location.reload() }
+  onRevealOptions(data) { window.location.reload() }
+  
   onVoteUpdate(data) {
     console.log('📊 Vote update received:', data)
-    console.log('Vote counts:', data.vote_counts)
-    this.updateVoteCounts(data.vote_counts)
   }
 
   onVotingComplete(data) {
-    setTimeout(() => {
-      window.location.reload()
-    }, 1000)
+    setTimeout(() => { window.location.reload() }, 1000)
   }
 
   getCsrfToken() {
-    return document.querySelector('meta[name="csrf-token"]')?.content || ''
+    // UPDATED: Robust fallback mechanism from original code
+    return document.querySelector('meta[name="csrf-token"]')?.content || 
+           document.querySelector('input[name="csrf-token"]')?.value || ''
   }
 
   copyRoomCode() {
@@ -579,9 +485,7 @@ export default class extends Controller {
       const confirmation = document.getElementById("copyConfirmation")
       if (confirmation) {
         confirmation.style.display = "block"
-        setTimeout(() => {
-          confirmation.style.display = "none"
-        }, 2500)
+        setTimeout(() => { confirmation.style.display = "none" }, 2500)
       }
     })
   }
@@ -590,20 +494,15 @@ export default class extends Controller {
     const button = event.currentTarget
     const name = button.dataset.restaurantName
     const address = button.dataset.restaurantAddress
-
     const shareText = `Check out ${name}! 📍 ${address}`
 
     if (navigator.share) {
-      navigator.share({
-        title: "Restaurant Roulette",
-        text: shareText
-      }).catch(() => {})
+      navigator.share({ title: "Restaurant Roulette", text: shareText }).catch(() => {})
     } else {
       navigator.clipboard.writeText(shareText).then(() => {
         const originalHTML = button.innerHTML
         button.innerHTML = '✓ Copied!'
         button.style.background = '#22c55e'
-        
         setTimeout(() => {
           button.innerHTML = originalHTML
           button.style.background = ''

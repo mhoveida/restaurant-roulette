@@ -309,7 +309,6 @@ Feature: Group Room Functionality
     And "Guest User" has joined room "1234"
     And the voting phase has begun
     Then I should see voting options
-    And I should see "0 votes" for each option
 
   @javascript
   Scenario: User changes vote before confirming
@@ -326,16 +325,6 @@ Feature: Group Room Functionality
     Then my vote should be confirmed
     And the button should be disabled
     And I should not be able to change my vote
-
-  @javascript
-  Scenario: Vote counts update in real-time
-    Given I have created a room with code "1234"
-    And "Guest User" has joined room "1234"
-    And the voting phase has begun
-    When I vote for option 1
-    And "Guest User" votes for option 2
-    Then option 1 should show "1 vote"
-    And option 2 should show "1 vote"
 
   @javascript
   Scenario: All members must confirm votes
@@ -415,8 +404,7 @@ Feature: Group Room Functionality
   Scenario: Votes update in real-time for all members
     Given I am in the voting phase of room "1234"
     When another member votes
-    Then I should see the vote count increase
-    And I should not need to refresh the page
+    Then I should not need to refresh the page
 
   # ==========================================
   # EDGE CASES

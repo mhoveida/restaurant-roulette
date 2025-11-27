@@ -2,7 +2,8 @@ class Room < ApplicationRecord
   # Preference validations
   validates :location,
             presence: { message: "Please enter a location" },
-            format: { with: /\A[a-zA-Z\s\-]+\z/, message: "Please enter a valid location" }
+            # FIX: Relaxed regex to allow numbers (0-9) so addresses like "5th Ave" don't fail validation
+            format: { with: /\A[a-zA-Z0-9\s\-]+\z/, message: "Please enter a valid location (letters, numbers, spaces, hyphens)" }
   validates :price,
             presence: { message: "Please select a price range" },
             inclusion: { in: [ "$", "$$", "$$$", "$$$$" ], message: "Please select a valid price range" }
@@ -232,13 +233,29 @@ class Room < ApplicationRecord
 
   def confirm_vote(member_id)
     return false unless voting?
-    return false unless votes[member_id].present?
     
-    self.votes[member_id]["confirmed"] = true
-    save
+    # FIX: Use string key explicitly
+    key = member_id.to_s
     
-    # Check if all members have confirmed votes
-    check_voting_complete
+    # Ensure vote exists for this member
+    unless votes.present? && votes.key?(key)
+      Rails.logger.error "❌ Confirm vote failed: No vote found for member #{key}"
+      return false
+    end
+    
+    # FIX: Modify the hash and mark as changed
+    self.votes[key]["confirmed"] = true
+    votes_will_change!
+    
+    if save
+      # Check if all members have confirmed votes
+      check_voting_complete
+      true
+    else
+      # FIX: Log the actual validation error to help debugging
+      Rails.logger.error "❌ Confirm vote save failed: #{errors.full_messages.join(', ')}"
+      false
+    end
   end
 
   def has_voted?(member_id)
