@@ -160,30 +160,24 @@ class RoomsController < ApplicationController
   end
 
   def spin
-    member_id = session["member_id_for_room_#{@room.id}"]
+    result = @room.spin_for_member(@current_member_id)
     
-    unless member_id
-      render json: { success: false, error: "Not authenticated" }, status: :unauthorized
-      return
-    end
-
-    result = @room.spin_for_member(member_id)
-
     if result[:success]
-      # Broadcast turn change
-      broadcast_turn_update
+      # Broadcast turn change to all members
+      ActionCable.server.broadcast(
+        "room_#{@room.id}",
+        {
+          type: "turn_changed",
+          current_turn: {
+            member_id: @room.current_turn_member_id,
+            member_name: @room.current_turn_member&.[](:name),
+            turn_index: @room.current_turn_index
+          },
+          state: @room.state
+        }
+      )
       
-      # Check if we moved to revealing phase
-      if @room.revealing?
-        broadcast_state_change("round_complete")
-      end
-      
-      render json: {
-        success: true,
-        spin: result[:spin],
-        round_complete: @room.revealing?,
-        next_turn: @room.current_turn_member
-      }
+      render json: { success: true, spin: result[:spin] }
     else
       render json: { success: false, error: result[:error] }, status: :unprocessable_entity
     end

@@ -18,33 +18,39 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log('🚀 ROOM SPIN CONTROLLER - FINAL ROBUST VERSION')
-    this.roomId = this.element.dataset.roomId
-    this.roomCode = this.element.dataset.roomCode
-    this.currentMemberId = this.element.dataset.currentMemberId
-    this.isRoomCreator = this.element.dataset.isRoomCreator === "true"
-    
-    // 1. Read confirmation state from the HTML data attribute
-    this.voteConfirmed = this.element.dataset.voteConfirmed === "true"
-    this.myVote = null
+  console.log('🚀 ROOM SPIN CONTROLLER - FINAL ROBUST VERSION')
+  this.roomId = this.element.dataset.roomId
+  this.roomCode = this.element.dataset.roomCode
+  this.currentMemberId = this.element.dataset.currentMemberId
+  this.isRoomCreator = this.element.dataset.isRoomCreator === "true"
+  
+  // 1. Read confirmation state from the HTML data attribute
+  this.voteConfirmed = this.element.dataset.voteConfirmed === "true"
+  this.myVote = null
 
-    if (this.hasWheelTarget) {
-      this.drawWheel()
-    }
-    
-    // 2. CHECK: If confirmed, lock everything immediately
-    if (this.voteConfirmed) {
-      this.lockVotingUI()
-    } 
-    // 3. RESTORE: If NOT confirmed, but we see a selection (from Rails rendering), show the button!
-    else if (document.querySelector('.selected-vote')) {
-      console.log('🔄 Restoring Confirm Button after reload')
+  if (this.hasWheelTarget) {
+    this.drawWheel()
+  }
+  
+  // 2. CHECK: If confirmed, lock everything immediately
+  if (this.voteConfirmed) {
+    this.lockVotingUI()
+  } 
+  // 3. RESTORE: If NOT confirmed, check if user has voted
+  else {
+    // Find if user has a selected vote
+    const selectedOption = document.querySelector('.voting-option.selected-vote')
+    if (selectedOption) {
+      console.log('🔄 Restoring Confirm Button - user has voted but not confirmed')
+      const optionIndex = parseInt(selectedOption.dataset.optionIndex)
+      this.myVote = optionIndex
       this.showConfirmVoteButton()
     }
-    
-    this.subscribeToRoom()
-    this.startStatusPolling()
   }
+  
+  this.subscribeToRoom()
+  this.startStatusPolling()
+}
 
   // Helper to visually and functionally lock the interface
   lockVotingUI() {
@@ -202,45 +208,60 @@ export default class extends Controller {
       
       const data = await response.json()
       
+      // Initialize on first poll
       if (!this.lastKnownState) {
         this.lastKnownState = data.state
         this.lastKnownTurnIndex = data.current_turn?.turn_index || 0
+        this.lastKnownTurnMember = data.current_turn?.member_id  // ADD THIS
         this.lastKnownVoteCount = data.votes_count || 0
         return
       }
       
+      // State changed (waiting → spinning, etc.)
       if (data.state !== this.lastKnownState) {
+        console.log(`State changed: ${this.lastKnownState} → ${data.state}`)
         window.location.reload()
         return
       }
       
+      // Turn changed during spinning
       if (data.state === 'spinning' && data.current_turn) {
         const newTurnIndex = data.current_turn.turn_index || 0
-        if (newTurnIndex !== this.lastKnownTurnIndex) {
+        const newTurnMember = data.current_turn.member_id
+        
+        // Reload if turn index changed OR if it's now MY turn
+        if (newTurnIndex !== this.lastKnownTurnIndex || 
+            (newTurnMember === this.currentMemberId && newTurnMember !== this.lastKnownTurnMember)) {
+          
+          console.log(`Turn changed: index ${this.lastKnownTurnIndex} → ${newTurnIndex}, member: ${newTurnMember}`)
           this.lastKnownTurnIndex = newTurnIndex
+          this.lastKnownTurnMember = newTurnMember
           window.location.reload()
           return
         }
       }
       
+      // Voting phase - don't reload to avoid disrupting voters
       if (data.state === 'voting') {
         const newVoteCount = data.votes_count || 0
         if (newVoteCount !== this.lastKnownVoteCount) {
           this.lastKnownVoteCount = newVoteCount
-          // We intentionally do NOT reload here to prevent disrupting voters
+          // Intentionally do NOT reload here
         }
       }
       
+      // Waiting phase - reload when members join/leave
       if (data.state === 'waiting' && data.members) {
         const currentMemberCount = document.querySelectorAll('.member-item').length
         if (data.members.length !== currentMemberCount) {
+          console.log(`Member count changed: ${currentMemberCount} → ${data.members.length}`)
           window.location.reload()
           return
         }
       }
       
     } catch (error) {
-      // Silent fail
+      console.error('Status polling error:', error)
     }
   }
 
@@ -448,19 +469,38 @@ export default class extends Controller {
   onSpinningStarted(data) { window.location.reload() }
 
   onTurnChanged(data) {
-    const currentTurnElements = document.querySelectorAll('.turn-item')
-    currentTurnElements.forEach((el, index) => {
-      if (index === data.turn_index) {
-        el.classList.add('current-turn')
-        el.classList.remove('completed-turn')
-      } else if (index < data.turn_index) {
-        el.classList.add('completed-turn')
-        el.classList.remove('current-turn')
-      } else {
-        el.classList.remove('current-turn', 'completed-turn')
-      }
-    })
+  console.log('🔄 Turn changed:', data)
+  
+  // CRITICAL: If it's now MY turn, reload the page to show the spin button
+  if (data.current_turn && data.current_turn.member_id === this.currentMemberId) {
+    console.log('⭐ It\'s MY turn now! Reloading...')
+    window.location.reload()
+    return
   }
+  
+  // Update turn indicators visually (for other members watching)
+  const currentTurnElements = document.querySelectorAll('.turn-item')
+  currentTurnElements.forEach((el, index) => {
+    if (index === data.turn_index) {
+      el.classList.add('current-turn')
+      el.classList.remove('completed-turn')
+    } else if (index < data.turn_index) {
+      el.classList.add('completed-turn')
+      el.classList.remove('current-turn')
+    } else {
+      el.classList.remove('current-turn', 'completed-turn')
+    }
+  })
+  
+  // Update the "X is spinning..." message
+  const waitingMessage = document.querySelector('.other-member-turn')
+  if (waitingMessage && data.current_turn) {
+    const nameElement = waitingMessage.querySelector('strong')
+    if (nameElement) {
+      nameElement.textContent = data.current_turn.member_name
+    }
+  }
+}
 
   onRoundComplete(data) { window.location.reload() }
   onRevealOptions(data) { window.location.reload() }
