@@ -355,9 +355,9 @@ RSpec.describe RoomsController, type: :controller do
         session.delete("member_id_for_room_#{room.id}")
       end
       
-      it 'returns unauthorized' do
+      it 'returns unprocessable content when not authenticated' do
         post :spin, params: { id: room.id }, format: :json
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
@@ -391,9 +391,12 @@ RSpec.describe RoomsController, type: :controller do
     
     before do
       room.update!(
-        state: :voting,
-        spins: [{"member_id" => "owner", "restaurant" => {"name" => "Test"}, "round" => 1}]
+        state: :revealing,  
+        spins: [{"member_id" => "owner", "restaurant" => {"name" => "Test"}, "round" => 1}],
+        current_round: 1  
       )
+      room.reveal_options!  
+      room.reload  
       session["member_id_for_room_#{room.id}"] = "owner"
     end
     

@@ -374,8 +374,16 @@ RSpec.describe Room, type: :model do
     before do
       room.update!(
         state: :voting,
-        spins: [{"member_id" => "owner", "restaurant" => {"name" => "Test"}}]
+        spins: [{
+          "member_id" => "owner",
+          "restaurant" => {"name" => "Test"},
+          "round" => 1,
+          "revealed" => true
+        }],
+        current_round: 1,
+        reveal_order: [0]
       )
+      room.reload
     end
     
     it 'records vote' do
@@ -412,13 +420,17 @@ RSpec.describe Room, type: :model do
     let(:room) { create(:room) }
     
     before do
-      # Setup revealing state first, then call reveal_options! to set everything properly
       room.update!(
-        state: :revealing,
-        spins: [{"member_id" => "owner", "restaurant" => {"name" => "Test"}, "round" => 1}],
-        current_round: 1
+        state: :voting,
+        spins: [{
+          "member_id" => "owner",
+          "restaurant" => {"name" => "Test"},
+          "round" => 1,
+          "revealed" => true
+        }],
+        current_round: 1,
+        reveal_order: [0]
       )
-      room.reveal_options!  # This properly sets revealed=true and reveal_order
       room.reload
       room.vote("owner", 0)
     end
@@ -525,9 +537,9 @@ RSpec.describe Room, type: :model do
       room.update!(
         state: :voting,
         votes: {
-          "owner" => {"option_index" => 0},
-          "guest1" => {"option_index" => 0},
-          "guest2" => {"option_index" => 1}
+          "owner" => {"option_index" => 0, "confirmed" => true},
+          "guest1" => {"option_index" => 0, "confirmed" => true},
+          "guest2" => {"option_index" => 1, "confirmed" => true}
         }
       )
       
