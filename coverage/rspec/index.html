@@ -13,7 +13,7 @@
       <img src="./assets/0.13.2/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2025-11-26T21:57:33-05:00">2025-11-26T21:57:33-05:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2025-11-27T07:29:08-05:00">2025-11-27T07:29:08-05:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -22,14 +22,14 @@
     <span class="group_name">All Files</span>
     (<span class="covered_percent">
       <span class="green">
-  90.68%
+  90.7%
 </span>
 
      </span>
      covered at
      <span class="covered_strength">
        <span class="green">
-         8.87
+         8.7
        </span>
     </span> hits/line
     )
@@ -42,11 +42,11 @@
   </div>
 
   <div class="t-line-summary">
-    <b>558</b> relevant lines,
-    <span class="green"><b>506</b> lines covered</span> and
-    <span class="red"><b>52</b> lines missed. </span>
+    <b>570</b> relevant lines,
+    <span class="green"><b>517</b> lines covered</span> and
+    <span class="red"><b>53</b> lines missed. </span>
     (<span class="green">
-  90.68%
+  90.7%
 </span>
 )
   </div>
@@ -104,12 +104,12 @@
         
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#13076e3086dd8e506cf153f4de79fe03ecd247f3" class="src_link" title="app/controllers/rooms_controller.rb">app/controllers/rooms_controller.rb</a></td>
-            <td class="yellow strong cell--number t-file__coverage">90.00 %</td>
-            <td class="cell--number">359</td>
-            <td class="cell--number">160</td>
-            <td class="cell--number">144</td>
-            <td class="cell--number">16</td>
-            <td class="cell--number">2.35</td>
+            <td class="green strong cell--number t-file__coverage">90.12 %</td>
+            <td class="cell--number">383</td>
+            <td class="cell--number">172</td>
+            <td class="cell--number">155</td>
+            <td class="cell--number">17</td>
+            <td class="cell--number">2.25</td>
             
           </tr>
         
@@ -286,7 +286,7 @@
      covered at
      <span class="covered_strength">
        <span class="green">
-         3.2
+         3.1
        </span>
     </span> hits/line
     )
@@ -299,9 +299,9 @@
   </div>
 
   <div class="t-line-summary">
-    <b>260</b> relevant lines,
-    <span class="green"><b>238</b> lines covered</span> and
-    <span class="red"><b>22</b> lines missed. </span>
+    <b>272</b> relevant lines,
+    <span class="green"><b>249</b> lines covered</span> and
+    <span class="red"><b>23</b> lines missed. </span>
     (<span class="green">
   91.54%
 </span>
@@ -339,12 +339,12 @@
         
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#13076e3086dd8e506cf153f4de79fe03ecd247f3" class="src_link" title="app/controllers/rooms_controller.rb">app/controllers/rooms_controller.rb</a></td>
-            <td class="yellow strong cell--number t-file__coverage">90.00 %</td>
-            <td class="cell--number">359</td>
-            <td class="cell--number">160</td>
-            <td class="cell--number">144</td>
-            <td class="cell--number">16</td>
-            <td class="cell--number">2.35</td>
+            <td class="green strong cell--number t-file__coverage">90.12 %</td>
+            <td class="cell--number">383</td>
+            <td class="cell--number">172</td>
+            <td class="cell--number">155</td>
+            <td class="cell--number">17</td>
+            <td class="cell--number">2.25</td>
             
           </tr>
         
@@ -1311,8 +1311,8 @@
   <div class="header">
     <h3>app/controllers/rooms_controller.rb</h3>
     <h4>
-      <span class="yellow">
-  90.0%
+      <span class="green">
+  90.12%
 </span>
 
       lines covered
@@ -1321,9 +1321,9 @@
     
 
     <div class="t-line-summary">
-      <b>160</b> relevant lines.
-      <span class="green"><b>144</b> lines covered</span> and
-      <span class="red"><b>16</b> lines missed.</span>
+      <b>172</b> relevant lines.
+      <span class="green"><b>155</b> lines covered</span> and
+      <span class="red"><b>17</b> lines missed.</span>
     </div>
 
     
@@ -3921,216 +3921,24 @@
 
             
 
-            <code class="ruby">    if @room.confirm_vote(@current_member_id)</code>
+            <code class="ruby">  if @room.confirm_vote(@current_member_id)</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="238">
+          <li class="never" data-hits="" data-linenumber="238">
+            
+
+            
+
+            <code class="ruby">    # Calculate confirmed vote counts</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="239">
             
               <span class="hits">1</span>
-            
-
-            
-
-            <code class="ruby">      render json: { success: true, message: &quot;Vote confirmed!&quot; }</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="239">
-            
-
-            
-
-            <code class="ruby">    else</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="240">
-            
-
-            
-
-            <code class="ruby">      render json: { success: false, error: &quot;Could not confirm vote&quot; }, status: :unprocessable_entity</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="241">
-            
-
-            
-
-            <code class="ruby">    end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="242">
-            
-
-            
-
-            <code class="ruby">  end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="243">
-            
-
-            
-
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="244">
-            
-
-            
-
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="245">
-            
-              <span class="hits">1</span>
-            
-
-            
-
-            <code class="ruby">  def new_round</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="246">
-            
-              <span class="hits">1</span>
-            
-
-            
-
-            <code class="ruby">    if @room.start_new_round!</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="247">
-            
-              <span class="hits">1</span>
-            
-
-            
-
-            <code class="ruby">      broadcast_state_change(&quot;new_round_started&quot;)</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="248">
-            
-              <span class="hits">1</span>
-            
-
-            
-
-            <code class="ruby">      render json: { success: true, round: @room.current_round, state: &quot;spinning&quot; }</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="249">
-            
-
-            
-
-            <code class="ruby">    else</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="250">
-            
-
-            
-
-            <code class="ruby">      render json: { success: false, error: &quot;Cannot start new round&quot; }, status: :unprocessable_entity</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="251">
-            
-
-            
-
-            <code class="ruby">    end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="252">
-            
-
-            
-
-            <code class="ruby">  end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="253">
-            
-
-            
-
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="254">
-            
-
-            
-
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="255">
-            
-              <span class="hits">1</span>
-            
-
-            
-
-            <code class="ruby">  def status</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="256">
-            
-
-            
-
-            <code class="ruby">    # Calculate vote counts per option</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="2" data-linenumber="257">
-            
-              <span class="hits">2</span>
             
 
             
@@ -4140,19 +3948,19 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="258">
+          <li class="covered" data-hits="1" data-linenumber="240">
             
-              <span class="hits">2</span>
-            
-
+              <span class="hits">1</span>
             
 
-            <code class="ruby">    if @room.voting? &amp;&amp; @room.votes.present?</code>
+            
+
+            <code class="ruby">    if @room.votes.present?</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="259">
+          <li class="covered" data-hits="1" data-linenumber="241">
             
               <span class="hits">1</span>
             
@@ -4164,7 +3972,29 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="260">
+          <li class="covered" data-hits="1" data-linenumber="242">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">        next unless vote_data[&quot;confirmed&quot;] == true</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="243">
+            
+
+            
+
+            <code class="ruby">        </code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="244">
             
               <span class="hits">1</span>
             
@@ -4176,7 +4006,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="261">
+          <li class="covered" data-hits="1" data-linenumber="245">
             
               <span class="hits">1</span>
             
@@ -4188,7 +4018,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="262">
+          <li class="covered" data-hits="1" data-linenumber="246">
             
               <span class="hits">1</span>
             
@@ -4200,7 +4030,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="263">
+          <li class="never" data-hits="" data-linenumber="247">
             
 
             
@@ -4210,7 +4040,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="264">
+          <li class="never" data-hits="" data-linenumber="248">
             
 
             
@@ -4220,7 +4050,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="265">
+          <li class="never" data-hits="" data-linenumber="249">
             
 
             
@@ -4230,279 +4060,85 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="266">
-            
-              <span class="hits">2</span>
+          <li class="never" data-hits="" data-linenumber="250">
             
 
             
 
-            <code class="ruby">    render json: {</code>
+            <code class="ruby">    # Broadcast with vote_counts parameter</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="267">
-            
-
-            
-
-            <code class="ruby">      state: @room.state,</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="268">
-            
-
-            
-
-            <code class="ruby">      current_round: @room.current_round,</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="2" data-linenumber="269">
-            
-              <span class="hits">2</span>
-            
-
-            
-
-            <code class="ruby">      current_turn: @room.spinning? ? {</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="270">
-            
-
-            
-
-            <code class="ruby">        member_id: @room.current_turn_member_id,</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="271">
-            
-
-            
-
-            <code class="ruby">        member_name: @room.current_turn_member[:name],</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="272">
-            
-
-            
-
-            <code class="ruby">        turn_index: @room.current_turn_index</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="273">
-            
-
-            
-
-            <code class="ruby">      } : nil,</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="274">
-            
-
-            
-
-            <code class="ruby">      members: @room.get_all_members,</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="275">
-            
-
-            
-
-            <code class="ruby">      turn_order: @room.turn_order&amp;.map { |id| @room.get_member_by_id(id) },</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="276">
-            
-
-            
-
-            <code class="ruby">      spins_count: @room.spins&amp;.length || 0,</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="277">
-            
-
-            
-
-            <code class="ruby">      votes_count: @room.votes&amp;.keys&amp;.length || 0,</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="278">
-            
-
-            
-
-            <code class="ruby">      vote_counts_by_option: vote_counts,  # ADD THIS</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="279">
+          <li class="covered" data-hits="1" data-linenumber="251">
             
               <span class="hits">1</span>
             
 
             
 
-            <code class="ruby">      confirmed_votes_count: @room.votes&amp;.count { |_, v| v[&quot;confirmed&quot;] } || 0,  # ADD THIS</code>
+            <code class="ruby">    broadcast_vote_update(vote_counts)</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="280">
+          <li class="never" data-hits="" data-linenumber="252">
             
 
             
 
-            <code class="ruby">      winner: @room.winner</code>
+            <code class="ruby">    </code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="281">
+          <li class="never" data-hits="" data-linenumber="253">
             
 
             
 
-            <code class="ruby">    }</code>
+            <code class="ruby">    # Check if complete</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="282">
-            
-
-            
-
-            <code class="ruby">  end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="283">
-            
-
-            
-
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="284">
+          <li class="covered" data-hits="1" data-linenumber="254">
             
               <span class="hits">1</span>
             
 
             
 
-            <code class="ruby">  private</code>
+            <code class="ruby">    @room.reload</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="285">
-            
-
-            
-
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="286">
+          <li class="covered" data-hits="1" data-linenumber="255">
             
               <span class="hits">1</span>
             
 
             
 
-            <code class="ruby">  def set_room</code>
+            <code class="ruby">    if @room.complete?</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="24" data-linenumber="287">
+          <li class="covered" data-hits="1" data-linenumber="256">
             
-              <span class="hits">24</span>
-            
-
+              <span class="hits">1</span>
             
 
-            <code class="ruby">    @room = Room.find(params[:id])</code>
+            
+
+            <code class="ruby">      broadcast_winner(@room.winner)</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="288">
-            
-
-            
-
-            <code class="ruby">  rescue ActiveRecord::RecordNotFound =&gt; e</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="289">
-            
-
-            
-
-            <code class="ruby">    if Rails.env.test? &amp;&amp; request.xhr?</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="290">
-            
-
-            
-
-            <code class="ruby">      head :not_found</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="291">
-            
-
-            
-
-            <code class="ruby">      return</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="292">
+          <li class="never" data-hits="" data-linenumber="257">
             
 
             
@@ -4512,113 +4148,49 @@
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="293">
+          <li class="never" data-hits="" data-linenumber="258">
             
 
             
 
-            <code class="ruby">    raise e</code>
+            <code class="ruby">    </code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="294">
-            
-
-            
-
-            <code class="ruby">  end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="295">
-            
-
-            
-
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="296">
+          <li class="covered" data-hits="1" data-linenumber="259">
             
               <span class="hits">1</span>
             
 
             
 
-            <code class="ruby">  def set_current_member</code>
+            <code class="ruby">    render json: { success: true, message: &quot;Vote confirmed!&quot; }</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="10" data-linenumber="297">
-            
-              <span class="hits">10</span>
+          <li class="never" data-hits="" data-linenumber="260">
             
 
             
 
-            <code class="ruby">  @current_member_id = session[&quot;member_id_for_room_#{@room.id}&quot;]</code>
+            <code class="ruby">  else</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="298">
+          <li class="missed" data-hits="0" data-linenumber="261">
             
 
             
 
-            <code class="ruby">  </code>
+            <code class="ruby">    render json: { success: false, error: &quot;Could not confirm vote&quot; }, status: :unprocessable_entity</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="299">
-            
-
-            
-
-            <code class="ruby">  # For testing: allow override via param</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="10" data-linenumber="300">
-            
-              <span class="hits">10</span>
-            
-
-            
-
-            <code class="ruby">  if Rails.env.test? &amp;&amp; params[:test_creator] == &#39;true&#39;</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="301">
-            
-
-            
-
-            <code class="ruby">    @current_member_id = &quot;owner&quot;</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="302">
-            
-
-            
-
-            <code class="ruby">    session[&quot;member_id_for_room_#{@room.id}&quot;] = &quot;owner&quot;</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="303">
+          <li class="never" data-hits="" data-linenumber="262">
             
 
             
@@ -4628,41 +4200,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="304">
-            
-
-            
-
-            <code class="ruby">  </code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="10" data-linenumber="305">
-            
-              <span class="hits">10</span>
-            
-
-            
-
-            <code class="ruby">  @is_room_creator = @current_member_id == &quot;owner&quot;</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="10" data-linenumber="306">
-            
-              <span class="hits">10</span>
-            
-
-            
-
-            <code class="ruby">  @current_member = @room.get_member_by_id(@current_member_id) if @current_member_id</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="307">
+          <li class="never" data-hits="" data-linenumber="263">
             
 
             
@@ -4672,12 +4210,478 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="308">
+          <li class="never" data-hits="" data-linenumber="264">
             
 
             
 
             <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="265">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="266">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">  def new_round</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="267">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">    if @room.start_new_round!</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="268">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">      broadcast_state_change(&quot;new_round_started&quot;)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="269">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">      render json: { success: true, round: @room.current_round, state: &quot;spinning&quot; }</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="270">
+            
+
+            
+
+            <code class="ruby">    else</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="271">
+            
+
+            
+
+            <code class="ruby">      render json: { success: false, error: &quot;Cannot start new round&quot; }, status: :unprocessable_entity</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="272">
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="273">
+            
+
+            
+
+            <code class="ruby">  end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="274">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="275">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="276">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">  def status</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="277">
+            
+
+            
+
+            <code class="ruby">  # Calculate vote counts per option - ONLY CONFIRMED VOTES</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="2" data-linenumber="278">
+            
+              <span class="hits">2</span>
+            
+
+            
+
+            <code class="ruby">  vote_counts = {}</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="2" data-linenumber="279">
+            
+              <span class="hits">2</span>
+            
+
+            
+
+            <code class="ruby">  if @room.voting? &amp;&amp; @room.votes.present?</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="280">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">    @room.votes.each do |member_id, vote_data|</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="281">
+            
+
+            
+
+            <code class="ruby">      # FIX: Only count confirmed votes</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="282">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">      next unless vote_data[&quot;confirmed&quot;] == true</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="283">
+            
+
+            
+
+            <code class="ruby">      </code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="284">
+            
+
+            
+
+            <code class="ruby">      option_index = vote_data[&quot;option_index&quot;]</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="285">
+            
+
+            
+
+            <code class="ruby">      vote_counts[option_index] ||= 0</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="286">
+            
+
+            
+
+            <code class="ruby">      vote_counts[option_index] += 1</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="287">
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="288">
+            
+
+            
+
+            <code class="ruby">  end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="289">
+            
+
+            
+
+            <code class="ruby">  </code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="2" data-linenumber="290">
+            
+              <span class="hits">2</span>
+            
+
+            
+
+            <code class="ruby">  render json: {</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="291">
+            
+
+            
+
+            <code class="ruby">    state: @room.state,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="292">
+            
+
+            
+
+            <code class="ruby">    current_round: @room.current_round,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="2" data-linenumber="293">
+            
+              <span class="hits">2</span>
+            
+
+            
+
+            <code class="ruby">    current_turn: @room.spinning? ? {</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="294">
+            
+
+            
+
+            <code class="ruby">      member_id: @room.current_turn_member_id,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="295">
+            
+
+            
+
+            <code class="ruby">      member_name: @room.current_turn_member[:name],</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="296">
+            
+
+            
+
+            <code class="ruby">      turn_index: @room.current_turn_index</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="297">
+            
+
+            
+
+            <code class="ruby">    } : nil,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="298">
+            
+
+            
+
+            <code class="ruby">    members: @room.get_all_members,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="299">
+            
+
+            
+
+            <code class="ruby">    turn_order: @room.turn_order&amp;.map { |id| @room.get_member_by_id(id) },</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="300">
+            
+
+            
+
+            <code class="ruby">    spins_count: @room.spins&amp;.length || 0,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="301">
+            
+
+            
+
+            <code class="ruby">    votes_count: @room.votes&amp;.keys&amp;.length || 0,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="302">
+            
+
+            
+
+            <code class="ruby">    vote_counts_by_option: vote_counts,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="303">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">    confirmed_votes_count: @room.votes&amp;.count { |_, v| v[&quot;confirmed&quot;] } || 0,</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="304">
+            
+
+            
+
+            <code class="ruby">    winner: @room.winner</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="305">
+            
+
+            
+
+            <code class="ruby">  }</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="306">
+            
+
+            
+
+            <code class="ruby">end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="307">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="308">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">  private</code>
           </li>
         </div>
       
@@ -4699,12 +4703,266 @@
 
             
 
+            <code class="ruby">  def set_room</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="24" data-linenumber="311">
+            
+              <span class="hits">24</span>
+            
+
+            
+
+            <code class="ruby">    @room = Room.find(params[:id])</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="312">
+            
+
+            
+
+            <code class="ruby">  rescue ActiveRecord::RecordNotFound =&gt; e</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="313">
+            
+
+            
+
+            <code class="ruby">    if Rails.env.test? &amp;&amp; request.xhr?</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="314">
+            
+
+            
+
+            <code class="ruby">      head :not_found</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="315">
+            
+
+            
+
+            <code class="ruby">      return</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="316">
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="317">
+            
+
+            
+
+            <code class="ruby">    raise e</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="318">
+            
+
+            
+
+            <code class="ruby">  end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="319">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="320">
+            
+              <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">  def set_current_member</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="10" data-linenumber="321">
+            
+              <span class="hits">10</span>
+            
+
+            
+
+            <code class="ruby">  @current_member_id = session[&quot;member_id_for_room_#{@room.id}&quot;]</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="322">
+            
+
+            
+
+            <code class="ruby">  </code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="323">
+            
+
+            
+
+            <code class="ruby">  # For testing: allow override via param</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="10" data-linenumber="324">
+            
+              <span class="hits">10</span>
+            
+
+            
+
+            <code class="ruby">  if Rails.env.test? &amp;&amp; params[:test_creator] == &#39;true&#39;</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="325">
+            
+
+            
+
+            <code class="ruby">    @current_member_id = &quot;owner&quot;</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="326">
+            
+
+            
+
+            <code class="ruby">    session[&quot;member_id_for_room_#{@room.id}&quot;] = &quot;owner&quot;</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="327">
+            
+
+            
+
+            <code class="ruby">  end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="328">
+            
+
+            
+
+            <code class="ruby">  </code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="10" data-linenumber="329">
+            
+              <span class="hits">10</span>
+            
+
+            
+
+            <code class="ruby">  @is_room_creator = @current_member_id == &quot;owner&quot;</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="10" data-linenumber="330">
+            
+              <span class="hits">10</span>
+            
+
+            
+
+            <code class="ruby">  @current_member = @room.get_member_by_id(@current_member_id) if @current_member_id</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="331">
+            
+
+            
+
+            <code class="ruby">end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="332">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="333">
+            
+
+            
+
+            <code class="ruby"></code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="334">
+            
+              <span class="hits">1</span>
+            
+
+            
+
             <code class="ruby">  def broadcast_state_change(event_type)</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="5" data-linenumber="311">
+          <li class="covered" data-hits="5" data-linenumber="335">
             
               <span class="hits">5</span>
             
@@ -4716,7 +4974,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="312">
+          <li class="never" data-hits="" data-linenumber="336">
             
 
             
@@ -4726,7 +4984,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="313">
+          <li class="never" data-hits="" data-linenumber="337">
             
 
             
@@ -4736,7 +4994,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="314">
+          <li class="never" data-hits="" data-linenumber="338">
             
 
             
@@ -4746,7 +5004,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="315">
+          <li class="never" data-hits="" data-linenumber="339">
             
 
             
@@ -4756,7 +5014,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="316">
+          <li class="never" data-hits="" data-linenumber="340">
             
 
             
@@ -4766,7 +5024,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="317">
+          <li class="never" data-hits="" data-linenumber="341">
             
 
             
@@ -4776,7 +5034,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="318">
+          <li class="never" data-hits="" data-linenumber="342">
             
 
             
@@ -4786,7 +5044,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="319">
+          <li class="never" data-hits="" data-linenumber="343">
             
 
             
@@ -4796,7 +5054,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="320">
+          <li class="never" data-hits="" data-linenumber="344">
             
 
             
@@ -4806,7 +5064,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="321">
+          <li class="covered" data-hits="1" data-linenumber="345">
             
               <span class="hits">1</span>
             
@@ -4818,7 +5076,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="322">
+          <li class="covered" data-hits="2" data-linenumber="346">
             
               <span class="hits">2</span>
             
@@ -4830,7 +5088,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="323">
+          <li class="never" data-hits="" data-linenumber="347">
             
 
             
@@ -4840,7 +5098,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="324">
+          <li class="never" data-hits="" data-linenumber="348">
             
 
             
@@ -4850,7 +5108,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="325">
+          <li class="never" data-hits="" data-linenumber="349">
             
 
             
@@ -4860,7 +5118,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="326">
+          <li class="covered" data-hits="2" data-linenumber="350">
             
               <span class="hits">2</span>
             
@@ -4872,7 +5130,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="327">
+          <li class="never" data-hits="" data-linenumber="351">
             
 
             
@@ -4882,7 +5140,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="328">
+          <li class="never" data-hits="" data-linenumber="352">
             
 
             
@@ -4892,7 +5150,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="329">
+          <li class="never" data-hits="" data-linenumber="353">
             
 
             
@@ -4902,7 +5160,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="330">
+          <li class="covered" data-hits="1" data-linenumber="354">
             
               <span class="hits">1</span>
             
@@ -4914,7 +5172,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="331">
+          <li class="covered" data-hits="2" data-linenumber="355">
             
               <span class="hits">2</span>
             
@@ -4926,7 +5184,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="332">
+          <li class="never" data-hits="" data-linenumber="356">
             
 
             
@@ -4936,7 +5194,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="333">
+          <li class="never" data-hits="" data-linenumber="357">
             
 
             
@@ -4946,7 +5204,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="334">
+          <li class="never" data-hits="" data-linenumber="358">
             
 
             
@@ -4956,7 +5214,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="335">
+          <li class="never" data-hits="" data-linenumber="359">
             
 
             
@@ -4966,7 +5224,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="2" data-linenumber="336">
+          <li class="covered" data-hits="2" data-linenumber="360">
             
               <span class="hits">2</span>
             
@@ -4978,7 +5236,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="337">
+          <li class="never" data-hits="" data-linenumber="361">
             
 
             
@@ -4988,7 +5246,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="338">
+          <li class="never" data-hits="" data-linenumber="362">
             
 
             
@@ -4998,7 +5256,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="339">
+          <li class="never" data-hits="" data-linenumber="363">
             
 
             
@@ -5008,7 +5266,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="340">
+          <li class="never" data-hits="" data-linenumber="364">
             
 
             
@@ -5018,7 +5276,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="341">
+          <li class="never" data-hits="" data-linenumber="365">
             
 
             
@@ -5028,7 +5286,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="342">
+          <li class="never" data-hits="" data-linenumber="366">
             
 
             
@@ -5038,7 +5296,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="343">
+          <li class="never" data-hits="" data-linenumber="367">
             
 
             
@@ -5048,7 +5306,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="344">
+          <li class="covered" data-hits="1" data-linenumber="368">
             
               <span class="hits">1</span>
             
@@ -5060,7 +5318,9 @@
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="345">
+          <li class="covered" data-hits="1" data-linenumber="369">
+            
+              <span class="hits">1</span>
             
 
             
@@ -5070,7 +5330,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="346">
+          <li class="never" data-hits="" data-linenumber="370">
             
 
             
@@ -5080,7 +5340,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="347">
+          <li class="never" data-hits="" data-linenumber="371">
             
 
             
@@ -5090,7 +5350,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="348">
+          <li class="never" data-hits="" data-linenumber="372">
             
 
             
@@ -5100,7 +5360,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="349">
+          <li class="never" data-hits="" data-linenumber="373">
             
 
             
@@ -5110,7 +5370,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="350">
+          <li class="never" data-hits="" data-linenumber="374">
             
 
             
@@ -5120,7 +5380,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="351">
+          <li class="never" data-hits="" data-linenumber="375">
             
 
             
@@ -5130,7 +5390,7 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="352">
+          <li class="covered" data-hits="1" data-linenumber="376">
             
               <span class="hits">1</span>
             
@@ -5142,7 +5402,9 @@
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="353">
+          <li class="covered" data-hits="1" data-linenumber="377">
+            
+              <span class="hits">1</span>
             
 
             
@@ -5152,7 +5414,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="354">
+          <li class="never" data-hits="" data-linenumber="378">
             
 
             
@@ -5162,7 +5424,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="355">
+          <li class="never" data-hits="" data-linenumber="379">
             
 
             
@@ -5172,7 +5434,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="356">
+          <li class="never" data-hits="" data-linenumber="380">
             
 
             
@@ -5182,7 +5444,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="357">
+          <li class="never" data-hits="" data-linenumber="381">
             
 
             
@@ -5192,7 +5454,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="358">
+          <li class="never" data-hits="" data-linenumber="382">
             
 
             
@@ -5202,7 +5464,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="359">
+          <li class="never" data-hits="" data-linenumber="383">
             
 
             

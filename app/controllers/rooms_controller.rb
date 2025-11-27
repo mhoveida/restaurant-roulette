@@ -234,12 +234,33 @@ class RoomsController < ApplicationController
 
 
   def confirm_vote
-    if @room.confirm_vote(@current_member_id)
-      render json: { success: true, message: "Vote confirmed!" }
-    else
-      render json: { success: false, error: "Could not confirm vote" }, status: :unprocessable_entity
+  if @room.confirm_vote(@current_member_id)
+    # Calculate confirmed vote counts
+    vote_counts = {}
+    if @room.votes.present?
+      @room.votes.each do |member_id, vote_data|
+        next unless vote_data["confirmed"] == true
+        
+        option_index = vote_data["option_index"]
+        vote_counts[option_index] ||= 0
+        vote_counts[option_index] += 1
+      end
     end
+    
+    # Broadcast with vote_counts parameter
+    broadcast_vote_update(vote_counts)
+    
+    # Check if complete
+    @room.reload
+    if @room.complete?
+      broadcast_winner(@room.winner)
+    end
+    
+    render json: { success: true, message: "Vote confirmed!" }
+  else
+    render json: { success: false, error: "Could not confirm vote" }, status: :unprocessable_entity
   end
+end
 
 
   def new_round
@@ -253,33 +274,36 @@ class RoomsController < ApplicationController
 
 
   def status
-    # Calculate vote counts per option
-    vote_counts = {}
-    if @room.voting? && @room.votes.present?
-      @room.votes.each do |member_id, vote_data|
-        option_index = vote_data["option_index"]
-        vote_counts[option_index] ||= 0
-        vote_counts[option_index] += 1
-      end
+  # Calculate vote counts per option - ONLY CONFIRMED VOTES
+  vote_counts = {}
+  if @room.voting? && @room.votes.present?
+    @room.votes.each do |member_id, vote_data|
+      # FIX: Only count confirmed votes
+      next unless vote_data["confirmed"] == true
+      
+      option_index = vote_data["option_index"]
+      vote_counts[option_index] ||= 0
+      vote_counts[option_index] += 1
     end
-    
-    render json: {
-      state: @room.state,
-      current_round: @room.current_round,
-      current_turn: @room.spinning? ? {
-        member_id: @room.current_turn_member_id,
-        member_name: @room.current_turn_member[:name],
-        turn_index: @room.current_turn_index
-      } : nil,
-      members: @room.get_all_members,
-      turn_order: @room.turn_order&.map { |id| @room.get_member_by_id(id) },
-      spins_count: @room.spins&.length || 0,
-      votes_count: @room.votes&.keys&.length || 0,
-      vote_counts_by_option: vote_counts,  # ADD THIS
-      confirmed_votes_count: @room.votes&.count { |_, v| v["confirmed"] } || 0,  # ADD THIS
-      winner: @room.winner
-    }
   end
+  
+  render json: {
+    state: @room.state,
+    current_round: @room.current_round,
+    current_turn: @room.spinning? ? {
+      member_id: @room.current_turn_member_id,
+      member_name: @room.current_turn_member[:name],
+      turn_index: @room.current_turn_index
+    } : nil,
+    members: @room.get_all_members,
+    turn_order: @room.turn_order&.map { |id| @room.get_member_by_id(id) },
+    spins_count: @room.spins&.length || 0,
+    votes_count: @room.votes&.keys&.length || 0,
+    vote_counts_by_option: vote_counts,
+    confirmed_votes_count: @room.votes&.count { |_, v| v["confirmed"] } || 0,
+    winner: @room.winner
+  }
+end
 
   private
 

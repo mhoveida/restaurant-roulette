@@ -101,6 +101,8 @@ export default class extends Controller {
   }
 
   handleBroadcast(data) {
+    console.log('📡 Broadcast received:', data.type, data)
+    
     switch(data.type) {
       case "spinning_started":
         this.onSpinningStarted(data)
@@ -115,11 +117,14 @@ export default class extends Controller {
         this.onRevealOptions(data)
         break
       case "vote_update":
+        console.log('🗳️ Vote update broadcast!')
         this.onVoteUpdate(data)
         break
       case "voting_complete":
         this.onVotingComplete(data)
         break
+      default:
+        console.log('⚠️ Unknown broadcast type:', data.type)
     }
   }
 
@@ -182,13 +187,15 @@ export default class extends Controller {
 
   updateVoteCountsFromStatus(statusData) {
     const voteCounts = statusData.vote_counts_by_option || {}
+    console.log('📊 Status update - vote counts:', voteCounts)
     
     document.querySelectorAll('.voting-option').forEach((option) => {
-      const optionIndex = parseInt(option.dataset.optionIndex)
+      const optionIndex = option.dataset.optionIndex  // Keep as string
       const count = voteCounts[optionIndex] || 0
       
       const voteCountElement = option.querySelector('.vote-count')
       if (voteCountElement) {
+        console.log(`  Setting option ${optionIndex} to ${count} votes`)
         voteCountElement.textContent = `${count} ${count === 1 ? 'vote' : 'votes'}`
       }
     })
@@ -299,16 +306,13 @@ export default class extends Controller {
     event.preventDefault()
     event.stopPropagation()
     
-    // FIX: Prevent voting if already confirmed
+    // Prevent voting if already confirmed
     if (this.voteConfirmed) {
       return
     }
     
     const optionIndex = parseInt(event.currentTarget.dataset.optionIndex)
     const clickedElement = event.currentTarget
-    
-    // FIX: Store previous vote to calculate vote count changes
-    const previousVote = this.myVote
     
     try {
       const csrfToken = document.querySelector('[name="csrf-token"]')?.content || 
@@ -331,45 +335,21 @@ export default class extends Controller {
       const data = await response.json()
       
       if (data.success) {
-        // FIX: Update vote counts BEFORE changing UI
-        // If changing from one option to another, decrement old
-        if (previousVote !== null && previousVote !== optionIndex) {
-          this.updateLocalVoteCount(previousVote, -1)
-        }
-        // If voting for first time OR changing to new option, increment new
-        if (previousVote === null || previousVote !== optionIndex) {
-          this.updateLocalVoteCount(optionIndex, 1)
-        }
-        
+        // Update UI to show selection (but NOT vote counts)
         document.querySelectorAll('.voting-option').forEach(opt => {
           opt.classList.remove('selected-vote')
         })
         
         clickedElement.classList.add('selected-vote')
-        this.myVote = optionIndex  // FIX: Store current vote
+        this.myVote = optionIndex
         this.showConfirmVoteButton()
         
-        // FIX: Also update from server to ensure accuracy
-        await this.updateVoteCountsFromServer()
+        // NOTE: Vote counts will ONLY update when someone confirms their vote
+        // We do NOT update vote counts here
       }
     } catch (error) {
       // Silent fail
     }
-  }
-
-  // FIX: NEW METHOD - Update individual vote count
-  updateLocalVoteCount(optionIndex, change) {
-    const optionElement = document.querySelector(`[data-option-index="${optionIndex}"]`)
-    if (!optionElement) return
-    
-    const voteCountElement = optionElement.querySelector('.vote-count')
-    if (!voteCountElement) return
-    
-    const currentText = voteCountElement.textContent
-    const currentCount = parseInt(currentText) || 0
-    const newCount = Math.max(0, currentCount + change)
-    
-    voteCountElement.textContent = `${newCount} ${newCount === 1 ? 'vote' : 'votes'}`
   }
 
   showConfirmVoteButton() {
@@ -475,6 +455,7 @@ export default class extends Controller {
           }
         }
         
+        console.log('✅ Vote confirmed, updating counts...')
         this.updateVoteCountsFromServer()
       } else {
         // FIX: Re-enable button on error
@@ -529,16 +510,20 @@ export default class extends Controller {
   }
 
   updateVoteCounts(voteCounts) {
-    Object.keys(voteCounts).forEach(optionIndex => {
-      const count = voteCounts[optionIndex]
-      const optionElement = document.querySelector(`[data-option-index="${optionIndex}"]`)
-      if (optionElement) {
-        const voteCountElement = optionElement.querySelector('.vote-count')
-        if (voteCountElement) {
-          voteCountElement.textContent = `${count} ${count === 1 ? 'vote' : 'votes'}`
-        }
+    console.log('🔄 Updating vote counts:', voteCounts)
+    
+    // Update ALL options (voteCounts keys from JSON are strings)
+    document.querySelectorAll('.voting-option').forEach(opt => {
+      const voteCountElement = opt.querySelector('.vote-count')
+      if (voteCountElement) {
+        const optionIndex = opt.dataset.optionIndex  // Keep as string to match JSON keys
+        const count = voteCounts[optionIndex] || 0
+        console.log(`  Option ${optionIndex}: ${count} votes`)
+        voteCountElement.textContent = `${count} ${count === 1 ? 'vote' : 'votes'}`
       }
     })
+    
+    console.log('✅ Vote counts updated')
   }
 
   async thumbsUp(event) {
@@ -589,6 +574,8 @@ export default class extends Controller {
   }
 
   onVoteUpdate(data) {
+    console.log('📊 Vote update received:', data)
+    console.log('Vote counts:', data.vote_counts)
     this.updateVoteCounts(data.vote_counts)
   }
 
