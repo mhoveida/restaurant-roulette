@@ -213,13 +213,15 @@ class Room < ApplicationRecord
 
   def vote(member_id, option_index)
     return false unless voting?
-    return false if option_index < 0 || option_index >= spins.length
+    return false unless (0...get_options_for_voting.length).include?(option_index)
     
-    # Initialize votes hash if needed
+    if votes.present? && votes[member_id.to_s].present? && votes[member_id.to_s]["confirmed"] == true
+      Rails.logger.info "❌ Vote rejected - member #{member_id} already confirmed"
+      return false
+    end
+    
     self.votes ||= {}
-    
-    # Store vote with confirmation status
-    self.votes[member_id] = {
+    self.votes[member_id.to_s] = {
       "option_index" => option_index,
       "confirmed" => false,
       "voted_at" => Time.current.to_s
@@ -316,6 +318,8 @@ class Room < ApplicationRecord
     
     vote_counts = Hash.new(0)
     votes.each do |_, vote_data|
+      next unless vote_data["confirmed"] == true  # ✅ ONLY confirmed
+      
       option_index = vote_data["option_index"]
       vote_counts[option_index] += 1
     end

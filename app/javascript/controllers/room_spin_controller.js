@@ -18,6 +18,7 @@ export default class extends Controller {
   }
 
   connect() {
+    console.log('🚀 ROOM SPIN CONTROLLER VERSION 3.0 - WITH ALERTS')
     this.roomId = this.element.dataset.roomId
     this.roomCode = this.element.dataset.roomCode
     this.currentMemberId = this.element.dataset.currentMemberId
@@ -186,19 +187,9 @@ export default class extends Controller {
   }
 
   updateVoteCountsFromStatus(statusData) {
-    const voteCounts = statusData.vote_counts_by_option || {}
-    console.log('📊 Status update - vote counts:', voteCounts)
-    
-    document.querySelectorAll('.voting-option').forEach((option) => {
-      const optionIndex = option.dataset.optionIndex  // Keep as string
-      const count = voteCounts[optionIndex] || 0
-      
-      const voteCountElement = option.querySelector('.vote-count')
-      if (voteCountElement) {
-        console.log(`  Setting option ${optionIndex} to ${count} votes`)
-        voteCountElement.textContent = `${count} ${count === 1 ? 'vote' : 'votes'}`
-      }
-    })
+    console.log('📊 Status update - vote counts hidden during voting')
+    // Vote counts are intentionally not displayed during voting
+    // They will be shown on the winner screen after all votes are confirmed
   }
 
   async startSpinning(event) {
@@ -306,9 +297,10 @@ export default class extends Controller {
     event.preventDefault()
     event.stopPropagation()
     
-    // Prevent voting if already confirmed
+    // CRITICAL: Prevent voting if already confirmed
     if (this.voteConfirmed) {
-      return
+      console.log('❌ Cannot vote - already confirmed')
+      return false
     }
     
     const optionIndex = parseInt(event.currentTarget.dataset.optionIndex)
@@ -348,8 +340,10 @@ export default class extends Controller {
         // We do NOT update vote counts here
       }
     } catch (error) {
-      // Silent fail
+      console.error('Vote error:', error)
     }
+    
+    return false
   }
 
   showConfirmVoteButton() {
@@ -421,6 +415,8 @@ export default class extends Controller {
         
         // FIX: Disable ALL voting options with clear visual feedback
         document.querySelectorAll('.voting-option').forEach(opt => {
+          // CRITICAL: Remove the click handler completely
+          opt.removeAttribute('data-action')
           opt.style.pointerEvents = 'none'
           opt.style.opacity = '0.6'
           opt.style.cursor = 'not-allowed'
@@ -510,20 +506,8 @@ export default class extends Controller {
   }
 
   updateVoteCounts(voteCounts) {
-    console.log('🔄 Updating vote counts:', voteCounts)
-    
-    // Update ALL options (voteCounts keys from JSON are strings)
-    document.querySelectorAll('.voting-option').forEach(opt => {
-      const voteCountElement = opt.querySelector('.vote-count')
-      if (voteCountElement) {
-        const optionIndex = opt.dataset.optionIndex  // Keep as string to match JSON keys
-        const count = voteCounts[optionIndex] || 0
-        console.log(`  Option ${optionIndex}: ${count} votes`)
-        voteCountElement.textContent = `${count} ${count === 1 ? 'vote' : 'votes'}`
-      }
-    })
-    
-    console.log('✅ Vote counts updated')
+    console.log('🔄 Vote counts updated (not displayed in UI)', voteCounts)
+    // Vote counts are intentionally hidden during voting for fairness
   }
 
   async thumbsUp(event) {

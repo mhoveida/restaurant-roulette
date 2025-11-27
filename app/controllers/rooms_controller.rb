@@ -218,49 +218,47 @@ class RoomsController < ApplicationController
   def vote
     option_index = params[:option_index].to_i
     
+    Rails.logger.info "🗳️ VOTE ACTION"
+    Rails.logger.info "  Member ID: #{@current_member_id.inspect}"
+    Rails.logger.info "  Option: #{option_index}"
+    
     if @room.vote(@current_member_id, option_index)
-      render json: { 
-        success: true, 
-        message: "Vote recorded",
-        current_vote: option_index
-      }
+      Rails.logger.info "  ✅ Vote saved"
+      render json: { success: true, message: "Vote recorded", current_vote: option_index }
     else
-      render json: { 
-        success: false, 
-        error: "Could not record vote" 
-      }, status: :unprocessable_entity
+      Rails.logger.info "  ❌ Vote failed"
+      render json: { success: false, error: "Could not record vote" }, status: :unprocessable_entity
     end
   end
 
 
   def confirm_vote
-  if @room.confirm_vote(@current_member_id)
-    # Calculate confirmed vote counts
-    vote_counts = {}
-    if @room.votes.present?
-      @room.votes.each do |member_id, vote_data|
-        next unless vote_data["confirmed"] == true
-        
-        option_index = vote_data["option_index"]
-        vote_counts[option_index] ||= 0
-        vote_counts[option_index] += 1
+    if @room.confirm_vote(@current_member_id)
+      # Calculate confirmed vote counts
+      vote_counts = {}
+      if @room.votes.present?
+        @room.votes.each do |member_id, vote_data|
+          next unless vote_data["confirmed"] == true
+          
+          option_index = vote_data["option_index"]
+          vote_counts[option_index.to_s] = (vote_counts[option_index.to_s] || 0) + 1  # ← Convert to string!
+        end
       end
+      
+      # Broadcast the updated vote counts to all members
+      broadcast_vote_update(vote_counts)
+      
+      # Check if voting is complete and broadcast winner
+      @room.reload
+      if @room.complete?
+        broadcast_winner(@room.winner)
+      end
+      
+      render json: { success: true, message: "Vote confirmed!" }
+    else
+      render json: { success: false, error: "Could not confirm vote" }, status: :unprocessable_entity
     end
-    
-    # Broadcast with vote_counts parameter
-    broadcast_vote_update(vote_counts)
-    
-    # Check if complete
-    @room.reload
-    if @room.complete?
-      broadcast_winner(@room.winner)
-    end
-    
-    render json: { success: true, message: "Vote confirmed!" }
-  else
-    render json: { success: false, error: "Could not confirm vote" }, status: :unprocessable_entity
   end
-end
 
 
   def new_round
@@ -278,12 +276,11 @@ end
   vote_counts = {}
   if @room.voting? && @room.votes.present?
     @room.votes.each do |member_id, vote_data|
-      # FIX: Only count confirmed votes
       next unless vote_data["confirmed"] == true
       
       option_index = vote_data["option_index"]
-      vote_counts[option_index] ||= 0
-      vote_counts[option_index] += 1
+      vote_counts[option_index.to_s] ||= 0  # Initialize to 0 if nil
+      vote_counts[option_index.to_s] += 1
     end
   end
   
