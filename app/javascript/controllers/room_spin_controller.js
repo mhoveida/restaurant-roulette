@@ -22,6 +22,8 @@ export default class extends Controller {
     this.roomCode = this.element.dataset.roomCode
     this.currentMemberId = this.element.dataset.currentMemberId
     this.isRoomCreator = this.element.dataset.isRoomCreator === "true"
+    this.myVote = null  // ADD: Track current vote
+    this.voteConfirmed = false  // ADD: Track if vote is confirmed
     this.myVote = null
 
     if (this.hasWheelTarget) {
@@ -297,8 +299,16 @@ export default class extends Controller {
     event.preventDefault()
     event.stopPropagation()
     
+    // FIX: Prevent voting if already confirmed
+    if (this.voteConfirmed) {
+      return
+    }
+    
     const optionIndex = parseInt(event.currentTarget.dataset.optionIndex)
     const clickedElement = event.currentTarget
+    
+    // FIX: Store previous vote to calculate vote count changes
+    const previousVote = this.myVote
     
     try {
       const csrfToken = document.querySelector('[name="csrf-token"]')?.content || 
@@ -321,19 +331,53 @@ export default class extends Controller {
       const data = await response.json()
       
       if (data.success) {
+        // FIX: Update vote counts BEFORE changing UI
+        // If changing from one option to another, decrement old
+        if (previousVote !== null && previousVote !== optionIndex) {
+          this.updateLocalVoteCount(previousVote, -1)
+        }
+        // If voting for first time OR changing to new option, increment new
+        if (previousVote === null || previousVote !== optionIndex) {
+          this.updateLocalVoteCount(optionIndex, 1)
+        }
+        
         document.querySelectorAll('.voting-option').forEach(opt => {
           opt.classList.remove('selected-vote')
         })
         
         clickedElement.classList.add('selected-vote')
+        this.myVote = optionIndex  // FIX: Store current vote
         this.showConfirmVoteButton()
+        
+        // FIX: Also update from server to ensure accuracy
+        await this.updateVoteCountsFromServer()
       }
     } catch (error) {
       // Silent fail
     }
   }
 
+  // FIX: NEW METHOD - Update individual vote count
+  updateLocalVoteCount(optionIndex, change) {
+    const optionElement = document.querySelector(`[data-option-index="${optionIndex}"]`)
+    if (!optionElement) return
+    
+    const voteCountElement = optionElement.querySelector('.vote-count')
+    if (!voteCountElement) return
+    
+    const currentText = voteCountElement.textContent
+    const currentCount = parseInt(currentText) || 0
+    const newCount = Math.max(0, currentCount + change)
+    
+    voteCountElement.textContent = `${newCount} ${newCount === 1 ? 'vote' : 'votes'}`
+  }
+
   showConfirmVoteButton() {
+    // FIX: Don't show/reset button if vote is already confirmed
+    if (this.voteConfirmed) {
+      return
+    }
+    
     let confirmBtn = document.getElementById('confirmVoteBtn')
     
     if (!confirmBtn) {
@@ -342,43 +386,113 @@ export default class extends Controller {
       confirmBtn.id = 'confirmVoteBtn'
       confirmBtn.className = 'button button-primary'
       confirmBtn.textContent = 'Confirm My Vote'
-      confirmBtn.style.cssText = 'width: 100%; max-width: 400px; margin: 2rem auto; display: block; padding: 1rem; font-size: 1.1rem;'
+      confirmBtn.style.cssText = 'width: 100%; max-width: 400px; margin: 2rem auto; display: block; padding: 1rem; font-size: 1.1rem; transition: all 0.3s ease;'
       confirmBtn.onclick = () => this.confirmVote()
       votingSection.appendChild(confirmBtn)
     }
     
+    // FIX: Reset button to enabled state if user changes vote
+    confirmBtn.disabled = false
+    confirmBtn.textContent = 'Confirm My Vote'
+    confirmBtn.style.backgroundColor = ''
     confirmBtn.style.display = 'block'
   }
 
   async confirmVote() {
+    // FIX: Prevent double-clicking
+    if (this.voteConfirmed) {
+      return
+    }
+    
+    const confirmBtn = document.getElementById('confirmVoteBtn')
+    if (confirmBtn) {
+      confirmBtn.disabled = true
+      confirmBtn.textContent = 'Confirming...'
+    }
+    
     try {
       const response = await fetch(`/rooms/${this.roomId}/confirm_vote`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+          'X-CSRF-Token': this.getCsrfToken()
         }
       })
       
       const data = await response.json()
       
       if (data.success) {
-        const confirmBtn = document.getElementById('confirmVoteBtn')
+        // FIX: Set flag to prevent further voting
+        this.voteConfirmed = true
+        
         if (confirmBtn) {
-          confirmBtn.textContent = 'Vote Confirmed!'
+          // FIX: More obvious visual feedback
+          confirmBtn.textContent = '✓ Vote Confirmed!'
           confirmBtn.disabled = true
           confirmBtn.style.backgroundColor = '#22c55e'
+          confirmBtn.style.color = 'white'
+          confirmBtn.style.transform = 'scale(1.05)'
+          setTimeout(() => {
+            if (confirmBtn) {
+              confirmBtn.style.transform = 'scale(1)'
+            }
+          }, 200)
         }
         
+        // FIX: Disable ALL voting options with clear visual feedback
         document.querySelectorAll('.voting-option').forEach(opt => {
           opt.style.pointerEvents = 'none'
           opt.style.opacity = '0.6'
+          opt.style.cursor = 'not-allowed'
+          
+          // Add lock indicator to selected option
+          if (opt.classList.contains('selected-vote')) {
+            opt.style.border = '3px solid #22c55e'
+            opt.style.boxShadow = '0 0 10px rgba(34, 197, 94, 0.5)'
+            
+            // Add lock icon if not already there
+            if (!opt.querySelector('.lock-icon')) {
+              const lockIcon = document.createElement('div')
+              lockIcon.className = 'lock-icon'
+              lockIcon.textContent = '🔒'
+              lockIcon.style.cssText = 'position: absolute; top: 10px; right: 10px; font-size: 2rem; z-index: 10;'
+              opt.style.position = 'relative'
+              opt.appendChild(lockIcon)
+            }
+          }
         })
         
+        // FIX: Show confirmation message
+        const votingSection = document.querySelector('.voting-section')
+        if (votingSection) {
+          let confirmMessage = document.getElementById('voteConfirmedMessage')
+          if (!confirmMessage) {
+            confirmMessage = document.createElement('div')
+            confirmMessage.id = 'voteConfirmedMessage'
+            confirmMessage.style.cssText = 'background: #22c55e; color: white; padding: 1.5rem; border-radius: 12px; margin: 1.5rem auto; max-width: 500px; text-align: center; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'
+            confirmMessage.innerHTML = '<div style="font-size: 2rem; margin-bottom: 0.5rem;">✓</div>Your vote has been confirmed!<br><span style="font-size: 0.9rem; opacity: 0.9;">Waiting for other members...</span>'
+            votingSection.insertBefore(confirmMessage, confirmBtn)
+          }
+        }
+        
         this.updateVoteCountsFromServer()
+      } else {
+        // FIX: Re-enable button on error
+        this.voteConfirmed = false
+        if (confirmBtn) {
+          confirmBtn.disabled = false
+          confirmBtn.textContent = 'Confirm My Vote'
+          confirmBtn.style.backgroundColor = ''
+        }
       }
     } catch (error) {
-      // Silent fail
+      // FIX: Re-enable button on error
+      this.voteConfirmed = false
+      if (confirmBtn) {
+        confirmBtn.disabled = false
+        confirmBtn.textContent = 'Confirm My Vote'
+        confirmBtn.style.backgroundColor = ''
+      }
     }
   }
 
@@ -390,7 +504,7 @@ export default class extends Controller {
       const data = await response.json()
       
       if (data.state === 'voting') {
-        this.updateVoteCountDisplay(data)
+        this.updateVoteCountsFromStatus(data)  // FIX: Use correct method
       } else if (data.state === 'complete') {
         window.location.reload()
       }
