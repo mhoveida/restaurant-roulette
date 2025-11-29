@@ -24,7 +24,7 @@ Feature: Group Room Functionality
     And I submit the room form
     Then I should see "Room Waiting Area"
     And I should see "Room Code"
-    And I should see "Group Preferences"
+    And I should see "These are the preferences you entered"
     And I should see "John Doe" in the room creator field
     And I should see "SoHo" in the location field
     And I should see "$$" in the price field

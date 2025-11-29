@@ -50,8 +50,14 @@
 
   <!-- Group Preferences Section -->
   <div class="preference-section">
-    <h2>Group Preferences</h2>
-    <p class="subtitle">Settings for this spin session</p>
+    <h2>Your Settings for this Spin</h2>
+    <p class="subtitle">These are the preferences you entered</p>
+
+    <% 
+       current_location = @current_member&.dig(:location).presence || @room.location
+       current_price = @current_member&.dig(:price).presence || @room.price
+       current_categories = @current_member&.dig(:categories).presence || @room.categories
+    %>
 
     <div class="preference-grid">
       <div class="preference-item">
@@ -61,24 +67,24 @@
 
       <div class="preference-item">
         <div class="preference-label">Location</div>
-        <div class="preference-value"><%= @room.location %></div>
+        <div class="preference-value"><%= current_location %></div>
       </div>
 
       <div class="preference-item">
         <div class="preference-label">Price Range</div>
-        <div class="preference-value"><%= @room.price %></div>
+        <div class="preference-value"><%= current_price %></div>
       </div>
     </div>
 
     <div class="preference-item" style="grid-column: 1 / -1;">
       <div class="preference-label">Cuisines</div>
       <div class="cuisine-list">
-        <% if @room.categories.is_a?(Array) %>
-          <% @room.categories.each do |cuisine| %>
+        <% if current_categories.is_a?(Array) %>
+          <% current_categories.each do |cuisine| %>
             <span class="cuisine-tag"><%= cuisine %></span>
           <% end %>
         <% else %>
-          <span class="cuisine-tag"><%= @room.categories %></span>
+          <span class="cuisine-tag"><%= current_categories %></span>
         <% end %>
       </div>
     </div>
