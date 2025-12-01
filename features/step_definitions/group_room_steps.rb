@@ -9,12 +9,12 @@ def select_cuisine_checkbox(cuisine)
   using_wait_time(15) do
     grid_selector = if page.has_css?('[data-create-room-target="cuisinesGrid"]')
                       '[data-create-room-target="cuisinesGrid"]'
-                    elsif page.has_css?('[data-solo-spin-target="cuisinesGrid"]')
+    elsif page.has_css?('[data-solo-spin-target="cuisinesGrid"]')
                       '[data-solo-spin-target="cuisinesGrid"]'
-                    else
+    else
                       raise "Cannot find cuisines grid"
-                    end
-    
+    end
+
     within(grid_selector) do
       expect(page).to have_css('.cuisine-checkbox', wait: 10)
       label = find('.cuisine-checkbox', text: cuisine, match: :first)
@@ -76,7 +76,7 @@ Given('a room exists with code {string}') do |code|
     owner_name: 'Test Owner',
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian'],
+    categories: [ 'Italian' ],
     state: 'waiting'
   )
 end
@@ -87,7 +87,7 @@ Given('a room exists with code {string} created by {string}') do |code, owner_na
     owner_name: owner_name,
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian'],
+    categories: [ 'Italian' ],
     state: 'waiting'
   )
 end
@@ -103,18 +103,18 @@ Given('I have created a room with code {string}') do |code|
   else
     'Test Creator'
   end
-  
+
   @room = Room.create!(
     code: code,
     owner_name: owner_name,
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian'],
+    categories: [ 'Italian' ],
     state: 'waiting'
   )
-  
+
   @current_user_id = "owner"
-  
+
   # Visit with test parameter
   visit "/rooms/#{@room.id}?test_creator=true"
   sleep 1
@@ -125,19 +125,19 @@ end
 # ==========================================
 Given('{string} has joined room {string}') do |name, code|
   room = Room.find_by!(code: code)
-  
+
   room.add_guest_member(
     name,
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian']
+    categories: [ 'Italian' ]
   )
 end
 
 Given('I have joined room {string}') do |code|
   room = Room.find_by(code: code)
   raise "Room with code #{code} not found" unless room
-  
+
   # Add current user as member
   if @current_user
     room.add_guest_member(
@@ -147,32 +147,32 @@ Given('I have joined room {string}') do |code|
       categories: room.categories
     )
   end
-  
+
   visit "/rooms/#{room.id}"
 end
 
 Given('I have joined room {string} as {string}') do |code, name|
   room = Room.find_by!(code: code)
-  
+
   # Add member to room FIRST
   member_data = room.add_guest_member(
     name,
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian']
+    categories: [ 'Italian' ]
   )
-  
+
   # Save the member ID
   @current_member_id = member_data["id"]
   @room = room
-  
+
   # Visit the room
   visit "/rooms/#{room.id}"
 end
 
 Given('I join room {string}') do |code|
   room = Room.find_by!(code: code)
-  
+
   # If there's a current user, add them as a member
   if @current_user
     room.add_guest_member(
@@ -183,14 +183,14 @@ Given('I join room {string}') do |code|
     )
     @current_member_id = room.members.last["id"]
   end
-  
+
   visit "/rooms/#{room.id}"
 end
 
 When('I try to join room {string} as {string}') do |code, name|
   room = Room.find_by!(code: code)
   visit "/rooms/#{room.id}/join_as_guest"
-  
+
   if page.has_field?('guest_name')
     fill_in 'guest_name', with: name
     select 'SoHo', from: 'location'
@@ -215,11 +215,11 @@ Then('I should see the {string} badge for {string}') do |badge_type, member_name
   # Try multiple possible locations
   containers = [
     '.members-list',
-    '.member-container', 
+    '.member-container',
     '.preference-section',
     '.room-members'
   ]
-  
+
   found = false
   containers.each do |container|
     if page.has_css?(container)
@@ -238,7 +238,7 @@ Then('I should see the {string} badge for {string}') do |badge_type, member_name
       end
     end
   end
-  
+
   raise "Could not find #{member_name} in any members container" unless found
 end
 
@@ -253,16 +253,16 @@ end
 When('I complete guest join for room {string} with {string}') do |code, name|
   room = Room.find_by(code: code)
   raise "Room not found" unless room
-  
+
   # Get form values
   location = find('[data-create-room-target="locationSelect"]').value
   price = find('[data-create-room-target="priceSelect"]').value
   categories_input = find('[data-create-room-target="categoriesInput"]', visible: false).value
   categories = categories_input.split(',').map(&:strip)
-  
+
   # Add member
   room.add_guest_member(name, location: location, price: price, categories: categories)
-  
+
   # Navigate to room
   visit "/rooms/#{room.id}"
 end
@@ -275,17 +275,17 @@ end
 Given('the spinning phase has started') do
   @room ||= Room.last
   @room.reload
-  
+
   # Get ALL current members
   all_members = @room.get_all_members
   turn_order = all_members.map { |m| m[:id] || m["id"] }
-  
+
   @room.update!(
     state: 'spinning',
     turn_order: turn_order,
     current_turn_index: 0
   )
-  
+
   # Set current member ID if not already set
   unless @current_member_id
     if @current_user
@@ -296,26 +296,26 @@ Given('the spinning phase has started') do
       @current_member_id = "owner"
     end
   end
-  
+
   # Visit the room with test_creator flag if we're the owner
   if @current_member_id == "owner"
     visit "/rooms/#{@room.id}?test_creator=true"
   else
     visit "/rooms/#{@room.id}"
   end
-  
+
   sleep 1  # Wait for JavaScript to load
 end
 
 When('it is my turn to spin') do
   @room ||= Room.last
-  
+
   turn_order = @room.turn_order || []
-  
+
   if turn_order.include?(@current_member_id)
     turn_index = turn_order.index(@current_member_id)
     @room.update!(current_turn_index: turn_index)
-    
+
     # Visit with test_creator if owner
     if @current_member_id == "owner"
       visit "/rooms/#{@room.id}?test_creator=true"
@@ -338,9 +338,9 @@ end
 When('I complete my spin') do
   click_button 'Spin'
   sleep 5
-  
+
   @room.reload
-  
+
   # Reload to see updated turn order
   visit current_path
   sleep 1
@@ -351,7 +351,7 @@ When('all members complete their spins') do
   @room.get_all_members.each do |member|
     @room.spin_for_member(member[:id])
   end
-  
+
   # Reload and visit to see reveal phase
   @room.reload
   visit "/rooms/#{@room.id}?test_creator=true"
@@ -371,7 +371,7 @@ end
 
 Then('I should see a restaurant result') do
   sleep 5  # Wait longer for AJAX spin to complete
-  
+
   @room.reload
 end
 
@@ -406,9 +406,9 @@ end
 
 Then('the turn should advance to the next member') do
   sleep 2
-  
+
   @room.reload
-  
+
   # Check if turn moved or round completed
   if @room.turn_order.length > 1
     # Multi-person room: either next turn or revealing
@@ -427,7 +427,7 @@ end
 
 When('I should be able to click {string}') do |text|
   expect(
-    page.has_button?(text, wait: 5) || 
+    page.has_button?(text, wait: 5) ||
     page.has_link?(text, wait: 5)
   ).to be(true), "Cannot find button or link: #{text}"
 end
@@ -439,7 +439,7 @@ end
 Given('all members have completed spinning') do
   @room ||= Room.last
   @room.reload
-  
+
   # Ensure room is in spinning state with turn order
   if @room.turn_order.blank?
     all_members = @room.get_all_members
@@ -451,19 +451,19 @@ Given('all members have completed spinning') do
       current_round: 1  # ← ADD THIS
     )
   end
-  
+
   # Complete spins for all members in turn order
   @room.turn_order.each do |member_id|
     @room.spin_for_member(member_id)
   end
-  
+
   @room.reload
-  
+
   # Move to revealing state
   @room.update!(state: 'revealing')
-  
+
   @room.reload
-  
+
   # Visit with test_creator flag if we're the owner
   if @current_member_id == "owner" || @current_user_id == "owner"
     visit "/rooms/#{@room.id}?test_creator=true"
@@ -492,7 +492,7 @@ end
 Given('the voting phase has begun') do
   @room ||= Room.last
   @room.reload
-  
+
   # Ensure room is in spinning state with turn order
   if @room.turn_order.blank?
     all_members = @room.get_all_members
@@ -504,23 +504,23 @@ Given('the voting phase has begun') do
       current_round: 1
     )
   end
-  
+
   # Complete spins for all members
   @room.turn_order.each do |member_id|
     @room.spin_for_member(member_id)
   end
-  
+
   @room.reload
-  
+
   # Reveal options to move to voting
   @room.reveal_options!
-  
+
   @room.reload
-  
+
   # Set current member ID
   @current_member_id ||= "owner"
   @current_user_id ||= "owner"
-  
+
   # Visit with test_creator flag
   visit "/rooms/#{@room.id}?test_creator=true"
   sleep 2
@@ -540,17 +540,17 @@ Given('I am in the voting phase of room {string}') do |code|
     owner_name: 'Test Owner',
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian']
+    categories: [ 'Italian' ]
   )
-  
+
   # Add a guest member so we have 2 options
   @room.add_guest_member(
     'Test Guest',
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian']
+    categories: [ 'Italian' ]
   )
-  
+
   # Set up turn order and round
   all_members = @room.get_all_members
   turn_order = all_members.map { |m| m[:id] || m["id"] }
@@ -560,17 +560,17 @@ Given('I am in the voting phase of room {string}') do |code|
     current_turn_index: 0,
     current_round: 1
   )
-  
+
   # Complete spins for all members
   @room.turn_order.each { |m| @room.spin_for_member(m) }
-  
+
   # Move to voting
   @room.reveal_options!
   @room.reload
-  
+
   @current_user_id = "owner"
   @current_member_id = "owner"
-  
+
   # Visit with test_creator flag
   visit "/rooms/#{@room.id}?test_creator=true"
   sleep 1
@@ -675,10 +675,10 @@ end
 Then('option {int} should show {string}') do |option_number, vote_text|
   # Check vote count in database instead of UI
   @room.reload
-  
+
   # Count votes for this option
   vote_count = @room.votes.count { |_, v| v["option_index"] == option_number - 1 }
-  
+
   expected_count = vote_text.match(/(\d+)/)[1].to_i
   expect(vote_count).to eq(expected_count)
 end
@@ -731,18 +731,18 @@ Given('the voting has completed in room {string}') do |code|
     owner_name: 'Test Owner',
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian']
+    categories: [ 'Italian' ]
   )
-  
+
   # Add a guest to have 2 members
-  @room.add_guest_member('Test Guest', location: 'SoHo', price: '$$', categories: ['Italian'])
-  
+  @room.add_guest_member('Test Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+
   # Complete spinning phase
   all_members = @room.get_all_members
   turn_order = all_members.map { |m| m[:id] || m["id"] }
   @room.update!(state: 'spinning', turn_order: turn_order, current_round: 1)
   @room.turn_order.each { |m| @room.spin_for_member(m) }
-  
+
   # Complete voting phase
   @room.reveal_options!
   @room.reload
@@ -750,10 +750,10 @@ Given('the voting has completed in room {string}') do |code|
     @room.vote(member[:id], 0)  # Everyone votes for option 0
     @room.confirm_vote(member[:id])
   end
-  
+
   # Room should auto-transition to complete with winner
   @room.reload
-  
+
   @current_member_id = "owner"
   visit "/rooms/#{@room.id}?test_creator=true"
   sleep 2
@@ -832,7 +832,7 @@ end
 Then('the winner should be selected') do
   # For solo rooms, need to vote and confirm first
   @room.reload
-  
+
   # If still in voting, complete the vote
   if @room.voting?
     @current_member_id ||= "owner"
@@ -840,7 +840,7 @@ Then('the winner should be selected') do
     @room.confirm_vote(@current_member_id)
     @room.reload
   end
-  
+
   # Check winner exists
   expect(@room.state).to eq('complete')
   expect(@room.winner).to be_present
@@ -877,7 +877,7 @@ end
 # ==========================================
 
 When('{string} joins the room') do |name|
-  @room.add_guest_member(name, location: 'SoHo', price: '$$', categories: ['Italian'])
+  @room.add_guest_member(name, location: 'SoHo', price: '$$', categories: [ 'Italian' ])
 end
 
 Then('I should see {string} without refreshing') do |text|
@@ -980,19 +980,19 @@ end
 
 When('I start spinning and complete my spin') do
   @room.reload
-  
+
   # Initialize turn order if needed
   if @room.turn_order.blank?
     all_members = @room.get_all_members
     turn_order = all_members.map { |m| m[:id] || m["id"] }
     @room.update!(state: 'spinning', turn_order: turn_order, current_round: 1)
   end
-  
+
   # Complete the spin programmatically
   @current_member_id ||= "owner"
   @room.spin_for_member(@current_member_id)
   @room.reload
-  
+
   visit "/rooms/#{@room.id}?test_creator=true"
   sleep 1
 end
@@ -1010,7 +1010,7 @@ end
 
 Given('{int} guests have joined the room') do |count|
   count.times do |i|
-    @room.add_guest_member("Guest#{i + 1}", location: 'SoHo', price: '$$', categories: ['Italian'])
+    @room.add_guest_member("Guest#{i + 1}", location: 'SoHo', price: '$$', categories: [ 'Italian' ])
   end
 end
 
@@ -1031,9 +1031,9 @@ Given('I am in the spinning phase of room {string}') do |code|
     owner_name: 'Test Owner',
     location: 'SoHo',
     price: '$$',
-    categories: ['Italian']
+    categories: [ 'Italian' ]
   )
-  
+
   @room.start_spinning!
   @current_user_id = "owner"
   visit "/rooms/#{@room.id}"
@@ -1061,7 +1061,7 @@ Then('the {string} field should contain {string}') do |field_name, expected_valu
     else
       field = find_field('Name')
     end
-    
+
     expect(field.value).to include(expected_value)
   else
     field = find_field(field_name)
@@ -1073,7 +1073,7 @@ end
 When('I submit the join room form') do
   # Get the room code
   room_code = find_field('room_code').value
-  
+
   # Find the room and navigate directly
   room = Room.find_by(code: room_code)
   if room
@@ -1087,7 +1087,7 @@ end
 When('I join room {string} directly') do |code|
   room = Room.find_by(code: code)
   raise "Room with code #{code} not found" unless room
-  
+
   if @current_user
     room.add_guest_member(
       "#{@current_user.first_name} #{@current_user.last_name}",
@@ -1096,27 +1096,27 @@ When('I join room {string} directly') do |code|
       categories: room.categories
     )
   end
-  
+
   visit "/rooms/#{room.id}"
 end
 
 When('I submit the guest join form') do
   room_id = current_path.match(/rooms\/(\d+)/)[1]
   room = Room.find(room_id)
-  
+
   name = find('[data-create-room-target="ownerNameInput"]').value
   location = find('[data-create-room-target="locationSelect"]').value
   price = find('[data-create-room-target="priceSelect"]').value
   categories_input = find('[data-create-room-target="categoriesInput"]', visible: false).value
   categories = categories_input.split(',').map(&:strip)
-  
+
   room.add_guest_member(
     name,
     location: location,
     price: price,
     categories: categories
   )
-  
+
   visit "/rooms/#{room.id}"
 end
 
@@ -1124,7 +1124,7 @@ Then('I should see {string} badge for {string}') do |badge_type, member_name|
   # Find the member in the list
   within('.members-list, .preference-section') do
     member_item = find('.member-item, .preference-item', text: member_name, match: :first)
-    
+
     case badge_type
     when "Room Creator"
       expect(member_item).to have_text(/Room Creator|Creator/)

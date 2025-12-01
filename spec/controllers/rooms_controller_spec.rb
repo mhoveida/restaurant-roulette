@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RoomsController, type: :controller do
   let(:restaurant) { create(:restaurant) }
-  
+
   before do
     allow_any_instance_of(Restaurant).to receive(:as_json).and_return({
       "id" => restaurant.id,
@@ -26,7 +26,7 @@ RSpec.describe RoomsController, type: :controller do
 
   describe 'GET #cuisines' do
     it 'returns cuisines as json' do
-      create(:restaurant, categories: ['Italian', 'Pizza'])
+      create(:restaurant, categories: [ 'Italian', 'Pizza' ])
       get :cuisines
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
@@ -104,7 +104,7 @@ RSpec.describe RoomsController, type: :controller do
 
         expect(response).to redirect_to(Room.last)
       end
-      
+
       it 'sets session member_id' do
         post :create, params: {
           owner_name: "John",
@@ -112,11 +112,11 @@ RSpec.describe RoomsController, type: :controller do
           price: "$$",
           categories: "Italian"
         }
-        
+
         room = Room.last
         expect(session["member_id_for_room_#{room.id}"]).to eq("owner")
       end
-      
+
       it 'parses comma-separated categories' do
         post :create, params: {
           owner_name: "John",
@@ -124,9 +124,9 @@ RSpec.describe RoomsController, type: :controller do
           price: "$$",
           categories: "Italian, French, Mexican"
         }
-        
+
         room = Room.last
-        expect(room.categories).to eq(["Italian", "French", "Mexican"])
+        expect(room.categories).to eq([ "Italian", "French", "Mexican" ])
       end
     end
 
@@ -176,7 +176,7 @@ RSpec.describe RoomsController, type: :controller do
 
         post :join, params: { room_code: room.code }
         expect(response).to redirect_to(room)
-        
+
         member_id = "user_#{user.id}"
         expect(session["member_id_for_room_#{room.id}"]).to eq(member_id)
       end
@@ -194,8 +194,8 @@ RSpec.describe RoomsController, type: :controller do
     context 'with valid guest data' do
       it 'adds guest with preferences' do
         expect {
-          post :join_as_guest, params: { 
-            id: room.id, 
+          post :join_as_guest, params: {
+            id: room.id,
             guest_name: "Alex",
             location: "Brooklyn",
             price: "$$$",
@@ -205,8 +205,8 @@ RSpec.describe RoomsController, type: :controller do
       end
 
       it 'redirects to room page' do
-        post :join_as_guest, params: { 
-          id: room.id, 
+        post :join_as_guest, params: {
+          id: room.id,
           guest_name: "Alex",
           location: "Brooklyn",
           price: "$$$",
@@ -214,10 +214,10 @@ RSpec.describe RoomsController, type: :controller do
         }
         expect(response).to redirect_to(room)
       end
-      
+
       it 'sets session for guest member' do
-        post :join_as_guest, params: { 
-          id: room.id, 
+        post :join_as_guest, params: {
+          id: room.id,
           guest_name: "Alex",
           location: "Brooklyn",
           price: "$$$",
@@ -229,8 +229,8 @@ RSpec.describe RoomsController, type: :controller do
 
     context 'with missing data' do
       it 'rejects blank name' do
-        post :join_as_guest, params: { 
-          id: room.id, 
+        post :join_as_guest, params: {
+          id: room.id,
           guest_name: "",
           location: "Brooklyn",
           price: "$$$",
@@ -239,10 +239,10 @@ RSpec.describe RoomsController, type: :controller do
         expect(response).to render_template(:join_as_guest)
         expect(flash.now[:alert]).to match(/name/i)
       end
-      
+
       it 'rejects blank location' do
-        post :join_as_guest, params: { 
-          id: room.id, 
+        post :join_as_guest, params: {
+          id: room.id,
           guest_name: "Alex",
           location: "",
           price: "$$$",
@@ -251,10 +251,10 @@ RSpec.describe RoomsController, type: :controller do
         expect(response).to render_template(:join_as_guest)
         expect(flash.now[:alert]).to match(/location/i)
       end
-      
+
       it 'rejects blank price' do
-        post :join_as_guest, params: { 
-          id: room.id, 
+        post :join_as_guest, params: {
+          id: room.id,
           guest_name: "Alex",
           location: "Brooklyn",
           price: "",
@@ -263,10 +263,10 @@ RSpec.describe RoomsController, type: :controller do
         expect(response).to render_template(:join_as_guest)
         expect(flash.now[:alert]).to match(/price/i)
       end
-      
+
       it 'rejects empty categories' do
-        post :join_as_guest, params: { 
-          id: room.id, 
+        post :join_as_guest, params: {
+          id: room.id,
           guest_name: "Alex",
           location: "Brooklyn",
           price: "$$$",
@@ -290,13 +290,13 @@ RSpec.describe RoomsController, type: :controller do
       get :show, params: { id: room.id }
       expect(assigns(:room)).to eq(room)
     end
-    
+
     it 'sets @current_member_id from session' do
       session["member_id_for_room_#{room.id}"] = "test_member"
       get :show, params: { id: room.id }
       expect(assigns(:current_member_id)).to eq("test_member")
     end
-    
+
     it 'sets @is_room_creator for owner' do
       session["member_id_for_room_#{room.id}"] = "owner"
       get :show, params: { id: room.id }
@@ -306,16 +306,16 @@ RSpec.describe RoomsController, type: :controller do
 
   describe 'POST #start_spinning' do
     let(:room) { create(:room) }
-    
+
     before do
       session["member_id_for_room_#{room.id}"] = "owner"
     end
-    
+
     it 'transitions room to spinning state' do
       post :start_spinning, params: { id: room.id }
       expect(room.reload.spinning?).to be true
     end
-    
+
     it 'returns success json' do
       post :start_spinning, params: { id: room.id }
       expect(response).to have_http_status(:ok)
@@ -326,9 +326,9 @@ RSpec.describe RoomsController, type: :controller do
 
   describe 'POST #spin' do
     let(:room) { create(:room) }
-    
+
     before do
-      room.update!(state: :spinning, turn_order: ["owner"], current_turn_index: 0, current_round: 1)
+      room.update!(state: :spinning, turn_order: [ "owner" ], current_turn_index: 0, current_round: 1)
       session["member_id_for_room_#{room.id}"] = "owner"
       allow_any_instance_of(Room).to receive(:find_random_restaurant).and_return({
         restaurant: restaurant,
@@ -349,115 +349,115 @@ RSpec.describe RoomsController, type: :controller do
       expect(json["spin"]).to be_present
       expect(json["spin"]["restaurant"]).to be_present
     end
-    
+
     context 'when not authenticated' do
       before do
         session.delete("member_id_for_room_#{room.id}")
       end
-      
+
       it 'returns unprocessable content when not authenticated' do
         post :spin, params: { id: room.id }, format: :json
         expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
-  
+
   describe 'POST #reveal' do
     let(:room) { create(:room) }
-    
+
     before do
       room.update!(
         state: :revealing,
-        spins: [{"member_id" => "owner", "restaurant" => {"name" => "Test"}, "round" => 1}],
+        spins: [ { "member_id" => "owner", "restaurant" => { "name" => "Test" }, "round" => 1 } ],
         current_round: 1
       )
       session["member_id_for_room_#{room.id}"] = "owner"
     end
-    
+
     it 'transitions to voting state' do
       post :reveal, params: { id: room.id }
       expect(room.reload.voting?).to be true
     end
-    
+
     it 'returns options' do
       post :reveal, params: { id: room.id }
       json = JSON.parse(response.body)
       expect(json["options"]).to be_an(Array)
     end
   end
-  
+
   describe 'POST #vote' do
     let(:room) { create(:room) }
-    
+
     before do
       room.update!(
-        state: :revealing,  
-        spins: [{"member_id" => "owner", "restaurant" => {"name" => "Test"}, "round" => 1}],
-        current_round: 1  
+        state: :revealing,
+        spins: [ { "member_id" => "owner", "restaurant" => { "name" => "Test" }, "round" => 1 } ],
+        current_round: 1
       )
-      room.reveal_options!  
-      room.reload  
+      room.reveal_options!
+      room.reload
       session["member_id_for_room_#{room.id}"] = "owner"
     end
-    
+
     it 'records vote' do
       post :vote, params: { id: room.id, option_index: 0 }, format: :json
       expect(response).to have_http_status(:ok)
       expect(room.reload.votes["owner"]).to be_present
     end
   end
-  
+
   describe 'POST #confirm_vote' do
     let(:room) { create(:room) }
-    
+
     before do
       # Properly setup with reveal_options! to ensure reveal_order is set
       room.update!(
         state: :revealing,
-        spins: [{"member_id" => "owner", "restaurant" => {"name" => "Test"}, "round" => 1}],
+        spins: [ { "member_id" => "owner", "restaurant" => { "name" => "Test" }, "round" => 1 } ],
         current_round: 1
       )
       room.reveal_options!  # This properly sets revealed=true and reveal_order
       room.reload
-      
+
       session["member_id_for_room_#{room.id}"] = "owner"
       room.vote("owner", 0)
     end
-    
+
     it 'confirms vote' do
       post :confirm_vote, params: { id: room.id }, format: :json
       expect(response).to have_http_status(:ok)
       expect(room.reload.has_confirmed_vote?("owner")).to be true
     end
   end
-  
+
   describe 'POST #new_round' do
     let(:room) { create(:room) }
-    
+
     before do
       room.update!(state: :complete)
       session["member_id_for_room_#{room.id}"] = "owner"
     end
-    
+
     it 'starts new round' do
       post :new_round, params: { id: room.id }
       expect(response).to have_http_status(:ok)
       expect(room.reload.spinning?).to be true
     end
   end
-  
+
   describe 'GET #status' do
     let(:room) { create(:room) }
-    
+
     it 'returns room status as json' do
       get :status, params: { id: room.id }, format: :json
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json["state"]).to eq(room.state)
     end
-    
+
     it 'includes vote counts' do
-      room.update!(state: :voting, votes: {"owner" => {"option_index" => 0}})
+      room.update!(state: :voting, votes: { "owner" => { "option_index" => 0 } })
       get :status, params: { id: room.id }, format: :json
       json = JSON.parse(response.body)
       expect(json).to have_key("vote_counts_by_option")

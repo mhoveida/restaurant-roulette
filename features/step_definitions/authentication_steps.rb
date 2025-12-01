@@ -150,9 +150,9 @@ Given('I am logged in as {string}') do |name|
 
   # Use Warden to log in programmatically
   login_as(user, scope: :user)
-  
+
   @current_user = user
-  
+
   # Visit home page to load the UI with profile icon
   visit root_path
   sleep 1

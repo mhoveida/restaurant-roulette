@@ -20,7 +20,7 @@ restaurants_data = [
     review_count: 5200,
     is_open_now: true,
     closing_time: "12:00 AM",
-    categories: ["French"]
+    categories: [ "French" ]
   },
   {
     name: "Emilio's Ballato",
@@ -35,7 +35,7 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Blue Ribbon Sushi",
@@ -50,7 +50,7 @@ restaurants_data = [
     review_count: 1800,
     is_open_now: true,
     closing_time: "2:00 AM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
   {
     name: "Tacombi",
@@ -65,7 +65,7 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Mexican"]
+    categories: [ "Mexican" ]
   },
   {
     name: "The Mercer Kitchen",
@@ -80,7 +80,7 @@ restaurants_data = [
     review_count: 1600,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
 
   # ==========================================
@@ -99,7 +99,7 @@ restaurants_data = [
     review_count: 3400,
     is_open_now: true,
     closing_time: "12:00 AM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Ippudo",
@@ -114,7 +114,7 @@ restaurants_data = [
     review_count: 4200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
   {
     name: "Mamoun's Falafel",
@@ -129,7 +129,7 @@ restaurants_data = [
     review_count: 2800,
     is_open_now: true,
     closing_time: "5:00 AM",
-    categories: ["Mediterranean"]
+    categories: [ "Mediterranean" ]
   },
   {
     name: "Xi'an Famous Foods",
@@ -144,7 +144,7 @@ restaurants_data = [
     review_count: 3400,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Chinese"]
+    categories: [ "Chinese" ]
   },
   {
     name: "Panna II",
@@ -159,7 +159,7 @@ restaurants_data = [
     review_count: 1900,
     is_open_now: true,
     closing_time: "12:00 AM",
-    categories: ["Indian"]
+    categories: [ "Indian" ]
   },
   {
     name: "Superiority Burger",
@@ -174,7 +174,7 @@ restaurants_data = [
     review_count: 1500,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Sobaya",
@@ -189,7 +189,7 @@ restaurants_data = [
     review_count: 1100,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
 
   # ==========================================
@@ -208,7 +208,7 @@ restaurants_data = [
     review_count: 1890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Sushi Nakazawa",
@@ -223,7 +223,7 @@ restaurants_data = [
     review_count: 980,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
   {
     name: "RedFarm",
@@ -238,7 +238,7 @@ restaurants_data = [
     review_count: 2800,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Chinese"]
+    categories: [ "Chinese" ]
   },
   {
     name: "Joe's Pizza",
@@ -253,7 +253,7 @@ restaurants_data = [
     review_count: 5400,
     is_open_now: true,
     closing_time: "4:00 AM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Employees Only",
@@ -268,7 +268,7 @@ restaurants_data = [
     review_count: 2780,
     is_open_now: true,
     closing_time: "3:30 AM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Taïm",
@@ -283,7 +283,7 @@ restaurants_data = [
     review_count: 1600,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Mediterranean"]
+    categories: [ "Mediterranean" ]
   },
   {
     name: "Jungsik",
@@ -298,7 +298,7 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Korean"]
+    categories: [ "Korean" ]
   },
 
   # ==========================================
@@ -317,7 +317,7 @@ restaurants_data = [
     review_count: 1450,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["French"]
+    categories: [ "French" ]
   },
   {
     name: "Tao Uptown",
@@ -332,7 +332,7 @@ restaurants_data = [
     review_count: 3200,
     is_open_now: true,
     closing_time: "12:00 AM",
-    categories: ["Chinese"]
+    categories: [ "Chinese" ]
   },
   {
     name: "Toloache",
@@ -347,7 +347,7 @@ restaurants_data = [
     review_count: 1800,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Mexican"]
+    categories: [ "Mexican" ]
   },
   {
     name: "The Smith",
@@ -362,7 +362,7 @@ restaurants_data = [
     review_count: 3200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Sushi Ginza Onodera",
@@ -377,7 +377,7 @@ restaurants_data = [
     review_count: 650,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
   {
     name: "Bukhara Grill",
@@ -392,7 +392,7 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Indian"]
+    categories: [ "Indian" ]
   },
   {
     name: "Pure Thai Cookhouse",
@@ -407,7 +407,7 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: ["Thai"]
+    categories: [ "Thai" ]
   },
 
   # ==========================================
@@ -426,7 +426,7 @@ restaurants_data = [
     review_count: 1450,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["French"]
+    categories: [ "French" ]
   },
   {
     name: "JG Melon",
@@ -441,7 +441,7 @@ restaurants_data = [
     review_count: 2800,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Sushi of Gari",
@@ -456,7 +456,7 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
   {
     name: "Sfoglia",
@@ -471,7 +471,7 @@ restaurants_data = [
     review_count: 980,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Café Boulud",
@@ -486,7 +486,7 @@ restaurants_data = [
     review_count: 1890,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["French"]
+    categories: [ "French" ]
   },
   {
     name: "Moti Mahal Delux",
@@ -501,7 +501,7 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Indian"]
+    categories: [ "Indian" ]
   },
 
   # ==========================================
@@ -520,7 +520,7 @@ restaurants_data = [
     review_count: 8900,
     is_open_now: true,
     closing_time: "10:45 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Ivan Ramen",
@@ -535,7 +535,7 @@ restaurants_data = [
     review_count: 2780,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
   {
     name: "Dhamaka",
@@ -550,7 +550,7 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Indian"]
+    categories: [ "Indian" ]
   },
   {
     name: "Cervo's",
@@ -565,7 +565,7 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Mediterranean"]
+    categories: [ "Mediterranean" ]
   },
   {
     name: "Mission Chinese Food",
@@ -580,7 +580,7 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Chinese"]
+    categories: [ "Chinese" ]
   },
   {
     name: "Scarr's Pizza",
@@ -595,7 +595,7 @@ restaurants_data = [
     review_count: 2890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
 
   # ==========================================
@@ -614,7 +614,7 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Peter Luger Steak House",
@@ -629,7 +629,7 @@ restaurants_data = [
     review_count: 5600,
     is_open_now: true,
     closing_time: "9:45 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Okonomi",
@@ -644,7 +644,7 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
   {
     name: "Barano",
@@ -659,7 +659,7 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Oaxaca Taqueria",
@@ -674,7 +674,7 @@ restaurants_data = [
     review_count: 1800,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Mexican"]
+    categories: [ "Mexican" ]
   },
   {
     name: "Thai Villa",
@@ -689,7 +689,7 @@ restaurants_data = [
     review_count: 1100,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: ["Thai"]
+    categories: [ "Thai" ]
   },
   {
     name: "Maison Premiere",
@@ -704,7 +704,7 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "2:00 AM",
-    categories: ["French"]
+    categories: [ "French" ]
   },
 
   # ==========================================
@@ -723,7 +723,7 @@ restaurants_data = [
     review_count: 3800,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Westville DUMBO",
@@ -738,7 +738,7 @@ restaurants_data = [
     review_count: 1600,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Cecconi's DUMBO",
@@ -753,7 +753,7 @@ restaurants_data = [
     review_count: 2200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Time Out Market",
@@ -768,7 +768,7 @@ restaurants_data = [
     review_count: 3400,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Atrium DUMBO",
@@ -783,7 +783,7 @@ restaurants_data = [
     review_count: 980,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Mediterranean"]
+    categories: [ "Mediterranean" ]
   },
 
   # ==========================================
@@ -802,7 +802,7 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Miti Miti",
@@ -817,7 +817,7 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Mexican"]
+    categories: [ "Mexican" ]
   },
   {
     name: "Faun",
@@ -832,7 +832,7 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Miriam",
@@ -847,7 +847,7 @@ restaurants_data = [
     review_count: 1800,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Mediterranean"]
+    categories: [ "Mediterranean" ]
   },
   {
     name: "Krupa Grocery",
@@ -862,7 +862,7 @@ restaurants_data = [
     review_count: 780,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "Talde",
@@ -877,7 +877,7 @@ restaurants_data = [
     review_count: 1400,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Thai"]
+    categories: [ "Thai" ]
   },
 
   # ==========================================
@@ -896,7 +896,7 @@ restaurants_data = [
     review_count: 3890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Mediterranean"]
+    categories: [ "Mediterranean" ]
   },
   {
     name: "Il Bambino",
@@ -911,7 +911,7 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Italian"]
+    categories: [ "Italian" ]
   },
   {
     name: "Pochana",
@@ -926,7 +926,7 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: ["Thai"]
+    categories: [ "Thai" ]
   },
   {
     name: "Sabry's Seafood",
@@ -941,7 +941,7 @@ restaurants_data = [
     review_count: 1100,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Mediterranean"]
+    categories: [ "Mediterranean" ]
   },
   {
     name: "Kondo",
@@ -956,7 +956,7 @@ restaurants_data = [
     review_count: 780,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Japanese"]
+    categories: [ "Japanese" ]
   },
   {
     name: "Tikka Indian Grill",
@@ -971,7 +971,7 @@ restaurants_data = [
     review_count: 980,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: ["Indian"]
+    categories: [ "Indian" ]
   },
   {
     name: "Mom's Kitchen",
@@ -986,7 +986,7 @@ restaurants_data = [
     review_count: 1400,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["American"]
+    categories: [ "American" ]
   },
   {
     name: "De Mole",
@@ -1001,7 +1001,7 @@ restaurants_data = [
     review_count: 1600,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: ["Mexican"]
+    categories: [ "Mexican" ]
   },
   {
     name: "HanGawi",
@@ -1016,7 +1016,7 @@ restaurants_data = [
     review_count: 680,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: ["Korean"]
+    categories: [ "Korean" ]
   }
 ]
 

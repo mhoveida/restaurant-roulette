@@ -50,43 +50,43 @@ When('I select {string} from the cuisine grid') do |cuisine|
     # Detect which page we're on
     grid_selector = if page.has_css?('.solo-spin-container')
                       '[data-solo-spin-target="cuisinesGrid"]'
-                    elsif page.has_css?('.create-room-container')
+    elsif page.has_css?('.create-room-container')
                       '[data-create-room-target="cuisinesGrid"]'
-                    else
+    else
                       raise "Cannot find cuisines grid"
-                    end
-    
+    end
+
     within(grid_selector) do
       # Wait for JavaScript to populate
       expect(page).to have_css('.cuisine-checkbox', wait: 10)
-      
+
       # Find the label containing this cuisine
       label = find('.cuisine-checkbox', text: cuisine, match: :first)
-      
+
       # Find the checkbox inside the label
       checkbox = label.find('input[type="checkbox"]')
-      
+
       # Click the checkbox (NOT the label) to trigger the JavaScript event
       checkbox.click
-      
+
       # Wait a moment for JavaScript to process
       sleep 0.5
-      
+
       # Verify it was selected
       expect(checkbox).to be_checked
-      
+
       # Verify the label has the 'selected' class added by JavaScript
       expect(label[:class]).to include('selected')
     end
   end
-  
+
   # Extra verification: check that the hidden categoriesInput was updated
   controller_name = if page.has_css?('.solo-spin-container')
                       'solo-spin'
-                    else
+  else
                       'create-room'
-                    end
-  
+  end
+
   categories_input = find("[data-#{controller_name}-target='categoriesInput']", visible: false)
   expect(categories_input.value).to include(cuisine)
 end
@@ -135,7 +135,7 @@ Then('the {string} field should be read-only') do |field_label|
   # Find input by name attribute or nearby label
   field = page.find('input[name*="name"]', match: :first) rescue nil
   field ||= page.find('input[readonly]', match: :first) rescue nil
-  
+
   expect(field).to be_present
 end
 
@@ -180,7 +180,7 @@ Then('I should see the cuisine selection grid') do
                 page.has_css?('.cuisine-tag', wait: 2) ||
                 page.has_css?('[class*="cuisine"]', wait: 2) ||
                 page.has_text?('Italian', wait: 2) # Fallback: check for cuisine names
-  
+
   expect(has_cuisine).to be true
 end
 
@@ -212,7 +212,7 @@ end
 
 Then('I should see a {string} button in the result modal') do |button_text|
   # Just check if button exists anywhere on page, don't require modal to be visible
-  has_element = page.has_button?(button_text, visible: :all) || 
+  has_element = page.has_button?(button_text, visible: :all) ||
                 page.has_link?(button_text, visible: :all)
   expect(has_element).to be true
 end
@@ -225,7 +225,7 @@ end
 Given('I have spun the wheel and see a result') do
   visit solo_spin_path
   sleep 1
-  
+
   # Fill in required fields
   fill_in placeholder: /name/i, with: "Test User"
   within('[data-solo-spin-target="locationSelect"]') do
@@ -234,7 +234,7 @@ Given('I have spun the wheel and see a result') do
   within('[data-solo-spin-target="priceSelect"]') do
     select "$$", match: :first
   end
-  
+
   # Select a cuisine - try multiple selectors
   if page.has_css?('.cuisine-tag')
     first('.cuisine-tag').click
@@ -245,7 +245,7 @@ Given('I have spun the wheel and see a result') do
   else
     # If no cuisine selector, just continue
   end
-  
+
   # Spin
   click_button "Spin the Wheel!"
   sleep 5  # Wait for spin to complete

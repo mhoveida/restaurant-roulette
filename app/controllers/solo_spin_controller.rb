@@ -1,5 +1,5 @@
 class SoloSpinController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:show, :spin], raise: false
+  skip_before_action :authenticate_user!, only: [ :show, :spin ], raise: false
   def show
     @name = current_user&.first_name || ""
   end
@@ -8,13 +8,13 @@ class SoloSpinController < ApplicationController
     location = params[:location]
     price = params[:price]
     categories = params[:categories] || []
-    
+
     result = find_random_restaurant(
       location: location,
       price: price,
       categories: categories
     )
-    
+
     if result[:restaurant]
       render json: {
         success: true,
@@ -34,28 +34,28 @@ class SoloSpinController < ApplicationController
   def find_random_restaurant(location:, price:, categories:)
     result = search_restaurants(location: location, price: price, categories: categories)
     return { restaurant: result, match_type: "exact" } if result
-    
+
     result = search_restaurants(location: location, price: price, categories: [])
     return { restaurant: result, match_type: "location_price" } if result
-    
+
     result = search_restaurants(location: location, price: nil, categories: categories)
     return { restaurant: result, match_type: "location_cuisine" } if result
-    
+
     result = search_restaurants(location: location, price: nil, categories: [])
     return { restaurant: result, match_type: "location_only" } if result
-    
+
     result = search_restaurants(location: nil, price: price, categories: categories)
     return { restaurant: result, match_type: "price_cuisine" } if result
-    
+
     result = search_restaurants(location: nil, price: nil, categories: categories)
     return { restaurant: result, match_type: "cuisine_only" } if result
-    
+
     result = search_restaurants(location: nil, price: price, categories: [])
     return { restaurant: result, match_type: "price_only" } if result
-    
+
     result = Restaurant.order("RANDOM()").first
     return { restaurant: result, match_type: "random" } if result
-    
+
     { restaurant: nil, match_type: "none" }
   end
 
@@ -63,28 +63,28 @@ class SoloSpinController < ApplicationController
 
   def search_restaurants(location:, price:, categories:)
     query = Restaurant.all
-    
+
     if location.present?
       query = query.where(
         "LOWER(neighborhood) LIKE LOWER(?) OR LOWER(address) LIKE LOWER(?)",
         "%#{location}%", "%#{location}%"
       )
     end
-    
+
     query = query.where(price: price) if price.present?
-    
+
     if categories.present? && categories.any?
       # FIX: Cast JSON to text for PostgreSQL compatibility (works on SQLite too usually)
       # If using Postgres, use "categories::text LIKE ?"
       # If using SQLite, "categories LIKE ?" is fine.
-      
+
       # Safe fallback for both (usually):
-      category_conditions = categories.map { |cat| "categories::text LIKE ?" } 
+      category_conditions = categories.map { |cat| "categories::text LIKE ?" }
       category_values = categories.map { |cat| "%#{cat}%" }
-      
+
       query = query.where(category_conditions.join(" OR "), *category_values)
     end
-    
+
     # Use Arel.sql to avoid deprecation warnings and ensure compatibility
     query.order(Arel.sql("RANDOM()")).first
   end

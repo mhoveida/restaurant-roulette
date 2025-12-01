@@ -35,7 +35,7 @@ class CapybaraAppWrapper
     # Only suppress errors for AJAX/XHR requests or specific polling endpoints
     if env['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' || env['PATH_INFO'] =~ %r{/status$}
       # Return a 404 to the browser instead of crashing the test runner
-      [404, {'Content-Type' => 'application/json'}, [{ error: 'Record not found (test cleanup)' }.to_json]]
+      [ 404, { 'Content-Type' => 'application/json' }, [ { error: 'Record not found (test cleanup)' }.to_json ] ]
     else
       # If it's a real page load failure, let it crash so we know something is wrong
       raise
@@ -85,7 +85,7 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   options.add_argument('--no-sandbox')
   options.add_argument('--disable-dev-shm-usage')
   options.add_argument('--disable-gpu')
-  
+
   # Ensure clean exit
   options.add_argument('--disable-application-cache')
 
@@ -145,15 +145,15 @@ After('@javascript') do
       // Attempt to stop any other intervals
       var highestIntervalId = setInterval(';');
       for (var i = 0 ; i < highestIntervalId ; i++) {
-        clearInterval(i); 
+        clearInterval(i);
       }
     ")
   rescue => e
     # Ignore JavaScript errors during cleanup (e.g. if browser is already closed)
   end
-  
+
   DatabaseCleaner.clean
-  
+
   # Give a moment for any final requests to complete
   sleep 0.1
 end

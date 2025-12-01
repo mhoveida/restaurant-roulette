@@ -39,7 +39,7 @@ When(/I click "(.*)"/) do |text|
   else
     raise Capybara::ElementNotFound, "Could not find button, link, or clickable element: #{text}"
   end
-  
+
   sleep 0.5
 end
 

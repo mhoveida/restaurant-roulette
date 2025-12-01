@@ -1,6 +1,6 @@
 class RoomsController < ApplicationController
-  before_action :set_room, only: [:show, :join_as_guest, :start_spinning, :spin, :reveal, :vote, :confirm_vote, :status, :new_round]
-  before_action :set_current_member, only: [:show, :spin, :vote, :confirm_vote]
+  before_action :set_room, only: [ :show, :join_as_guest, :start_spinning, :spin, :reveal, :vote, :confirm_vote, :status, :new_round ]
+  before_action :set_current_member, only: [ :show, :spin, :vote, :confirm_vote ]
 
   def neighborhoods
     neighborhoods = Restaurant.pluck(:neighborhood).uniq.compact.sort
@@ -60,7 +60,7 @@ class RoomsController < ApplicationController
 
   def join
     room_code = params[:room_code]
-    
+
     if room_code.blank?
       flash[:alert] = "Please enter a room code"
       redirect_to root_path
@@ -79,12 +79,12 @@ class RoomsController < ApplicationController
         # For logged-in users, add them as a member with their user ID
         guest_name = current_user.first_name
         member_id = "user_#{current_user.id}"
-        
+
         # Check if already in room
         unless @room.members&.any? { |m| m["id"] == member_id }
           @room.add_guest_member(guest_name, member_id: member_id)
         end
-        
+
         session["member_id_for_room_#{@room.id}"] = member_id
         redirect_to @room, notice: "You joined the room successfully"
       else
@@ -103,9 +103,9 @@ class RoomsController < ApplicationController
       location = params[:location]
       price = params[:price]
       categories_input = params[:categories]
-      
+
       # Parse comma-separated cuisines into array
-      categories = categories_input.present? ? categories_input.split(',').map(&:strip).reject(&:blank?) : []
+      categories = categories_input.present? ? categories_input.split(",").map(&:strip).reject(&:blank?) : []
 
       # Validation
       if guest_name.blank?
@@ -134,11 +134,11 @@ class RoomsController < ApplicationController
 
       # Add guest with their preferences
       @room.add_guest_member(guest_name, location: location, price: price, categories: categories)
-      
+
       # Get the member ID that was just created
       new_member = @room.members.last
       session["member_id_for_room_#{@room.id}"] = new_member["id"]
-      
+
       redirect_to @room, notice: "Successfully joined the room!"
     end
   end
@@ -152,7 +152,7 @@ class RoomsController < ApplicationController
     if @room.start_spinning!
       # Broadcast to all members that spinning has started
       broadcast_state_change("spinning_started")
-      
+
       render json: { success: true, state: "spinning", current_turn: @room.current_turn_member }
     else
       render json: { success: false, error: "Cannot start spinning" }, status: :unprocessable_entity
@@ -161,7 +161,7 @@ class RoomsController < ApplicationController
 
   def spin
     result = @room.spin_for_member(@current_member_id)
-    
+
     if result[:success]
       # Broadcast turn change to all members
       ActionCable.server.broadcast(
@@ -176,7 +176,7 @@ class RoomsController < ApplicationController
           state: @room.state
         }
       )
-      
+
       render json: { success: true, spin: result[:spin] }
     else
       render json: { success: false, error: result[:error] }, status: :unprocessable_entity
@@ -188,10 +188,10 @@ class RoomsController < ApplicationController
     if @room.reveal_options!
       # Get options in randomized order
       options = @room.get_options_for_voting
-      
+
       # Broadcast reveal to all members
       broadcast_reveal(options)
-      
+
       render json: {
         success: true,
         state: "voting",
@@ -211,11 +211,11 @@ class RoomsController < ApplicationController
 
   def vote
     option_index = params[:option_index].to_i
-    
+
     Rails.logger.info "🗳️ VOTE ACTION"
     Rails.logger.info "  Member ID: #{@current_member_id.inspect}"
     Rails.logger.info "  Option: #{option_index}"
-    
+
     if @room.vote(@current_member_id, option_index)
       Rails.logger.info "  ✅ Vote saved"
       render json: { success: true, message: "Vote recorded", current_vote: option_index }
@@ -233,21 +233,21 @@ class RoomsController < ApplicationController
       if @room.votes.present?
         @room.votes.each do |member_id, vote_data|
           next unless vote_data["confirmed"] == true
-          
+
           option_index = vote_data["option_index"]
           vote_counts[option_index.to_s] = (vote_counts[option_index.to_s] || 0) + 1  # ← Convert to string!
         end
       end
-      
+
       # Broadcast the updated vote counts to all members
       broadcast_vote_update(vote_counts)
-      
+
       # Check if voting is complete and broadcast winner
       @room.reload
       if @room.complete?
         broadcast_winner(@room.winner)
       end
-      
+
       render json: { success: true, message: "Vote confirmed!" }
     else
       render json: { success: false, error: "Could not confirm vote" }, status: :unprocessable_entity
@@ -271,13 +271,13 @@ class RoomsController < ApplicationController
   if @room.voting? && @room.votes.present?
     @room.votes.each do |member_id, vote_data|
       next unless vote_data["confirmed"] == true
-      
+
       option_index = vote_data["option_index"]
       vote_counts[option_index.to_s] ||= 0  # Initialize to 0 if nil
       vote_counts[option_index.to_s] += 1
     end
   end
-  
+
   render json: {
     state: @room.state,
     current_round: @room.current_round,
@@ -310,13 +310,13 @@ end
 
   def set_current_member
   @current_member_id = session["member_id_for_room_#{@room.id}"]
-  
+
   # For testing: allow override via param
-  if Rails.env.test? && params[:test_creator] == 'true'
+  if Rails.env.test? && params[:test_creator] == "true"
     @current_member_id = "owner"
     session["member_id_for_room_#{@room.id}"] = "owner"
   end
-  
+
   @is_room_creator = @current_member_id == "owner"
   @current_member = @room.get_member_by_id(@current_member_id) if @current_member_id
 end

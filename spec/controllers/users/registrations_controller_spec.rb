@@ -39,7 +39,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         post :create, params: valid_params
         expect(assigns(:signup_attempted)).to be true
       end
-      
+
       it 'sets flash notice' do
         post :create, params: valid_params
         expect(flash[:notice]).to be_present
@@ -69,12 +69,12 @@ RSpec.describe Users::RegistrationsController, type: :controller do
         post :create, params: invalid_params
         expect(response).to render_template(:new)
       end
-      
+
       it 'returns unprocessable_entity status' do
         post :create, params: invalid_params
         expect(response).to have_http_status(:unprocessable_entity)
       end
-      
+
       it 'sets @signup_attempted to true' do
         post :create, params: invalid_params
         expect(assigns(:signup_attempted)).to be true
@@ -124,7 +124,7 @@ RSpec.describe Users::RegistrationsController, type: :controller do
 
   describe '#after_sign_up_path_for' do
     let(:user) { create(:user) }
-    
+
     it 'returns root path' do
       path = controller.send(:after_sign_up_path_for, user)
       expect(path).to eq(root_path)
