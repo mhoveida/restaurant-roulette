@@ -7,14 +7,18 @@ export default class extends Controller {
     "priceSelect",
     "cuisinesGrid",
     "categoriesInput",
+    "dietaryRestrictionsGrid",
+    "dietaryRestrictionsInput", 
     "createButton",
     "validationMessage"
   ]
 
   connect() {
     this.selectedCuisines = []
+    this.selectedDietaryRestrictions = []
     this.fetchNeighborhoods()
     this.fetchCuisines()
+    this.fetchDietaryRestrictions()
   }
 
   async fetchNeighborhoods() {
@@ -67,6 +71,35 @@ export default class extends Controller {
     }
   }
 
+  async fetchDietaryRestrictions() {
+    try {
+      const response = await fetch('/dietary_restrictions')
+      const restrictions = await response.json()
+      
+      // Create checkbox grid
+      const grid = this.dietaryRestrictionsGridTarget
+      grid.innerHTML = restrictions.map(restriction => `
+        <label class="cuisine-checkbox">
+          <input type="checkbox" value="${restriction}" data-action="change->create-room#toggleDietaryRestriction">
+          <span class="cuisine-label">${restriction}</span>
+        </label>
+      `).join('')
+    } catch (error) {
+      console.error('Error fetching dietary restrictions:', error)
+      // Fallback options
+      const fallbackRestrictions = [
+        "Vegetarian", "Vegan", "Gluten-Free", "Halal", "Kosher", "No Restriction"
+      ]
+      const grid = this.dietaryRestrictionsGridTarget
+      grid.innerHTML = fallbackRestrictions.map(restriction => `
+        <label class="cuisine-checkbox">
+          <input type="checkbox" value="${restriction}" data-action="change->create-room#toggleDietaryRestriction">
+          <span class="cuisine-label">${restriction}</span>
+        </label>
+      `).join('')
+    }
+  }
+
   toggleCuisine(event) {
     const checkbox = event.target
     const cuisine = checkbox.value
@@ -81,6 +114,50 @@ export default class extends Controller {
     
     // Update hidden input
     this.categoriesInputTarget.value = this.selectedCuisines.join(',')
+    
+    // Visual feedback
+    checkbox.closest('.cuisine-checkbox').classList.toggle('selected', checkbox.checked)
+  }
+
+  toggleDietaryRestriction(event) {
+    const checkbox = event.target
+    const restriction = checkbox.value
+    
+    // Special handling for "No Restriction"
+    if (restriction === "No Restriction") {
+      if (checkbox.checked) {
+        // Uncheck all other dietary options
+        this.dietaryRestrictionsGridTarget.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          if (cb.value !== "No Restriction" && cb.checked) {
+            cb.checked = false
+            cb.closest('.cuisine-checkbox').classList.remove('selected')
+          }
+        })
+        this.selectedDietaryRestrictions = ["No Restriction"]
+      } else {
+        this.selectedDietaryRestrictions = []
+      }
+    } else {
+      // Regular dietary option selected - uncheck "No Restriction"
+      const noRestrictionCheckbox = this.dietaryRestrictionsGridTarget.querySelector('input[value="No Restriction"]')
+      if (noRestrictionCheckbox && noRestrictionCheckbox.checked) {
+        noRestrictionCheckbox.checked = false
+        noRestrictionCheckbox.closest('.cuisine-checkbox').classList.remove('selected')
+      }
+      
+      if (checkbox.checked) {
+        if (!this.selectedDietaryRestrictions.includes(restriction)) {
+          this.selectedDietaryRestrictions.push(restriction)
+        }
+        // Remove "No Restriction" if it was there
+        this.selectedDietaryRestrictions = this.selectedDietaryRestrictions.filter(r => r !== "No Restriction")
+      } else {
+        this.selectedDietaryRestrictions = this.selectedDietaryRestrictions.filter(r => r !== restriction)
+      }
+    }
+    
+    // Update hidden input
+    this.dietaryRestrictionsInputTarget.value = this.selectedDietaryRestrictions.join(',')
     
     // Visual feedback
     checkbox.closest('.cuisine-checkbox').classList.toggle('selected', checkbox.checked)
@@ -104,14 +181,15 @@ export default class extends Controller {
     const location = this.locationSelectTarget.value
     const price = this.priceSelectTarget.value
     const cuisines = this.selectedCuisines.length > 0
+    const dietary = this.selectedDietaryRestrictions.length > 0
 
-    console.log('Validation:', { name, location, price, cuisines: this.selectedCuisines })
-    return name && location && price && cuisines
+    console.log('Validation:', { name, location, price, cuisines: this.selectedCuisines, dietary: this.selectedDietaryRestrictions })
+    return name && location && price && cuisines && dietary
   }
 
   showValidationMessage() {
     this.validationMessageTarget.style.display = "block"
-    this.validationMessageTarget.textContent = "Please fill in all fields and select at least one cuisine"
+    this.validationMessageTarget.textContent = "Please fill in all fields, select at least one cuisine, and select at least one dietary option"
   }
 
   hideValidationMessage() {
