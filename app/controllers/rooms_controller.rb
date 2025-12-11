@@ -14,6 +14,19 @@ class RoomsController < ApplicationController
     @categories = ""
   end
 
+  def dietary_restrictions
+    restrictions = [
+      "Vegetarian",
+      "Vegan",
+      "Gluten-Free",
+      "Halal",
+      "Kosher",
+      "No Restriction"
+    ]
+    
+    render json: restrictions
+  end
+
   def cuisines
     cuisines = Restaurant.pluck(:categories).flatten.uniq.compact.sort
     render json: cuisines
@@ -24,6 +37,11 @@ class RoomsController < ApplicationController
     location = params[:location]
     price = params[:price]
     categories = params[:categories]
+    dietary_restrictions = params[:dietary_restrictions]
+
+    Rails.logger.info "🔍 CONTROLLER PARAMS:"
+    Rails.logger.info "  categories raw: #{params[:categories].inspect}"
+    Rails.logger.info "  dietary_restrictions raw: #{params[:dietary_restrictions].inspect}"
 
     # Use logged-in user's name if available, otherwise use provided name
     final_owner_name = user_signed_in? ? current_user.first_name : owner_name
@@ -35,12 +53,23 @@ class RoomsController < ApplicationController
       []
     end
 
+    Rails.logger.info "  categories_array after parsing: #{categories_array.inspect}"
+
+    # Parse dietary restrictions (NEW)
+    dietary_restrictions_array = if dietary_restrictions.present?
+      dietary_restrictions.split(",").map(&:strip).reject(&:empty?)
+    else
+      []
+    end
+    Rails.logger.info "  dietary_array after parsing: #{dietary_restrictions_array.inspect}"
+
     # Create the room
     @room = Room.new(
       owner_name: final_owner_name,
       location: location,
       price: price,
-      categories: categories_array
+      categories: categories_array,
+      dietary_restrictions: dietary_restrictions_array
     )
 
     if @room.save
@@ -52,6 +81,7 @@ class RoomsController < ApplicationController
       @location = location
       @price = price
       @categories = categories
+      @dietary_restrictions = dietary_restrictions
       flash.now[:alert] = @room.errors.full_messages.join(", ")
       render :new
     end
@@ -103,10 +133,13 @@ class RoomsController < ApplicationController
       location = params[:location]
       price = params[:price]
       categories_input = params[:categories]
+      dietary_restrictions_input = params[:dietary_restrictions]
 
       # Parse comma-separated cuisines into array
       categories = categories_input.present? ? categories_input.split(",").map(&:strip).reject(&:blank?) : []
-
+      # Parse comma-separated dietary restrictions into array (NEW)
+      dietary_restrictions = dietary_restrictions_input.present? ? dietary_restrictions_input.split(",").map(&:strip).reject(&:blank?) : []
+      
       # Validation
       if guest_name.blank?
         flash.now[:alert] = "Please enter your name"
@@ -132,8 +165,15 @@ class RoomsController < ApplicationController
         return
       end
 
+      # Validate dietary restrictions (NEW)
+      if dietary_restrictions.empty?
+        flash.now[:alert] = "Please select at least one dietary option"
+        render :join_as_guest
+        return
+      end
+
       # Add guest with their preferences
-      @room.add_guest_member(guest_name, location: location, price: price, categories: categories)
+      @room.add_guest_member(guest_name, location: location, price: price, categories: categories, dietary_restrictions: dietary_restrictions)
 
       # Get the member ID that was just created
       new_member = @room.members.last
