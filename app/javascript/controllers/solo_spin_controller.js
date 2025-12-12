@@ -352,8 +352,14 @@ export default class extends Controller {
       const data = await response.json()
 
       if (data.success) {
-        btn.textContent = '✓ Added to History!'
-        btn.style.backgroundColor = '#22c55e'
+        // Check if it's a duplicate entry
+        if (data.message && data.message.includes('Already')) {
+          btn.textContent = 'Already in your history'
+          btn.style.backgroundColor = '#fbbf24'  // Amber color
+        } else {
+          btn.textContent = '✓ Added to History!'
+          btn.style.backgroundColor = '#22c55e'  // Green color
+        }
         
         setTimeout(() => {
           btn.textContent = originalText
