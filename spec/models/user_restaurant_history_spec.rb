@@ -26,8 +26,8 @@ RSpec.describe UserRestaurantHistory, type: :model do
     it 'returns histories ordered by creation date (most recent first)' do
       history1 = create(:user_restaurant_history, user: user)
       history2 = create(:user_restaurant_history, user: user)
-      
-      expect(UserRestaurantHistory.recent).to eq([history2, history1])
+
+      expect(UserRestaurantHistory.recent).to eq([ history2, history1 ])
     end
   end
 end

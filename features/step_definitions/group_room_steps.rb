@@ -38,10 +38,10 @@ def select_dietary_restriction_checkbox(restriction)
 
     # Get the grid element
     grid_element = find(grid_selector)
-    
+
     # Wait for the grid to be populated (has actual checkboxes, not just loading text)
-    expect(grid_element).to have_css('.cuisine-checkbox', wait: 15) 
-    
+    expect(grid_element).to have_css('.cuisine-checkbox', wait: 15)
+
     within(grid_selector) do
       label = find('.cuisine-checkbox', text: restriction, match: :first)
       label.click

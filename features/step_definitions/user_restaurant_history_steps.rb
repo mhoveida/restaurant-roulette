@@ -22,7 +22,7 @@ Given('I have saved restaurants to my history') do
     price: '$$',
     address: '123 Main St',
     neighborhood: 'Downtown',
-    categories: ['Italian', 'Pizza'],
+    categories: [ 'Italian', 'Pizza' ],
     image_url: 'https://example.com/image1.jpg',
     latitude: 40.7128,
     longitude: -74.0060
@@ -34,7 +34,7 @@ Given('I have saved restaurants to my history') do
     price: '$$$',
     address: '456 Oak Ave',
     neighborhood: 'Midtown',
-    categories: ['Japanese', 'Sushi'],
+    categories: [ 'Japanese', 'Sushi' ],
     image_url: 'https://example.com/image2.jpg',
     latitude: 40.7500,
     longitude: -73.9900
@@ -98,29 +98,29 @@ end
 When('I click the remove button on a restaurant card') do
   # Ensure we're on the history page with the card visible
   visit user_history_path(@user)
-  
+
   # Wait for the button to be visible
   expect(page).to have_css('.remove-button', visible: true)
-  
+
   # Since JavaScript isn't loading in test environment, directly call the delete action
   # Find the remove button for restaurant1 by looking in its card
   card_with_restaurant1 = find('.history-card', text: @restaurant1.name)
   remove_button = card_with_restaurant1.find('.remove-button')
   restaurant_id_to_delete = remove_button['data-restaurant-id'].to_i
-  
+
   # Verify it has the restaurant ID set
   expect(restaurant_id_to_delete).to be_present
-  
+
   # Get the CSRF token from the page (it might be in a hidden meta tag)
   csrf_token = page.find('meta[name="csrf-token"]')['content']
-  
+
   # Make the DELETE request directly using Capybara's driver
   page.driver.delete(
     "/user_history/#{restaurant_id_to_delete}",
     {},
     { 'HTTP_X_CSRF_TOKEN' => csrf_token, 'CONTENT_TYPE' => 'application/json' }
   )
-  
+
   # Wait a moment and then reload the page to show updated state
   sleep 1
   visit user_history_path(@user)
@@ -135,10 +135,10 @@ end
 Then('that restaurant should be removed from my history') do
   # Reload the page to get the latest data
   visit user_history_path(@user)
-  
+
   # Wait for the page to load
   sleep 0.5
-  
+
   # After deletion, verify the restaurant is gone from both DB and UI
   @user.reload
   expect(@user.user_restaurant_histories.count).to eq(1)
@@ -177,16 +177,16 @@ end
 When('I click the "View on Map" button for a restaurant') do
   # Ensure we're on the history page
   visit user_history_path(@user)
-  
+
   # Wait for the buttons to be visible
   expect(page).to have_css('.map-button', visible: true)
-  
+
   # Find the map button for restaurant1 by looking for it in a card with that restaurant's name
   card_with_restaurant1 = find('.history-card', text: @restaurant1.name)
   @map_button = card_with_restaurant1.find('.map-button')
-  
+
   expect(@map_button['href']).to include('google.com/maps')
-  
+
   # Store which restaurant this button is for
   @map_button_restaurant = @restaurant1
 end

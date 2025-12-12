@@ -257,17 +257,17 @@ When('I click the {string} button') do |button_text|
     # The I'm Going button has ID goingResultBtn
     # Wait for it to appear
     btn = find('#goingResultBtn', visible: :all, wait: 5)
-    
+
     # Scroll the button into view if needed
     page.execute_script("arguments[0].scrollIntoView(true);", btn.native)
-    
+
     # If there's a forced restaurant ID, use fetch directly (for duplicate testing)
     if page.evaluate_script('window.forcedRestaurantId')
       # The response will be JSON, so we need to use fetch
       page.execute_script(<<~JS
         const restaurantId = window.forcedRestaurantId;
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || "";
-        
+
         fetch('/solo_spin/save_to_history', {
           method: 'POST',
           headers: {
@@ -295,7 +295,7 @@ When('I click the {string} button') do |button_text|
       # Normal button click - use JavaScript click to ensure it works even if hidden
       page.execute_script("arguments[0].click();", btn.native)
     end
-    
+
     # Wait for the fetch request to complete
     sleep 2
   else
@@ -310,30 +310,30 @@ end
 When('I set my preferences and spin the wheel') do
   # Fill in name
   name_field = page.find('[data-solo-spin-target="nameInput"]', visible: :all) rescue nil
-  
+
   if name_field && !name_field['readonly']
     name_field.set "Test User"
   end
-  
+
   # Select neighborhood
   price_select = page.find('[data-solo-spin-target="priceSelect"]', visible: :all) rescue nil
   if price_select
     price_select.find('option[value="$$"]', visible: :all).click rescue price_select.find('option:not([value=""])', visible: :all, match: :first).click
   end
-  
+
   # Select price range
   location_select = page.find('[data-solo-spin-target="locationSelect"]', visible: :all) rescue nil
   if location_select
     location_select.find('option[value="Astoria"]', visible: :all).click rescue location_select.find('option:not([value=""])', visible: :all, match: :first).click
   end
-  
+
   # Select a cuisine - REQUIRED
   cuisine_checkboxes = page.all('.cuisine-checkbox input', visible: :all)
   if cuisine_checkboxes.any?
     cuisine_checkboxes.first.execute_script("this.checked = true; this.dispatchEvent(new Event('change'))")
     sleep 0.2
   end
-  
+
   # Select a dietary restriction - REQUIRED
   dietary_grid = page.find('[data-solo-spin-target="dietaryRestrictionsGrid"]', visible: :all, wait: 5) rescue nil
   if dietary_grid
@@ -343,7 +343,7 @@ When('I set my preferences and spin the wheel') do
       sleep 0.2
     end
   end
-  
+
   # Click spin button
   button = page.find_button("Spin the Wheel!", wait: 5) rescue nil
   if button
@@ -352,7 +352,7 @@ When('I set my preferences and spin the wheel') do
     # If button not found, try a more direct approach
     page.execute_script("document.querySelector('[data-action=\"click->solo-spin#spin\"]')?.click()")
   end
-  
+
   # Wait for result
   sleep 5
 end
@@ -361,7 +361,7 @@ When('a restaurant result is shown') do
   # Wait for result overlay to appear (it's added to body with ID 'soloResult')
   # Use find with visible: :all to allow non-visible elements, match: :first for ambiguous matches
   page.find('#soloResult, .result-modal, .restaurant-card', wait: 10, visible: :all, match: :first)
-  
+
   # Should see restaurant name or rating - check anywhere on page
   expect(page).to have_text(/★|Rating|\$/, wait: 5)
 end
@@ -377,7 +377,7 @@ Then('the button should be green') do
   # Check for green styling (class or inline style)
   button_html = button['class'] || ''
   button_style = button['style'] || ''
-  is_green = button_html.include?('green') || button_html.include?('primary') || 
+  is_green = button_html.include?('green') || button_html.include?('primary') ||
              button_style.include?('green') || button_style.include?('rgb(0')
   expect(button).to be_present  # At minimum, button exists
 end
@@ -393,7 +393,7 @@ Then('I should see a success message') do
   # Wait for success message in the page or check if save was successful
   # Could be in alert, modal, or JSON response
   sleep 1  # Give time for any animations
-  
+
   # Check for success indicators
   has_success = page.has_text?('success') ||
                 page.has_text?('saved') ||
@@ -401,13 +401,13 @@ Then('I should see a success message') do
                 page.has_text?('going') ||
                 page.has_text?('history') ||
                 page.has_css?('.success, .alert-success')
-  
+
   # If no visible message, check if the restaurant was actually saved
   if !has_success
     @user.reload
     has_success = @user.user_restaurant_histories.count > 0
   end
-  
+
   expect(has_success).to be true
 end
 
@@ -420,22 +420,22 @@ Given('I have already saved a restaurant to my history') do
     address: '123 Test St',
     latitude: 40.7128,
     longitude: -74.0060,
-    categories: ['Italian']
+    categories: [ 'Italian' ]
   )
-  
+
   @user.user_restaurant_histories.create!(restaurant: @saved_restaurant)
 end
 
 When('I spin the wheel and get the same restaurant') do
   # We'll save the restaurant ID and use it directly
   saved_id = @saved_restaurant.id
-  
+
   # Set name field
   name_field = page.find('[data-solo-spin-target="nameInput"]', visible: :all) rescue nil
   if name_field && !name_field['readonly']
     name_field.set "Test User"
   end
-  
+
   # Select any neighborhood and price
   location_select = page.find('[data-solo-spin-target="locationSelect"]') rescue nil
   if location_select
@@ -445,7 +445,7 @@ When('I spin the wheel and get the same restaurant') do
       page.find('[data-solo-spin-target="locationSelect"] option:not([value=""])', visible: :all, match: :first).click
     end
   end
-  
+
   price_select = page.find('[data-solo-spin-target="priceSelect"]') rescue nil
   if price_select
     begin
@@ -454,12 +454,12 @@ When('I spin the wheel and get the same restaurant') do
       page.find('[data-solo-spin-target="priceSelect"] option:not([value=""])', visible: :all, match: :first).click
     end
   end
-  
+
   # Select a cuisine - REQUIRED
   if page.has_css?('.cuisine-checkbox input', visible: :all)
     page.first('.cuisine-checkbox input', visible: :all).click
   end
-  
+
   # Select a dietary restriction - REQUIRED
   dietary_grid = page.find('[data-solo-spin-target="dietaryRestrictionsGrid"]', visible: :all, wait: 5) rescue nil
   if dietary_grid
@@ -468,12 +468,12 @@ When('I spin the wheel and get the same restaurant') do
       dietary_checkboxes.first.click
     end
   end
-  
+
   # Spin the wheel and wait for result
   button = page.find_button("Spin the Wheel!", wait: 5)
   button.click
   sleep 5
-  
+
   # Force the "I'm Going" button to save the specific restaurant ID
   page.execute_script(<<~JS
     window.forcedRestaurantId = #{saved_id};
@@ -484,11 +484,11 @@ end
 Then('the button should show {string}') do |button_text|
   # Wait for button to update (might have been clicked and response received)
   sleep 2
-  
+
   # The button text is being set in JavaScript, but it might be in a hidden modal
   # Check if the text exists anywhere on the page by looking at the HTML
   page_html = page.html
-  
+
   # Search for the button text in the page HTML (case-insensitive)
   pattern = /#{Regexp.escape(button_text)}/i
   expect(page_html).to match(pattern), "Button text '#{button_text}' not found in page"
@@ -510,7 +510,7 @@ Then('I should only see {string} and {string} buttons') do |button1, button2|
   # Check that button1 and button2 exist
   expect(page).to have_button(button1, visible: :all) || page.has_text?(button1, visible: :all)
   expect(page).to have_button(button2, visible: :all) || page.has_text?(button2, visible: :all)
-  
+
   # Check that "I'm Going!" button does NOT exist
   expect(page).not_to have_button("I'm Going!", visible: :all)
 end
