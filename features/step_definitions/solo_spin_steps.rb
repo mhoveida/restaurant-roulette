@@ -334,6 +334,16 @@ When('I set my preferences and spin the wheel') do
     sleep 0.2
   end
   
+  # Select a dietary restriction - REQUIRED
+  dietary_grid = page.find('[data-solo-spin-target="dietaryRestrictionsGrid"]', visible: :all, wait: 5) rescue nil
+  if dietary_grid
+    dietary_checkboxes = dietary_grid.all('.cuisine-checkbox input', visible: :all)
+    if dietary_checkboxes.any?
+      dietary_checkboxes.first.execute_script("this.checked = true; this.dispatchEvent(new Event('change'))")
+      sleep 0.2
+    end
+  end
+  
   # Click spin button
   button = page.find_button("Spin the Wheel!", wait: 5) rescue nil
   if button
@@ -445,9 +455,18 @@ When('I spin the wheel and get the same restaurant') do
     end
   end
   
-  # Select a cuisine
-  if page.has_css?('.cuisine-checkbox input')
-    first('.cuisine-checkbox input').click
+  # Select a cuisine - REQUIRED
+  if page.has_css?('.cuisine-checkbox input', visible: :all)
+    page.first('.cuisine-checkbox input', visible: :all).click
+  end
+  
+  # Select a dietary restriction - REQUIRED
+  dietary_grid = page.find('[data-solo-spin-target="dietaryRestrictionsGrid"]', visible: :all, wait: 5) rescue nil
+  if dietary_grid
+    dietary_checkboxes = dietary_grid.all('.cuisine-checkbox input', visible: :all)
+    if dietary_checkboxes.any?
+      dietary_checkboxes.first.click
+    end
   end
   
   # Spin the wheel and wait for result

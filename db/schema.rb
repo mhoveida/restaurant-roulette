@@ -19,7 +19,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_152455) do
     t.text "categories"
     t.string "closing_time"
     t.datetime "created_at", null: false
-    t.jsonb "dietary_options", default: []
     t.text "dietary_restrictions"
     t.string "image_url"
     t.boolean "is_open_now", default: true
@@ -32,7 +31,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_152455) do
     t.decimal "rating", precision: 2, scale: 1
     t.integer "review_count", default: 0
     t.datetime "updated_at", null: false
-    t.index ["dietary_options"], name: "index_restaurants_on_dietary_options", using: :gin
     t.index ["id"], name: "index_restaurants_on_id", unique: true
     t.index ["name"], name: "index_restaurants_on_name"
     t.index ["price"], name: "index_restaurants_on_price"
@@ -45,7 +43,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_152455) do
     t.datetime "created_at", null: false
     t.integer "current_round", default: 0
     t.integer "current_turn_index", default: 0
-    t.jsonb "dietary_options", default: []
     t.jsonb "dietary_restrictions", default: []
     t.string "location"
     t.jsonb "members", default: []

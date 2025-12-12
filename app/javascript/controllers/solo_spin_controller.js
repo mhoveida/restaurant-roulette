@@ -59,27 +59,36 @@ export default class extends Controller {
   async fetchDietaryRestrictions() {
     try {
       const response = await fetch('/dietary_restrictions')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const restrictions = await response.json()
       
       const grid = this.dietaryRestrictionsGridTarget
-      grid.innerHTML = restrictions.map(restriction => `
+      const html = restrictions.map(restriction => `
         <label class="cuisine-checkbox">
           <input type="checkbox" value="${restriction}" data-action="change->solo-spin#toggleDietaryRestriction">
           <span class="cuisine-label">${restriction}</span>
         </label>
       `).join('')
+      
+      grid.innerHTML = html
     } catch (error) {
-      /*console.error('Error fetching dietary restrictions:', error)*/
+      console.error('Error fetching dietary restrictions:', error)
+      
       const fallbackRestrictions = [
         "Vegetarian", "Vegan", "Gluten-Free", "Halal", "Kosher", "No Restriction"
       ]
       const grid = this.dietaryRestrictionsGridTarget
-      grid.innerHTML = fallbackRestrictions.map(restriction => `
+      const html = fallbackRestrictions.map(restriction => `
         <label class="cuisine-checkbox">
           <input type="checkbox" value="${restriction}" data-action="change->solo-spin#toggleDietaryRestriction">
           <span class="cuisine-label">${restriction}</span>
         </label>
       `).join('')
+      
+      grid.innerHTML = html
     }
   }
 
