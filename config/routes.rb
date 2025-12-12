@@ -48,7 +48,7 @@ Rails.application.routes.draw do
 
   get "neighborhoods", to: "rooms#neighborhoods"
   get "cuisines", to: "rooms#cuisines"
-  get 'dietary_restrictions', to: 'rooms#dietary_restrictions'
+  get "dietary_restrictions", to: "rooms#dietary_restrictions"
 
   # Devise OAuth Failure
   devise_scope :user do

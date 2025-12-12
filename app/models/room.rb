@@ -14,7 +14,7 @@ class Room < ApplicationRecord
   validates :code,
             presence: true,
             uniqueness: true
-  
+
   # Custom validation to ensure at least one restriction is selected
   validate :dietary_restrictions_present
 
@@ -431,8 +431,8 @@ class Room < ApplicationRecord
   def find_random_restaurant(location:, price:, categories:, dietary_restrictions:)
     # Try exact match first (all 4 criteria)
     result = search_restaurants(
-      location: location, 
-      price: price, 
+      location: location,
+      price: price,
       categories: categories,
       dietary_restrictions: dietary_restrictions
     )
@@ -440,8 +440,8 @@ class Room < ApplicationRecord
 
     # Fallback 1: Location + Price + Dietary
     result = search_restaurants(
-      location: location, 
-      price: price, 
+      location: location,
+      price: price,
       categories: [],
       dietary_restrictions: dietary_restrictions
     )
@@ -449,8 +449,8 @@ class Room < ApplicationRecord
 
     # Fallback 2: Location + Price + Cuisine (original fallback 1)
     result = search_restaurants(
-      location: location, 
-      price: price, 
+      location: location,
+      price: price,
       categories: categories,
       dietary_restrictions: []
     )
@@ -458,8 +458,8 @@ class Room < ApplicationRecord
 
     # Fallback 3: Location + Cuisine + Dietary
     result = search_restaurants(
-      location: location, 
-      price: nil, 
+      location: location,
+      price: nil,
       categories: categories,
       dietary_restrictions: dietary_restrictions
     )
@@ -467,8 +467,8 @@ class Room < ApplicationRecord
 
     # Fallback 4: Location + Cuisine (original fallback 2)
     result = search_restaurants(
-      location: location, 
-      price: nil, 
+      location: location,
+      price: nil,
       categories: categories,
       dietary_restrictions: []
     )
@@ -476,8 +476,8 @@ class Room < ApplicationRecord
 
     # Fallback 5: Location + Dietary
     result = search_restaurants(
-      location: location, 
-      price: nil, 
+      location: location,
+      price: nil,
       categories: [],
       dietary_restrictions: dietary_restrictions
     )
@@ -485,8 +485,8 @@ class Room < ApplicationRecord
 
     # Fallback 6: Location only (original fallback 3)
     result = search_restaurants(
-      location: location, 
-      price: nil, 
+      location: location,
+      price: nil,
       categories: [],
       dietary_restrictions: []
     )
@@ -494,8 +494,8 @@ class Room < ApplicationRecord
 
     # Fallback 7: Price + Cuisine + Dietary
     result = search_restaurants(
-      location: nil, 
-      price: price, 
+      location: nil,
+      price: price,
       categories: categories,
       dietary_restrictions: dietary_restrictions
     )
@@ -503,8 +503,8 @@ class Room < ApplicationRecord
 
     # Fallback 8: Price + Cuisine (original fallback 4)
     result = search_restaurants(
-      location: nil, 
-      price: price, 
+      location: nil,
+      price: price,
       categories: categories,
       dietary_restrictions: []
     )
@@ -512,8 +512,8 @@ class Room < ApplicationRecord
 
     # Fallback 9: Cuisine + Dietary
     result = search_restaurants(
-      location: nil, 
-      price: nil, 
+      location: nil,
+      price: nil,
       categories: categories,
       dietary_restrictions: dietary_restrictions
     )
@@ -521,8 +521,8 @@ class Room < ApplicationRecord
 
     # Fallback 10: Just cuisine (original fallback 5)
     result = search_restaurants(
-      location: nil, 
-      price: nil, 
+      location: nil,
+      price: nil,
       categories: categories,
       dietary_restrictions: []
     )
@@ -530,8 +530,8 @@ class Room < ApplicationRecord
 
     # Fallback 11: Just dietary
     result = search_restaurants(
-      location: nil, 
-      price: nil, 
+      location: nil,
+      price: nil,
       categories: [],
       dietary_restrictions: dietary_restrictions
     )
@@ -539,8 +539,8 @@ class Room < ApplicationRecord
 
     # Fallback 12: Just price (original fallback 6)
     result = search_restaurants(
-      location: nil, 
-      price: price, 
+      location: nil,
+      price: price,
       categories: [],
       dietary_restrictions: []
     )
@@ -579,7 +579,7 @@ class Room < ApplicationRecord
       filtered_by_cuisine = restaurants.select do |restaurant|
         # Skip restaurants without categories
         next false unless restaurant.categories.is_a?(Array) && restaurant.categories.any?
-        
+
         # Check if restaurant has ANY of the selected cuisines (exact match, case-insensitive)
         categories.any? do |selected_cuisine|
           restaurant.categories.any? do |rest_cuisine|
@@ -587,7 +587,7 @@ class Room < ApplicationRecord
           end
         end
       end
-      
+
       # IMPORTANT: Only use filtered results if we found matches
       # Otherwise, return nil to trigger fallback in find_random_restaurant
       return nil if filtered_by_cuisine.empty?
@@ -600,13 +600,13 @@ class Room < ApplicationRecord
         filtered_by_dietary = restaurants.select do |restaurant|
           # Skip if restaurant has no dietary info
           next false if restaurant.dietary_restrictions.blank?
-          
+
           # Check if restaurant offers ANY of the selected dietary options
           dietary_restrictions.any? do |selected_dietary|
             restaurant.dietary_restrictions.to_s.include?(selected_dietary)
           end
         end
-        
+
         # IMPORTANT: Only use filtered results if we found matches
         return nil if filtered_by_dietary.empty?
         restaurants = filtered_by_dietary

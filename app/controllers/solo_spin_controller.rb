@@ -36,8 +36,8 @@ class SoloSpinController < ApplicationController
   def find_random_restaurant(location:, price:, categories:, dietary_restrictions:)
     # Try exact match first
     result = search_restaurants(
-      location: location, 
-      price: price, 
+      location: location,
+      price: price,
       categories: categories,
       dietary_restrictions: dietary_restrictions
     )
@@ -45,8 +45,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 1: Location + Price + Dietary
     result = search_restaurants(
-      location: location, 
-      price: price, 
+      location: location,
+      price: price,
       categories: [],
       dietary_restrictions: dietary_restrictions
     )
@@ -54,8 +54,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 2: Location + Price
     result = search_restaurants(
-      location: location, 
-      price: price, 
+      location: location,
+      price: price,
       categories: [],
       dietary_restrictions: []
     )
@@ -63,8 +63,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 3: Location + Cuisine + Dietary
     result = search_restaurants(
-      location: location, 
-      price: nil, 
+      location: location,
+      price: nil,
       categories: categories,
       dietary_restrictions: dietary_restrictions
     )
@@ -72,8 +72,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 4: Location + Cuisine
     result = search_restaurants(
-      location: location, 
-      price: nil, 
+      location: location,
+      price: nil,
       categories: categories,
       dietary_restrictions: []
     )
@@ -81,8 +81,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 5: Location + Dietary
     result = search_restaurants(
-      location: location, 
-      price: nil, 
+      location: location,
+      price: nil,
       categories: [],
       dietary_restrictions: dietary_restrictions
     )
@@ -90,8 +90,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 6: Location only
     result = search_restaurants(
-      location: location, 
-      price: nil, 
+      location: location,
+      price: nil,
       categories: [],
       dietary_restrictions: []
     )
@@ -99,8 +99,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 7: Price + Cuisine + Dietary
     result = search_restaurants(
-      location: nil, 
-      price: price, 
+      location: nil,
+      price: price,
       categories: categories,
       dietary_restrictions: dietary_restrictions
     )
@@ -108,8 +108,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 8: Price + Cuisine
     result = search_restaurants(
-      location: nil, 
-      price: price, 
+      location: nil,
+      price: price,
       categories: categories,
       dietary_restrictions: []
     )
@@ -117,8 +117,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 9: Cuisine + Dietary
     result = search_restaurants(
-      location: nil, 
-      price: nil, 
+      location: nil,
+      price: nil,
       categories: categories,
       dietary_restrictions: dietary_restrictions
     )
@@ -126,8 +126,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 10: Cuisine only
     result = search_restaurants(
-      location: nil, 
-      price: nil, 
+      location: nil,
+      price: nil,
       categories: categories,
       dietary_restrictions: []
     )
@@ -135,8 +135,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 11: Dietary only
     result = search_restaurants(
-      location: nil, 
-      price: nil, 
+      location: nil,
+      price: nil,
       categories: [],
       dietary_restrictions: dietary_restrictions
     )
@@ -144,8 +144,8 @@ class SoloSpinController < ApplicationController
 
     # Fallback 12: Price only
     result = search_restaurants(
-      location: nil, 
-      price: price, 
+      location: nil,
+      price: price,
       categories: [],
       dietary_restrictions: []
     )

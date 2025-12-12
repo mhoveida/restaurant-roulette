@@ -8,6 +8,6 @@ FactoryBot.define do
     location { 'New York' }
     price { '$$' }
     categories { 'Italian,American' }
-    dietary_restrictions { ['No Restriction'] }
+    dietary_restrictions { [ 'No Restriction' ] }
   end
 end

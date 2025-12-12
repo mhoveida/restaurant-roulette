@@ -23,7 +23,7 @@ class RoomsController < ApplicationController
       "Kosher",
       "No Restriction"
     ]
-    
+
     render json: restrictions
   end
 
@@ -139,7 +139,7 @@ class RoomsController < ApplicationController
       categories = categories_input.present? ? categories_input.split(",").map(&:strip).reject(&:blank?) : []
       # Parse comma-separated dietary restrictions into array (NEW)
       dietary_restrictions = dietary_restrictions_input.present? ? dietary_restrictions_input.split(",").map(&:strip).reject(&:blank?) : []
-      
+
       # Validation
       if guest_name.blank?
         flash.now[:alert] = "Please enter your name"

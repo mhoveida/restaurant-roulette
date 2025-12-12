@@ -295,7 +295,7 @@ When('I complete guest join for room {string} with {string}') do |code, name|
   categories = categories_input.split(',').map(&:strip)
 
   # Add member
-  room.add_guest_member(name, location: location, price: price, categories: categories, dietary_restrictions: ['No Restriction'])
+  room.add_guest_member(name, location: location, price: price, categories: categories, dietary_restrictions: [ 'No Restriction' ])
 
   # Navigate to room
   visit "/rooms/#{room.id}"
@@ -404,14 +404,14 @@ Then('the wheel should spin') do
 end
 
 Then('I should see a restaurant result') do
-  sleep 5  
+  sleep 5
 
   # Get room from URL if not already set
   if @room.nil?
     room_id = current_path.match(/rooms\/(\d+)/)[1]
     @room = Room.find(room_id) if room_id
   end
-  
+
   @room&.reload
 end
 
@@ -749,7 +749,7 @@ end
 Given('option {int} is a location-only match') do |option_number|
   @room ||= Room.last
   @room.reload
-  
+
   # Get the spin at this index and update its match_type
   if @room.spins.present? && @room.spins[option_number - 1]
     @room.spins[option_number - 1]["match_type"] = "location_only"
@@ -1163,7 +1163,7 @@ When('I submit the guest join form') do
     location: location,
     price: price,
     categories: categories,
-    dietary_restrictions: ['No Restriction']
+    dietary_restrictions: [ 'No Restriction' ]
   )
 
   visit "/rooms/#{room.id}"
