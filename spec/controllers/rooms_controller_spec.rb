@@ -74,7 +74,8 @@ RSpec.describe RoomsController, type: :controller do
             owner_name: "John",
             location: "New York",
             price: "$$",
-            categories: "Italian"
+            categories: "Italian",
+            dietary_restrictions: "No Restriction"
           }
         }.to change(Room, :count).by(1)
       end
@@ -87,7 +88,8 @@ RSpec.describe RoomsController, type: :controller do
           owner_name: "John",
           location: "New York",
           price: "$$",
-          categories: "Italian"
+          categories: "Italian",
+          dietary_restrictions: "No Restriction"
         }
 
         room = Room.last
@@ -99,7 +101,8 @@ RSpec.describe RoomsController, type: :controller do
           owner_name: "John",
           location: "New York",
           price: "$$",
-          categories: "Italian"
+          categories: "Italian",
+          dietary_restrictions: "No Restriction"
         }
 
         expect(response).to redirect_to(Room.last)
@@ -110,7 +113,8 @@ RSpec.describe RoomsController, type: :controller do
           owner_name: "John",
           location: "New York",
           price: "$$",
-          categories: "Italian"
+          categories: "Italian",
+          dietary_restrictions: "No Restriction"
         }
 
         room = Room.last
@@ -122,7 +126,8 @@ RSpec.describe RoomsController, type: :controller do
           owner_name: "John",
           location: "New York",
           price: "$$",
-          categories: "Italian, French, Mexican"
+          categories: "Italian, French, Mexican",
+          dietary_restrictions: "No Restriction"
         }
 
         room = Room.last
@@ -137,7 +142,8 @@ RSpec.describe RoomsController, type: :controller do
             owner_name: "John",
             location: "",
             price: "$$",
-            categories: "Italian"
+            categories: "Italian",
+            dietary_restrictions: "No Restriction"
           }
         }.not_to change(Room, :count)
 
@@ -199,7 +205,8 @@ RSpec.describe RoomsController, type: :controller do
             guest_name: "Alex",
             location: "Brooklyn",
             price: "$$$",
-            categories: "Italian, French"
+            categories: "Italian, French",
+            dietary_restrictions: "No Restriction"
           }
         }.to change { room.reload.get_all_members.length }.by(1)
       end
@@ -210,7 +217,8 @@ RSpec.describe RoomsController, type: :controller do
           guest_name: "Alex",
           location: "Brooklyn",
           price: "$$$",
-          categories: "Italian"
+          categories: "Italian",
+          dietary_restrictions: "No Restriction"
         }
         expect(response).to redirect_to(room)
       end
@@ -221,7 +229,8 @@ RSpec.describe RoomsController, type: :controller do
           guest_name: "Alex",
           location: "Brooklyn",
           price: "$$$",
-          categories: "Italian"
+          categories: "Italian",
+          dietary_restrictions: "No Restriction"
         }
         expect(session["member_id_for_room_#{room.id}"]).to be_present
       end
@@ -234,7 +243,8 @@ RSpec.describe RoomsController, type: :controller do
           guest_name: "",
           location: "Brooklyn",
           price: "$$$",
-          categories: "Italian"
+          categories: "Italian",
+          dietary_restrictions: "No Restriction"
         }
         expect(response).to render_template(:join_as_guest)
         expect(flash.now[:alert]).to match(/name/i)
@@ -246,7 +256,8 @@ RSpec.describe RoomsController, type: :controller do
           guest_name: "Alex",
           location: "",
           price: "$$$",
-          categories: "Italian"
+          categories: "Italian",
+          dietary_restrictions: "No Restriction"
         }
         expect(response).to render_template(:join_as_guest)
         expect(flash.now[:alert]).to match(/location/i)
@@ -258,7 +269,8 @@ RSpec.describe RoomsController, type: :controller do
           guest_name: "Alex",
           location: "Brooklyn",
           price: "",
-          categories: "Italian"
+          categories: "Italian",
+          dietary_restrictions: "No Restriction"
         }
         expect(response).to render_template(:join_as_guest)
         expect(flash.now[:alert]).to match(/price/i)
@@ -270,7 +282,8 @@ RSpec.describe RoomsController, type: :controller do
           guest_name: "Alex",
           location: "Brooklyn",
           price: "$$$",
-          categories: ""
+          categories: "",
+          dietary_restrictions: "No Restriction"
         }
         expect(response).to render_template(:join_as_guest)
         expect(flash.now[:alert]).to match(/cuisine/i)

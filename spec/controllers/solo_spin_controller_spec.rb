@@ -55,7 +55,8 @@ RSpec.describe SoloSpinController, type: :controller do
         post :spin, params: {
           location: 'New York',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         }
 
         expect(response).to have_http_status(:ok)
@@ -68,7 +69,8 @@ RSpec.describe SoloSpinController, type: :controller do
         post :spin, params: {
           location: 'New York',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         }
 
         json = JSON.parse(response.body)
@@ -79,7 +81,8 @@ RSpec.describe SoloSpinController, type: :controller do
         post :spin, params: {
           location: 'New York',
           price: '$$',
-          categories: [ 'Italian', 'French' ]
+          categories: [ 'Italian', 'French' ],
+          dietary_restrictions: []
         }
 
         expect(response).to have_http_status(:ok)
@@ -89,7 +92,8 @@ RSpec.describe SoloSpinController, type: :controller do
         post :spin, params: {
           location: 'New York',
           price: '$$',
-          categories: 'Italian'
+          categories: 'Italian',
+          dietary_restrictions: []
         }
 
         expect(response).to have_http_status(:ok)
@@ -98,7 +102,8 @@ RSpec.describe SoloSpinController, type: :controller do
       it 'handles nil categories' do
         post :spin, params: {
           location: 'New York',
-          price: '$$'
+          price: '$$',
+          dietary_restrictions: []
         }
 
         expect(response).to have_http_status(:ok)
@@ -117,7 +122,8 @@ RSpec.describe SoloSpinController, type: :controller do
         post :spin, params: {
           location: 'Mars',
           price: '$$$$',
-          categories: [ 'Martian' ]
+          categories: [ 'Martian' ],
+          dietary_restrictions: []
         }
 
         json = JSON.parse(response.body)
@@ -136,13 +142,15 @@ RSpec.describe SoloSpinController, type: :controller do
         allow(controller_instance).to receive(:search_restaurants).with(
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         ).and_return(restaurant)
 
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to eq(restaurant)
@@ -155,23 +163,26 @@ RSpec.describe SoloSpinController, type: :controller do
         allow(controller_instance).to receive(:search_restaurants).with(
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         ).and_return(nil)
 
         allow(controller_instance).to receive(:search_restaurants).with(
           location: 'SoHo',
           price: '$$',
-          categories: []
+          categories: [],
+          dietary_restrictions: []
         ).and_return(restaurant)
 
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to eq(restaurant)
-        expect(result[:match_type]).to eq('location_price')
+        expect(result[:match_type]).to eq('location_price_dietary')
       end
     end
 
@@ -182,17 +193,19 @@ RSpec.describe SoloSpinController, type: :controller do
         allow(controller_instance).to receive(:search_restaurants).with(
           location: 'SoHo',
           price: nil,
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         ).and_return(restaurant)
 
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to eq(restaurant)
-        expect(result[:match_type]).to eq('location_cuisine')
+        expect(result[:match_type]).to eq('location_cuisine_dietary')
       end
     end
 
@@ -203,17 +216,19 @@ RSpec.describe SoloSpinController, type: :controller do
         allow(controller_instance).to receive(:search_restaurants).with(
           location: 'SoHo',
           price: nil,
-          categories: []
+          categories: [],
+          dietary_restrictions: []
         ).and_return(restaurant)
 
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to eq(restaurant)
-        expect(result[:match_type]).to eq('location_only')
+        expect(result[:match_type]).to eq('location_dietary')
       end
     end
 
@@ -224,17 +239,19 @@ RSpec.describe SoloSpinController, type: :controller do
         allow(controller_instance).to receive(:search_restaurants).with(
           location: nil,
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         ).and_return(restaurant)
 
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to eq(restaurant)
-        expect(result[:match_type]).to eq('price_cuisine')
+        expect(result[:match_type]).to eq('price_cuisine_dietary')
       end
     end
 
@@ -245,17 +262,19 @@ RSpec.describe SoloSpinController, type: :controller do
         allow(controller_instance).to receive(:search_restaurants).with(
           location: nil,
           price: nil,
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         ).and_return(restaurant)
 
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to eq(restaurant)
-        expect(result[:match_type]).to eq('cuisine_only')
+        expect(result[:match_type]).to eq('cuisine_dietary')
       end
     end
 
@@ -266,13 +285,15 @@ RSpec.describe SoloSpinController, type: :controller do
         allow(controller_instance).to receive(:search_restaurants).with(
           location: nil,
           price: '$$',
-          categories: []
+          categories: [],
+          dietary_restrictions: []
         ).and_return(restaurant)
 
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to eq(restaurant)
@@ -288,7 +309,8 @@ RSpec.describe SoloSpinController, type: :controller do
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to eq(restaurant)
@@ -304,7 +326,8 @@ RSpec.describe SoloSpinController, type: :controller do
         result = controller_instance.send(:find_random_restaurant,
           location: 'SoHo',
           price: '$$',
-          categories: [ 'Italian' ]
+          categories: [ 'Italian' ],
+          dietary_restrictions: []
         )
 
         expect(result[:restaurant]).to be_nil
@@ -322,7 +345,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: 'SoHo',
         price: '$$',
-        categories: [ 'Italian' ]
+        categories: [ 'Italian' ],
+        dietary_restrictions: []
       )
 
       expect(result).to be_present
@@ -334,7 +358,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: 'SoHo',
         price: nil,
-        categories: []
+        categories: [],
+        dietary_restrictions: []
       )
 
       expect(result).to be_present
@@ -346,7 +371,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: nil,
         price: '$$',
-        categories: []
+        categories: [],
+        dietary_restrictions: []
       )
 
       expect(result).to be_present
@@ -358,7 +384,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: nil,
         price: nil,
-        categories: [ 'Italian' ]
+        categories: [ 'Italian' ],
+        dietary_restrictions: []
       )
 
       expect(result).to be_present
@@ -370,7 +397,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: nil,
         price: nil,
-        categories: [ 'Italian', 'French' ]
+        categories: [ 'Italian', 'French' ],
+        dietary_restrictions: []
       )
 
       expect(result).to be_present
@@ -380,7 +408,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: 'Mars',
         price: '$$$$$',
-        categories: [ 'Alien' ]
+        categories: [ 'Alien' ],
+        dietary_restrictions: []
       )
 
       expect(result).to be_nil
@@ -392,7 +421,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: 'SoHo',
         price: nil,
-        categories: []
+        categories: [],
+        dietary_restrictions: []
       )
 
       expect(result).to be_present
@@ -404,7 +434,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: nil,
         price: '$$',
-        categories: []
+        categories: [],
+        dietary_restrictions: []
       )
 
       expect(result).to be_present
@@ -416,7 +447,8 @@ RSpec.describe SoloSpinController, type: :controller do
       result = controller_instance.send(:search_restaurants,
         location: 'SoHo',
         price: nil,
-        categories: []
+        categories: [],
+        dietary_restrictions: []
       )
 
       expect(result).to be_present
