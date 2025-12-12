@@ -69,7 +69,8 @@ class RoomsController < ApplicationController
       location: location,
       price: price,
       categories: categories_array,
-      dietary_restrictions: dietary_restrictions_array
+      dietary_restrictions: dietary_restrictions_array,
+      owner_user_id: user_signed_in? ? current_user.id : nil
     )
 
     if @room.save
@@ -285,6 +286,8 @@ class RoomsController < ApplicationController
       # Check if voting is complete and broadcast winner
       @room.reload
       if @room.complete?
+        # Save the winner restaurant to the history of all logged-in group members
+        @room.save_winner_to_user_histories
         broadcast_winner(@room.winner)
       end
 
