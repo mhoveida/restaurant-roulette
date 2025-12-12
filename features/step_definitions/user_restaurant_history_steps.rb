@@ -224,8 +224,8 @@ Given('another user has created a group room with code {string}') do |code|
     owner_name: @room_creator.first_name,
     location: "Manhattan",
     price: "$$",
-    categories: ["Italian", "Pizza"],
-    dietary_restrictions: ["No Restriction"]
+    categories: [ "Italian", "Pizza" ],
+    dietary_restrictions: [ "No Restriction" ]
   )
   @room.start_spinning!
 end
@@ -239,29 +239,29 @@ Given('I have joined the group room as a logged-in user') do
     "type" => "guest",
     "joined_at" => Time.current.to_s
   }
-  
+
   @room.members ||= []
   @room.members << new_member
-  @room.turn_order = ["owner"] + @room.members.map { |m| m["id"] }
+  @room.turn_order = [ "owner" ] + @room.members.map { |m| m["id"] }
   @room.save
-  
+
   visit "/rooms/#{@room.id}"
 end
 
 When('the group completes voting and selects a restaurant') do
   # Determine which room to use (@group_room for owner test, @room for guest test)
   current_room = @group_room || @room
-  
+
   # Simulate the room going through voting and completing
   @winning_restaurant = Restaurant.create!(
     name: "Test Winning Restaurant #{Time.now.to_i}",
     rating: 4.5,
     price: '$$',
     address: '789 Voting St, New York, NY',
-    categories: ['Italian'],
+    categories: [ 'Italian' ],
     dietary_restrictions: 'No Restriction'
   )
-  
+
   # Set up voting options - owner is always the first option
   voting_options = [
     {
@@ -278,7 +278,7 @@ When('the group completes voting and selects a restaurant') do
       "match_type" => "direct"
     }
   ]
-  
+
   # Add an alternate option if testing with guests
   voting_options << {
     "restaurant" => {
@@ -286,20 +286,20 @@ When('the group completes voting and selects a restaurant') do
       "rating" => 4.0,
       "price" => "$$$",
       "address" => '000 Other St, New York, NY',
-      "categories" => ["French"],
+      "categories" => [ "French" ],
       "dietary_restrictions" => "No Restriction"
     },
     "member_id" => "user_2",
     "member_name" => "Other Member",
     "match_type" => "direct"
   }
-  
+
   current_room.spin_result = voting_options
   current_room.state = :voting
-  
+
   # Build votes for all members who will vote
   votes = { "owner" => { "option_index" => 0, "confirmed" => true } }
-  
+
   # Add votes from guest members (those starting with user_)
   if current_room.members.present?
     current_room.members.each do |member|
@@ -308,17 +308,17 @@ When('the group completes voting and selects a restaurant') do
       end
     end
   end
-  
+
   # For the basic guest test, add a vote for @user
   if @room && @user
     votes["user_#{@user.id}"] = { "option_index" => 0, "confirmed" => true }
   end
-  
+
   current_room.votes = votes
-  
+
   # Calculate vote count
   vote_count = votes.size
-  
+
   # Manually set the winner (simulating tally_votes_and_select_winner!)
   current_room.winner = {
     "restaurant" => voting_options[0]["restaurant"],
@@ -331,10 +331,10 @@ When('the group completes voting and selects a restaurant') do
     "tied_count" => 1,
     "selected_at" => Time.current.to_s
   }
-  
+
   current_room.state = :complete
   current_room.save
-  
+
   # Call the method to save to user histories
   current_room.save_winner_to_user_histories
 end
@@ -342,7 +342,7 @@ end
 Then('the winning restaurant should be added to my user history') do
   # Reload user to get fresh data
   @user.reload
-  
+
   # Check that the user has the winning restaurant in their history
   history = @user.user_restaurant_histories.last
   expect(history).to be_present
@@ -380,12 +380,12 @@ Given('I create a group room with code {string}') do |code|
     owner_name: @user.first_name,
     location: "Manhattan",
     price: "$$",
-    categories: ["Italian", "Pizza"],
-    dietary_restrictions: ["No Restriction"],
+    categories: [ "Italian", "Pizza" ],
+    dietary_restrictions: [ "No Restriction" ],
     owner_user_id: @user.id  # Store the owner's user_id
   )
   @group_room.start_spinning!
-  
+
   # Login as the first user and visit the room
   login_as @user, scope: :user
   visit "/rooms/#{@group_room.id}"
@@ -400,17 +400,17 @@ Given('a second logged-in user has joined the group room') do
     "type" => "guest",
     "joined_at" => Time.current.to_s
   }
-  
+
   @group_room.members ||= []
   @group_room.members << new_member
-  @group_room.turn_order = ["owner"] + @group_room.members.map { |m| m["id"] }
+  @group_room.turn_order = [ "owner" ] + @group_room.members.map { |m| m["id"] }
   @group_room.save
 end
 
 Then('the winning restaurant should be added to my user history as room owner') do
   # Reload user to get fresh data
   @user.reload
-  
+
   # Check that the user has the winning restaurant in their history
   history = @user.user_restaurant_histories.find_by(restaurant_id: @winning_restaurant.id)
   expect(history).to be_present
@@ -420,7 +420,7 @@ end
 Then('the winning restaurant should be added to the second user\'s history as a guest') do
   # Reload second user to get fresh data
   @second_user.reload
-  
+
   # Check that the second user has the winning restaurant in their history
   history = @second_user.user_restaurant_histories.find_by(restaurant_id: @winning_restaurant.id)
   expect(history).to be_present

@@ -397,7 +397,7 @@ class Room < ApplicationRecord
     return unless winner.present? && winner["restaurant"].present?
 
     winner_restaurant_data = winner["restaurant"]
-    
+
     # Find or create the restaurant in the database
     restaurant = find_or_create_restaurant_from_spin(winner_restaurant_data)
     return unless restaurant.present?
@@ -411,10 +411,10 @@ class Room < ApplicationRecord
     if members.present?
       members.each do |member|
         next unless member["type"] == "guest" && member["id"]&.start_with?("user_")
-        
+
         user_id = member["id"].sub(/^user_/, "").to_i
         next unless User.exists?(user_id)
-        
+
         UserRestaurantHistory.find_or_create_by(user_id: user_id, restaurant_id: restaurant.id)
       end
     end
