@@ -15,6 +15,9 @@ class Room < ApplicationRecord
             presence: true,
             uniqueness: true
 
+  # Custom validation to ensure at least one restriction is selected
+  validate :dietary_restrictions_present
+
 
   # State machine: waiting -> spinning -> revealing -> voting -> complete
   enum :state, {
@@ -29,7 +32,7 @@ class Room < ApplicationRecord
   before_validation :generate_code, on: :create
   before_create :initialize_room_state
 
-  def add_guest_member(name, location: nil, price: nil, categories: [], member_id: nil)
+  def add_guest_member(name, location: nil, price: nil, categories: [], dietary_restrictions: [], member_id: nil)
     member_id ||= "guest_#{SecureRandom.hex(8)}"
 
     new_member = {
@@ -39,7 +42,8 @@ class Room < ApplicationRecord
       "joined_at" => Time.current.to_s,
       "location" => location,
       "price" => price,
-      "categories" => categories
+      "categories" => categories,
+      "dietary_restrictions" => dietary_restrictions
     }
 
     self.members ||= []
@@ -105,7 +109,7 @@ class Room < ApplicationRecord
 
   def spin_for_member(member_id)
     return { success: false, error: "Not in spinning state" } unless spinning?
-    return { success: false, error: "Not your turn" } unless member_id == current_turn_member_id  # FIXED
+    return { success: false, error: "Not your turn" } unless member_id == current_turn_member_id
 
     # Get member's preferences - handle owner separately
     if member_id == "owner"
@@ -113,6 +117,7 @@ class Room < ApplicationRecord
       member_location = location
       member_price = price
       member_categories = categories
+      member_dietary_restrictions = dietary_restrictions
     else
       member = members.find { |m| m["id"] == member_id }
       return { success: false, error: "Member not found" } unless member
@@ -121,13 +126,15 @@ class Room < ApplicationRecord
       member_location = member["location"] || location
       member_price = member["price"] || price
       member_categories = member["categories"] || categories
+      member_dietary_restrictions = member["dietary_restrictions"] || dietary_restrictions
     end
 
     # Find restaurant with fallback
     result = find_random_restaurant(
       location: member_location,
       price: member_price,
-      categories: member_categories
+      categories: member_categories,
+      dietary_restrictions: member_dietary_restrictions
     )
 
     restaurant = result[:restaurant]
@@ -388,6 +395,12 @@ class Room < ApplicationRecord
 
   private
 
+  def dietary_restrictions_present
+    if dietary_restrictions.blank? || dietary_restrictions.empty?
+      errors.add(:dietary_restrictions, "Please select at least one dietary option")
+    end
+  end
+
   def symbolize_keys(hash)
     if hash.is_a?(Hash)
       hash.transform_keys(&:to_sym)
@@ -415,33 +428,122 @@ class Room < ApplicationRecord
     self.current_turn_index = 0
   end
 
-  def find_random_restaurant(location:, price:, categories:)
-    # Try exact match first
-    result = search_restaurants(location: location, price: price, categories: categories)
+  def find_random_restaurant(location:, price:, categories:, dietary_restrictions:)
+    # Try exact match first (all 4 criteria)
+    result = search_restaurants(
+      location: location,
+      price: price,
+      categories: categories,
+      dietary_restrictions: dietary_restrictions
+    )
     return { restaurant: result, match_type: "exact" } if result
 
-    # Fallback 1: Same location + price, any cuisine
-    result = search_restaurants(location: location, price: price, categories: [])
+    # Fallback 1: Location + Price + Dietary
+    result = search_restaurants(
+      location: location,
+      price: price,
+      categories: [],
+      dietary_restrictions: dietary_restrictions
+    )
+    return { restaurant: result, match_type: "location_price_dietary" } if result
+
+    # Fallback 2: Location + Price + Cuisine (original fallback 1)
+    result = search_restaurants(
+      location: location,
+      price: price,
+      categories: categories,
+      dietary_restrictions: []
+    )
     return { restaurant: result, match_type: "location_price" } if result
 
-    # Fallback 2: Same location + cuisine, any price
-    result = search_restaurants(location: location, price: nil, categories: categories)
+    # Fallback 3: Location + Cuisine + Dietary
+    result = search_restaurants(
+      location: location,
+      price: nil,
+      categories: categories,
+      dietary_restrictions: dietary_restrictions
+    )
+    return { restaurant: result, match_type: "location_cuisine_dietary" } if result
+
+    # Fallback 4: Location + Cuisine (original fallback 2)
+    result = search_restaurants(
+      location: location,
+      price: nil,
+      categories: categories,
+      dietary_restrictions: []
+    )
     return { restaurant: result, match_type: "location_cuisine" } if result
 
-    # Fallback 3: Same location only
-    result = search_restaurants(location: location, price: nil, categories: [])
+    # Fallback 5: Location + Dietary
+    result = search_restaurants(
+      location: location,
+      price: nil,
+      categories: [],
+      dietary_restrictions: dietary_restrictions
+    )
+    return { restaurant: result, match_type: "location_dietary" } if result
+
+    # Fallback 6: Location only (original fallback 3)
+    result = search_restaurants(
+      location: location,
+      price: nil,
+      categories: [],
+      dietary_restrictions: []
+    )
     return { restaurant: result, match_type: "location_only" } if result
 
-    # Fallback 4: Same price + cuisine, any location
-    result = search_restaurants(location: nil, price: price, categories: categories)
+    # Fallback 7: Price + Cuisine + Dietary
+    result = search_restaurants(
+      location: nil,
+      price: price,
+      categories: categories,
+      dietary_restrictions: dietary_restrictions
+    )
+    return { restaurant: result, match_type: "price_cuisine_dietary" } if result
+
+    # Fallback 8: Price + Cuisine (original fallback 4)
+    result = search_restaurants(
+      location: nil,
+      price: price,
+      categories: categories,
+      dietary_restrictions: []
+    )
     return { restaurant: result, match_type: "price_cuisine" } if result
 
-    # Fallback 5: Just cuisine anywhere
-    result = search_restaurants(location: nil, price: nil, categories: categories)
+    # Fallback 9: Cuisine + Dietary
+    result = search_restaurants(
+      location: nil,
+      price: nil,
+      categories: categories,
+      dietary_restrictions: dietary_restrictions
+    )
+    return { restaurant: result, match_type: "cuisine_dietary" } if result
+
+    # Fallback 10: Just cuisine (original fallback 5)
+    result = search_restaurants(
+      location: nil,
+      price: nil,
+      categories: categories,
+      dietary_restrictions: []
+    )
     return { restaurant: result, match_type: "cuisine_only" } if result
 
-    # Fallback 6: Just price anywhere
-    result = search_restaurants(location: nil, price: price, categories: [])
+    # Fallback 11: Just dietary
+    result = search_restaurants(
+      location: nil,
+      price: nil,
+      categories: [],
+      dietary_restrictions: dietary_restrictions
+    )
+    return { restaurant: result, match_type: "dietary_only" } if result
+
+    # Fallback 12: Just price (original fallback 6)
+    result = search_restaurants(
+      location: nil,
+      price: price,
+      categories: [],
+      dietary_restrictions: []
+    )
     return { restaurant: result, match_type: "price_only" } if result
 
     # Last resort: Any restaurant
@@ -451,9 +553,11 @@ class Room < ApplicationRecord
     { restaurant: nil, match_type: "none" }
   end
 
-  def search_restaurants(location:, price:, categories:)
+  def search_restaurants(location:, price:, categories:, dietary_restrictions:)
+    # Start with all restaurants
     query = Restaurant.all
 
+    # Apply location filter in SQL (fast)
     if location.present?
       query = query.where(
         "LOWER(neighborhood) LIKE LOWER(?) OR LOWER(address) LIKE LOWER(?)",
@@ -461,14 +565,56 @@ class Room < ApplicationRecord
       )
     end
 
+    # Apply price filter in SQL (fast)
     query = query.where(price: price) if price.present?
 
+    # Load filtered restaurants into Ruby for exact matching
+    restaurants = query.to_a
+
+    # Return nil immediately if no restaurants match location/price
+    return nil if restaurants.empty?
+
+    # Apply cuisine filter using EXACT array matching
     if categories.present? && categories.any?
-      category_conditions = categories.map { |cat| "categories LIKE ?" }
-      category_values = categories.map { |cat| "%#{cat}%" }
-      query = query.where(category_conditions.join(" OR "), *category_values)
+      filtered_by_cuisine = restaurants.select do |restaurant|
+        # Skip restaurants without categories
+        next false unless restaurant.categories.is_a?(Array) && restaurant.categories.any?
+
+        # Check if restaurant has ANY of the selected cuisines (exact match, case-insensitive)
+        categories.any? do |selected_cuisine|
+          restaurant.categories.any? do |rest_cuisine|
+            rest_cuisine.to_s.strip.downcase == selected_cuisine.to_s.strip.downcase
+          end
+        end
+      end
+
+      # IMPORTANT: Only use filtered results if we found matches
+      # Otherwise, return nil to trigger fallback in find_random_restaurant
+      return nil if filtered_by_cuisine.empty?
+      restaurants = filtered_by_cuisine
     end
 
-    query.order("RANDOM()").first
+    # Apply dietary restrictions filter
+    if dietary_restrictions.present? && dietary_restrictions.any?
+      unless dietary_restrictions.include?("No Restriction")
+        filtered_by_dietary = restaurants.select do |restaurant|
+          # Skip if restaurant has no dietary info
+          next false if restaurant.dietary_restrictions.blank?
+
+          # Check if restaurant offers ANY of the selected dietary options
+          dietary_restrictions.any? do |selected_dietary|
+            restaurant.dietary_restrictions.to_s.include?(selected_dietary)
+          end
+        end
+
+        # IMPORTANT: Only use filtered results if we found matches
+        return nil if filtered_by_dietary.empty?
+        restaurants = filtered_by_dietary
+      end
+    end
+
+    # Return random restaurant from the final filtered list
+    # Use sample which returns nil if array is empty (shouldn't happen due to checks above)
+    restaurants.sample
   end
 end

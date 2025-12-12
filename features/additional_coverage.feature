@@ -22,10 +22,6 @@ Feature: Additional backend coverage
     When I complete a valid sign up for "coverage-signup@example.com"
     Then I should be on the sign up page
 
-# Scenario: Inactive sign up path falls back gracefully
-#   When I complete an inactive sign up for "inactive-user@example.com"
-#   Then I should see "signed up but"
-
   Scenario: User login validation requires credentials
     When I validate a blank login user
     Then I should see login errors for email and password
@@ -36,13 +32,6 @@ Feature: Additional backend coverage
     And I gather the room members
     Then both the host and guest should be returned
 
-# Temporarily disabled - needs fixing
-#  Scenario: Logged-in user joins an existing room via join endpoint
-#    Given I am authenticated as "Coverage Owner"
-#    And a room with code "2468" exists for joining
-#    When I post a join request for code "2468"
-#    Then I should land on that room page
-#    And the room membership should include "Coverage"
 
   Scenario: Invalid room code shows error
     When I post a join request for code "9999"
@@ -209,11 +198,6 @@ Feature: Additional backend coverage
     Given a room exists in revealing state
     Then round_complete should be true
 
-# Temporarily disabled - needs fixing
-#  Scenario: Sessions controller after sign in redirects to root
-#    Given I am on the login page
-#    When I successfully log in
-#    Then I should be redirected to root path
 
   Scenario: Room broadcast methods are called during state changes
     Given a room exists in spinning state

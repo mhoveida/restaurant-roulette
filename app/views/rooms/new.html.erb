@@ -55,6 +55,16 @@
         <input type="hidden" name="categories" data-create-room-target="categoriesInput">
       </div>
 
+      <div class="form-group">
+        <label>Dietary Restrictions <small style="color: rgba(255, 255, 255, 0.5);">(Select at least one)</small></label>
+        <div class="cuisines-grid" data-create-room-target="dietaryRestrictionsGrid">
+          <!-- Will be populated by JavaScript -->
+          <div style="color: rgba(255, 255, 255, 0.5); padding: 1rem;">Loading dietary options...</div>
+        </div>
+        <!-- Hidden field to store selected dietary restrictions -->
+        <input type="hidden" name="dietary_restrictions" data-create-room-target="dietaryRestrictionsInput">
+      </div>
+
       <div class="button-group">
         <%= form.submit "Create Room", class: "button create-button", data: { 'create-room-target': 'createButton', action: 'click->create-room#validateAndCreate' } %>
       </div>

@@ -54,7 +54,8 @@ Given('a simple room exists for coverage') do
     owner_name: 'Coverage Host',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
   @coverage_room = @room
 end
@@ -64,7 +65,8 @@ When('I add a guest named {string} with preferences') do |guest_name|
     guest_name,
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Mexican' ]
+    categories: [ 'Mexican' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
 end
 
@@ -87,6 +89,7 @@ Given('a room with code {string} exists for joining') do |code|
     location: 'SoHo',
     price: '$$',
     categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ],
     code: code
   )
 end
@@ -165,9 +168,10 @@ Given('a room exists in spinning state') do
     owner_name: 'Spinner',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest 1', location: 'SoHo', price: '$$', categories: [ 'Mexican' ])
+  @room.add_guest_member('Guest 1', location: 'SoHo', price: '$$', categories: [ 'Mexican' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
 end
 
@@ -188,10 +192,11 @@ Given('a room exists in voting state with options') do
     owner_name: 'Voter',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest 1', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
-  @room.add_guest_member('Guest 2', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest 1', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
+  @room.add_guest_member('Guest 2', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
 
   # Simulate spins
@@ -223,9 +228,10 @@ Given('a completed room exists') do
     owner_name: 'Completer',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
 
   # Complete a full round
   @room.start_spinning!
@@ -313,7 +319,7 @@ end
 
 Then('it should fallback to location and price match') do
   expect(@solo_spin_response['success']).to be true
-  expect(@solo_spin_response['match_type']).to eq('location_price')
+  expect(@solo_spin_response['match_type']).to eq('location_price_dietary')
 end
 
 When('I request a solo spin with unavailable price and cuisine') do
@@ -327,7 +333,7 @@ end
 
 Then('it should fallback to location only match') do
   expect(@solo_spin_response['success']).to be true
-  expect(@solo_spin_response['match_type']).to eq('location_only')
+  expect(@solo_spin_response['match_type']).to eq('location_dietary')
 end
 
 When('I create a user with first and last names') do
@@ -430,9 +436,10 @@ Given('a room with multiple rounds of spins') do
     owner_name: 'Multi',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
 
   # Round 1
   @room.start_spinning!
@@ -467,7 +474,8 @@ Given('restaurants exist with various categories') do
     owner_name: 'Search Test',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
 end
 
@@ -475,7 +483,8 @@ When('I search for room restaurant with specific category') do
   result = @room.send(:find_random_restaurant,
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: []
   )
   @found_restaurant = result[:restaurant]
 end
@@ -526,7 +535,8 @@ When('I create a room as logged in user') do
     owner_name: 'ShouldBeIgnored',
     location: 'SoHo',
     price: '$$',
-    categories: 'Italian'
+    categories: 'Italian',
+    dietary_restrictions: 'No Restriction'
   }
   @created_room = Room.last
 end
@@ -592,9 +602,10 @@ Given('a room exists in revealing state') do
     owner_name: 'Revealer',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
   @room.spin_for_member('owner')
   @room.spin_for_member(@room.members[0]['id'])
@@ -650,9 +661,10 @@ Given('a room exists with tallied votes') do
     owner_name: 'Tallier',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
   @room.spin_for_member('owner')
   @room.spin_for_member(@room.members[0]['id'])
@@ -679,7 +691,8 @@ Given('restaurants exist in database') do
     owner_name: 'Fallback Test',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
 end
 
@@ -687,46 +700,50 @@ When('I search with unavailable location but valid price and cuisine') do
   result = @room.send(:find_random_restaurant,
     location: 'NonExistentPlace',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: []
   )
   @search_result = result
 end
 
 Then('fallback should find price and cuisine match') do
-  expect(@search_result[:match_type]).to eq('price_cuisine')
+  expect(@search_result[:match_type]).to eq('price_cuisine_dietary')
 end
 
 When('I search with unavailable location and price but valid cuisine') do
   result = @room.send(:find_random_restaurant,
     location: 'NonExistentPlace',
     price: '$$$$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: []
   )
   @search_result = result
 end
 
 Then('fallback should find cuisine only match') do
-  expect(@search_result[:match_type]).to eq('cuisine_only')
+  expect(@search_result[:match_type]).to eq('cuisine_dietary')
 end
 
 When('I search with unavailable location and cuisine but valid price') do
   result = @room.send(:find_random_restaurant,
     location: 'NonExistentPlace',
     price: '$$',
-    categories: [ 'NonExistentCuisine' ]
+    categories: [ 'NonExistentCuisine' ],
+    dietary_restrictions: []
   )
   @search_result = result
 end
 
 Then('fallback should find price only match') do
-  expect(@search_result[:match_type]).to eq('price_only')
+  expect(@search_result[:match_type]).to eq('dietary_only')
 end
 
 When('I search with all unavailable criteria') do
   result = @room.send(:find_random_restaurant,
     location: 'NonExistentPlace',
     price: '$$$$$',
-    categories: [ 'NonExistentCuisine' ]
+    categories: [ 'NonExistentCuisine' ],
+    dietary_restrictions: [ 'NonExistentDietary' ]
   )
   @search_result = result
 end
@@ -766,9 +783,10 @@ Given('a room exists in voting state with votes') do
     owner_name: 'VoteCounter',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
   @room.spin_for_member('owner')
   @room.spin_for_member(@room.members[0]['id'])
@@ -799,9 +817,10 @@ Given('a room exists in voting state with all votes') do
     owner_name: 'AllVoter',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
   @room.spin_for_member('owner')
   @room.spin_for_member(@room.members[0]['id'])
@@ -833,9 +852,10 @@ Given('a room exists with revealed and unrevealed spins') do
     owner_name: 'Revealer',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
   @room.spin_for_member('owner')
   @room.spin_for_member(@room.members[0]['id'])
@@ -858,7 +878,8 @@ Given('a room exists in waiting state') do
     owner_name: 'Waiter',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
 end
 
@@ -898,7 +919,8 @@ Given('a room exists with last member about to spin') do
     owner_name: 'LastSpinner',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
   @room.start_spinning!
 end
@@ -922,7 +944,7 @@ end
 
 Then('it should match on price and cuisine') do
   expect(@solo_response['success']).to be true
-  expect(@solo_response['match_type']).to eq('price_cuisine')
+  expect(@solo_response['match_type']).to eq('price_cuisine_dietary')
 end
 
 When('I request solo spin with missing location and price') do
@@ -936,7 +958,7 @@ end
 
 Then('it should match on cuisine only') do
   expect(@solo_response['success']).to be true
-  expect(@solo_response['match_type']).to eq('cuisine_only')
+  expect(@solo_response['match_type']).to eq('cuisine_dietary')
 end
 
 When('I request solo spin with missing location and cuisine') do
@@ -950,14 +972,15 @@ end
 
 Then('it should match on price only') do
   expect(@solo_response['success']).to be true
-  expect(@solo_response['match_type']).to eq('price_only')
+  expect(@solo_response['match_type']).to eq('dietary_only')
 end
 
 When('I request solo spin with no matching criteria') do
   page.driver.post solo_spin_path, {
     location: 'NonExistentPlace123',
     price: '$$$$$',
-    categories: [ 'NonExistentCuisine123' ]
+    categories: [ 'NonExistentCuisine123' ],
+    dietary_restrictions: [ 'NonExistentDietary123' ]
   }
   @solo_response = JSON.parse(page.body)
 end
@@ -982,7 +1005,8 @@ When('multiple rooms are created') do
       owner_name: 'Test',
       location: 'SoHo',
       price: '$$',
-      categories: [ 'Italian' ]
+      categories: [ 'Italian' ],
+      dietary_restrictions: [ 'No Restriction' ]
     )
     @room_codes << room.code
   end
@@ -997,7 +1021,8 @@ When('a new room is created') do
     owner_name: 'New',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
 end
 
@@ -1020,9 +1045,10 @@ Given('a room exists with tied votes') do
     owner_name: 'TieMaker',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
   @room.spin_for_member('owner')
   @room.spin_for_member(@room.members[0]['id'])
@@ -1047,9 +1073,10 @@ Given('a room exists in spinning state with guest') do
     owner_name: 'Host',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('GuestWithPrefs', location: 'Chelsea', price: '$$$', categories: [ 'French' ])
+  @room.add_guest_member('GuestWithPrefs', location: 'Chelsea', price: '$$$', categories: [ 'French' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
   @room.spin_for_member('owner')
 end
@@ -1074,7 +1101,7 @@ end
 When('I add multiple guests') do
   @guest_ids = []
   3.times do |i|
-    guest = @room.add_guest_member("Guest#{i}", location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+    guest = @room.add_guest_member("Guest#{i}", location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
     @guest_ids << guest['id']
   end
 end
@@ -1109,7 +1136,8 @@ When('I POST valid guest join data') do
     guest_name: 'ValidGuest',
     location: 'SoHo',
     price: '$$',
-    categories: 'Italian,French'
+    categories: 'Italian,French',
+    dietary_restrictions: 'No Restriction'
   }
 end
 
@@ -1131,10 +1159,11 @@ Given('a room exists in voting state with partial votes') do
     owner_name: 'Partial',
     location: 'SoHo',
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: [ 'No Restriction' ]
   )
-  @room.add_guest_member('Guest1', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
-  @room.add_guest_member('Guest2', location: 'SoHo', price: '$$', categories: [ 'Italian' ])
+  @room.add_guest_member('Guest1', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
+  @room.add_guest_member('Guest2', location: 'SoHo', price: '$$', categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
   @room.start_spinning!
   @room.spin_for_member('owner')
   @room.spin_for_member(@room.members[0]['id'])
@@ -1166,7 +1195,8 @@ When('I search with nil price') do
   result = @room.send(:search_restaurants,
     location: 'SoHo',
     price: nil,
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: []
   )
   @search_result = result
 end
@@ -1179,7 +1209,8 @@ When('I search with nil location') do
   result = @room.send(:search_restaurants,
     location: nil,
     price: '$$',
-    categories: [ 'Italian' ]
+    categories: [ 'Italian' ],
+    dietary_restrictions: []
   )
   @search_result = result
 end
@@ -1192,7 +1223,8 @@ When('I search with empty categories') do
   result = @room.send(:search_restaurants,
     location: 'SoHo',
     price: '$$',
-    categories: []
+    categories: [],
+    dietary_restrictions: []
   )
   @search_result = result
 end

@@ -41,6 +41,7 @@ Feature: Solo Spin
     And I select "SoHo" from the "Neighborhood" dropdown
     And I select "$$$" from the "Price Range" dropdown
     And I select "French" from the cuisine grid
+    And I select "No Restriction" from the dietary restrictions grid
     And I click "Spin the Wheel!"
     Then the wheel should spin
     And I should see the result modal

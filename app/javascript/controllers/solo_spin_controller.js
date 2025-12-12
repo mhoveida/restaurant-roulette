@@ -7,6 +7,8 @@ export default class extends Controller {
     "priceSelect",
     "cuisinesGrid",
     "categoriesInput",
+    "dietaryRestrictionsGrid", 
+    "dietaryRestrictionsInput",
     "wheel",
     "spinButton",
     "validationMessage"
@@ -14,9 +16,11 @@ export default class extends Controller {
 
   connect() {
     this.selectedCuisines = []
+    this.selectedDietaryRestrictions = []
     this.currentRestaurant = null
     this.fetchNeighborhoods()
     this.fetchCuisines()
+    this.fetchDietaryRestrictions()
     this.drawWheel()
   }
 
@@ -49,6 +53,33 @@ export default class extends Controller {
         option.textContent = neighborhood
         select.appendChild(option)
       })
+    }
+  }
+
+  async fetchDietaryRestrictions() {
+    try {
+      const response = await fetch('/dietary_restrictions')
+      const restrictions = await response.json()
+      
+      const grid = this.dietaryRestrictionsGridTarget
+      grid.innerHTML = restrictions.map(restriction => `
+        <label class="cuisine-checkbox">
+          <input type="checkbox" value="${restriction}" data-action="change->solo-spin#toggleDietaryRestriction">
+          <span class="cuisine-label">${restriction}</span>
+        </label>
+      `).join('')
+    } catch (error) {
+      /*console.error('Error fetching dietary restrictions:', error)*/
+      const fallbackRestrictions = [
+        "Vegetarian", "Vegan", "Gluten-Free", "Halal", "Kosher", "No Restriction"
+      ]
+      const grid = this.dietaryRestrictionsGridTarget
+      grid.innerHTML = fallbackRestrictions.map(restriction => `
+        <label class="cuisine-checkbox">
+          <input type="checkbox" value="${restriction}" data-action="change->solo-spin#toggleDietaryRestriction">
+          <span class="cuisine-label">${restriction}</span>
+        </label>
+      `).join('')
     }
   }
 
@@ -96,6 +127,44 @@ export default class extends Controller {
     checkbox.closest('.cuisine-checkbox').classList.toggle('selected', checkbox.checked)
   }
 
+
+  toggleDietaryRestriction(event) {
+    const checkbox = event.target
+    const restriction = checkbox.value
+    
+    if (restriction === "No Restriction") {
+      if (checkbox.checked) {
+        this.dietaryRestrictionsGridTarget.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          if (cb.value !== "No Restriction" && cb.checked) {
+            cb.checked = false
+            cb.closest('.cuisine-checkbox').classList.remove('selected')
+          }
+        })
+        this.selectedDietaryRestrictions = ["No Restriction"]
+      } else {
+        this.selectedDietaryRestrictions = []
+      }
+    } else {
+      const noRestrictionCheckbox = this.dietaryRestrictionsGridTarget.querySelector('input[value="No Restriction"]')
+      if (noRestrictionCheckbox && noRestrictionCheckbox.checked) {
+        noRestrictionCheckbox.checked = false
+        noRestrictionCheckbox.closest('.cuisine-checkbox').classList.remove('selected')
+      }
+      
+      if (checkbox.checked) {
+        if (!this.selectedDietaryRestrictions.includes(restriction)) {
+          this.selectedDietaryRestrictions.push(restriction)
+        }
+        this.selectedDietaryRestrictions = this.selectedDietaryRestrictions.filter(r => r !== "No Restriction")
+      } else {
+        this.selectedDietaryRestrictions = this.selectedDietaryRestrictions.filter(r => r !== restriction)
+      }
+    }
+  
+    this.dietaryRestrictionsInputTarget.value = this.selectedDietaryRestrictions.join(',')
+    checkbox.closest('.cuisine-checkbox').classList.toggle('selected', checkbox.checked)
+  }
+
   drawWheel() {
     const canvas = this.wheelTarget
     const ctx = canvas.getContext("2d")
@@ -132,7 +201,7 @@ export default class extends Controller {
     ctx.fillStyle = "#FEE440"
     ctx.fill()
   }
-
+  
   async spin(event) {
     event.preventDefault()
     
@@ -146,6 +215,7 @@ export default class extends Controller {
     const location = this.locationSelectTarget.value
     const price = this.priceSelectTarget.value
     const categories = this.selectedCuisines
+    const dietaryRestrictions = this.selectedDietaryRestrictions
     
     // Show spinning animation
     this.wheelTarget.classList.add('spinning')
@@ -163,7 +233,8 @@ export default class extends Controller {
         body: JSON.stringify({
           location: location,
           price: price,
-          categories: categories
+          categories: categories,
+          dietary_restrictions: dietaryRestrictions
         })
       })
       
@@ -195,13 +266,14 @@ export default class extends Controller {
     const location = this.locationSelectTarget.value
     const price = this.priceSelectTarget.value
     const cuisines = this.selectedCuisines.length > 0
+    const dietary = this.selectedDietaryRestrictions.length > 0
     
-    return name && location && price && cuisines
+    return name && location && price && cuisines && dietary
   }
 
   showValidationMessage() {
     this.validationMessageTarget.style.display = "block"
-    this.validationMessageTarget.textContent = "Please fill in all fields and select at least one cuisine"
+    this.validationMessageTarget.textContent = "Please fill in all fields, select at least one cuisine, and select at least one dietary option"
 
   }
 

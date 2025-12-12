@@ -20,7 +20,8 @@ restaurants_data = [
     review_count: 5200,
     is_open_now: true,
     closing_time: "12:00 AM",
-    categories: [ "French" ]
+    categories: [ "French" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Emilio's Ballato",
@@ -35,7 +36,9 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
+
   },
   {
     name: "Blue Ribbon Sushi",
@@ -50,7 +53,8 @@ restaurants_data = [
     review_count: 1800,
     is_open_now: true,
     closing_time: "2:00 AM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Tacombi",
@@ -65,7 +69,8 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Mexican" ]
+    categories: [ "Mexican" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "The Mercer Kitchen",
@@ -80,7 +85,8 @@ restaurants_data = [
     review_count: 1600,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -99,7 +105,8 @@ restaurants_data = [
     review_count: 3400,
     is_open_now: true,
     closing_time: "12:00 AM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Ippudo",
@@ -114,7 +121,8 @@ restaurants_data = [
     review_count: 4200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Mamoun's Falafel",
@@ -129,7 +137,8 @@ restaurants_data = [
     review_count: 2800,
     is_open_now: true,
     closing_time: "5:00 AM",
-    categories: [ "Mediterranean" ]
+    categories: [ "Mediterranean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Xi'an Famous Foods",
@@ -144,7 +153,8 @@ restaurants_data = [
     review_count: 3400,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Chinese" ]
+    categories: [ "Chinese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Panna II",
@@ -159,7 +169,8 @@ restaurants_data = [
     review_count: 1900,
     is_open_now: true,
     closing_time: "12:00 AM",
-    categories: [ "Indian" ]
+    categories: [ "Indian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Superiority Burger",
@@ -174,7 +185,8 @@ restaurants_data = [
     review_count: 1500,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Sobaya",
@@ -189,7 +201,8 @@ restaurants_data = [
     review_count: 1100,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -208,7 +221,8 @@ restaurants_data = [
     review_count: 1890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Sushi Nakazawa",
@@ -223,7 +237,8 @@ restaurants_data = [
     review_count: 980,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "RedFarm",
@@ -238,7 +253,8 @@ restaurants_data = [
     review_count: 2800,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Chinese" ]
+    categories: [ "Chinese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Joe's Pizza",
@@ -253,7 +269,8 @@ restaurants_data = [
     review_count: 5400,
     is_open_now: true,
     closing_time: "4:00 AM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Employees Only",
@@ -268,7 +285,8 @@ restaurants_data = [
     review_count: 2780,
     is_open_now: true,
     closing_time: "3:30 AM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Taïm",
@@ -283,7 +301,8 @@ restaurants_data = [
     review_count: 1600,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Mediterranean" ]
+    categories: [ "Mediterranean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Jungsik",
@@ -298,7 +317,8 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Korean" ]
+    categories: [ "Korean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -317,7 +337,8 @@ restaurants_data = [
     review_count: 1450,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "French" ]
+    categories: [ "French" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Tao Uptown",
@@ -332,7 +353,8 @@ restaurants_data = [
     review_count: 3200,
     is_open_now: true,
     closing_time: "12:00 AM",
-    categories: [ "Chinese" ]
+    categories: [ "Chinese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Toloache",
@@ -347,7 +369,8 @@ restaurants_data = [
     review_count: 1800,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Mexican" ]
+    categories: [ "Mexican" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "The Smith",
@@ -362,7 +385,8 @@ restaurants_data = [
     review_count: 3200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Sushi Ginza Onodera",
@@ -377,7 +401,8 @@ restaurants_data = [
     review_count: 650,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Bukhara Grill",
@@ -392,7 +417,8 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Indian" ]
+    categories: [ "Indian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Pure Thai Cookhouse",
@@ -407,7 +433,8 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: [ "Thai" ]
+    categories: [ "Thai" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -426,7 +453,8 @@ restaurants_data = [
     review_count: 1450,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "French" ]
+    categories: [ "French" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "JG Melon",
@@ -441,7 +469,8 @@ restaurants_data = [
     review_count: 2800,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Sushi of Gari",
@@ -456,7 +485,8 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Sfoglia",
@@ -471,7 +501,8 @@ restaurants_data = [
     review_count: 980,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Café Boulud",
@@ -486,7 +517,8 @@ restaurants_data = [
     review_count: 1890,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "French" ]
+    categories: [ "French" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Moti Mahal Delux",
@@ -501,7 +533,8 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Indian" ]
+    categories: [ "Indian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -520,7 +553,8 @@ restaurants_data = [
     review_count: 8900,
     is_open_now: true,
     closing_time: "10:45 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Ivan Ramen",
@@ -535,7 +569,8 @@ restaurants_data = [
     review_count: 2780,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Dhamaka",
@@ -550,7 +585,8 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Indian" ]
+    categories: [ "Indian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Cervo's",
@@ -565,7 +601,8 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Mediterranean" ]
+    categories: [ "Mediterranean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Mission Chinese Food",
@@ -580,7 +617,8 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Chinese" ]
+    categories: [ "Chinese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Scarr's Pizza",
@@ -595,7 +633,8 @@ restaurants_data = [
     review_count: 2890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -614,7 +653,8 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Peter Luger Steak House",
@@ -629,7 +669,8 @@ restaurants_data = [
     review_count: 5600,
     is_open_now: true,
     closing_time: "9:45 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Okonomi",
@@ -644,7 +685,8 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Barano",
@@ -659,7 +701,8 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Oaxaca Taqueria",
@@ -674,7 +717,8 @@ restaurants_data = [
     review_count: 1800,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Mexican" ]
+    categories: [ "Mexican" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Thai Villa",
@@ -689,7 +733,8 @@ restaurants_data = [
     review_count: 1100,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: [ "Thai" ]
+    categories: [ "Thai" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Maison Premiere",
@@ -704,7 +749,8 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "2:00 AM",
-    categories: [ "French" ]
+    categories: [ "French" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -723,7 +769,8 @@ restaurants_data = [
     review_count: 3800,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Westville DUMBO",
@@ -738,7 +785,8 @@ restaurants_data = [
     review_count: 1600,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Cecconi's DUMBO",
@@ -753,7 +801,8 @@ restaurants_data = [
     review_count: 2200,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Time Out Market",
@@ -768,7 +817,8 @@ restaurants_data = [
     review_count: 3400,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Atrium DUMBO",
@@ -783,7 +833,8 @@ restaurants_data = [
     review_count: 980,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Mediterranean" ]
+    categories: [ "Mediterranean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -802,7 +853,8 @@ restaurants_data = [
     review_count: 2100,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Miti Miti",
@@ -817,7 +869,8 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Mexican" ]
+    categories: [ "Mexican" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Faun",
@@ -832,7 +885,8 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Miriam",
@@ -847,7 +901,8 @@ restaurants_data = [
     review_count: 1800,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Mediterranean" ]
+    categories: [ "Mediterranean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Krupa Grocery",
@@ -862,7 +917,8 @@ restaurants_data = [
     review_count: 780,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Talde",
@@ -877,7 +933,8 @@ restaurants_data = [
     review_count: 1400,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Thai" ]
+    categories: [ "Thai" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
 
   # ==========================================
@@ -896,7 +953,8 @@ restaurants_data = [
     review_count: 3890,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Mediterranean" ]
+    categories: [ "Mediterranean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Il Bambino",
@@ -911,7 +969,8 @@ restaurants_data = [
     review_count: 1200,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Italian" ]
+    categories: [ "Italian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Pochana",
@@ -926,7 +985,8 @@ restaurants_data = [
     review_count: 890,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: [ "Thai" ]
+    categories: [ "Thai" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Sabry's Seafood",
@@ -941,7 +1001,8 @@ restaurants_data = [
     review_count: 1100,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Mediterranean" ]
+    categories: [ "Mediterranean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Kondo",
@@ -956,7 +1017,8 @@ restaurants_data = [
     review_count: 780,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Japanese" ]
+    categories: [ "Japanese" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Tikka Indian Grill",
@@ -971,7 +1033,8 @@ restaurants_data = [
     review_count: 980,
     is_open_now: true,
     closing_time: "10:30 PM",
-    categories: [ "Indian" ]
+    categories: [ "Indian" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "Mom's Kitchen",
@@ -986,7 +1049,8 @@ restaurants_data = [
     review_count: 1400,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "American" ]
+    categories: [ "American" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "De Mole",
@@ -1001,7 +1065,8 @@ restaurants_data = [
     review_count: 1600,
     is_open_now: true,
     closing_time: "11:00 PM",
-    categories: [ "Mexican" ]
+    categories: [ "Mexican" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   },
   {
     name: "HanGawi",
@@ -1016,7 +1081,8 @@ restaurants_data = [
     review_count: 680,
     is_open_now: true,
     closing_time: "10:00 PM",
-    categories: [ "Korean" ]
+    categories: [ "Korean" ],
+    dietary_restrictions: [ "Vegetarian", "Vegan", "Gluten-free", "Halal", "Kosher" ]
   }
 ]
 

@@ -48,8 +48,8 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   get "neighborhoods", to: "rooms#neighborhoods"
-
   get "cuisines", to: "rooms#cuisines"
+  get "dietary_restrictions", to: "rooms#dietary_restrictions"
 
   # User History
   get "user_history", to: "user_histories#show", as: "user_history"

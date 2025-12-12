@@ -18,15 +18,29 @@ class Restaurant < ApplicationRecord
     where(price: price) if price.present?
   }
 
+  scope :by_dietary_restriction, ->(restriction) {
+    where("dietary_restrictions LIKE ?", "%#{restriction}%") if restriction.present?
+  }
+
   scope :by_location, ->(location) { all }
   scope :open_now, -> { where(is_open_now: true) }
 
   def cuisine_list
-  categories.is_a?(Array) ? categories.join(", ") : ""
-end
+    categories.is_a?(Array) ? categories.join(", ") : ""
+  end
 
   def has_cuisine?(cuisine)
     return false unless categories.is_a?(Array)
     categories.any? { |c| c.downcase.include?(cuisine.downcase) }
+  end
+
+  def dietary_restrictions_list
+    return [] if dietary_restrictions.blank?
+    dietary_restrictions.split(",").map(&:strip)
+  end
+
+  def has_dietary_restriction?(restriction)
+    return false if dietary_restrictions.blank?
+    dietary_restrictions_list.any? { |r| r.downcase.include?(restriction.downcase) }
   end
 end

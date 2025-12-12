@@ -66,6 +66,20 @@
         </small>
       </div>
 
+      <!-- Dietary Restrictions Multi-Select-->
+      <div class="form-group">
+        <label>Dietary Restrictions <small style="color: rgba(255, 255, 255, 0.5);">(Select at least one)</small></label>
+        <div class="cuisines-grid" data-create-room-target="dietaryRestrictionsGrid">
+          <div style="color: rgba(255, 255, 255, 0.5); padding: 1rem;">Loading dietary options...</div>
+        </div>
+        <input type="hidden" name="dietary_restrictions" data-create-room-target="dietaryRestrictionsInput">
+        <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 0.5rem;">
+          Owner's dietary restrictions: <strong style="color: var(--color-yellow);">
+            <%= @room.dietary_restrictions.respond_to?(:join) ? @room.dietary_restrictions.join(", ") : @room.dietary_restrictions %>
+          </strong>
+        </small>
+      </div>
+
       <div class="button-group">
         <%= form.submit "Join Room", class: "button create-button", data: { 'create-room-target': 'createButton', action: 'click->create-room#validateAndCreate' } %>
       </div>

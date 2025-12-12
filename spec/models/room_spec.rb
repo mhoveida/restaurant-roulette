@@ -11,22 +11,33 @@ RSpec.describe Room, type: :model do
     end
 
     it "is not valid without a location" do
-      room = Room.new(owner_name: "John", price: "$$", code: "1234")
+      room = Room.new(owner_name: "John", price: "$$", code: "1234", categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
       expect(room).not_to be_valid
     end
 
     it "is not valid without a price" do
-      room = Room.new(owner_name: "John", location: "NYC", code: "1234")
+      room = Room.new(owner_name: "John", location: "NYC", code: "1234", categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
       expect(room).not_to be_valid
     end
 
     it "is not valid without owner_name" do
-      room = Room.new(location: "NYC", price: "$$", code: "1234")
+      room = Room.new(location: "NYC", price: "$$", code: "1234", categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
+      expect(room).not_to be_valid
+    end
+
+    it "is not valid without dietary_restrictions" do
+      room = Room.new(owner_name: "John", location: "NYC", price: "$$", code: "1234", categories: [ 'Italian' ])
+      expect(room).not_to be_valid
+      expect(room.errors[:dietary_restrictions]).to include('Please select at least one dietary option')
+    end
+
+    it "is not valid with empty dietary_restrictions array" do
+      room = Room.new(owner_name: "John", location: "NYC", price: "$$", code: "1234", categories: [ 'Italian' ], dietary_restrictions: [])
       expect(room).not_to be_valid
     end
 
     it "auto-generates a code" do
-      room = Room.new(owner_name: "John", location: "NYC", price: "$$")
+      room = Room.new(owner_name: "John", location: "NYC", price: "$$", categories: [ 'Italian' ], dietary_restrictions: [ 'No Restriction' ])
       room.valid?
       expect(room.code).to be_present
       expect(room.code).to match(/^\d{4}$/)
@@ -72,24 +83,30 @@ RSpec.describe Room, type: :model do
 
     it 'adds a guest member' do
       expect {
-        room.add_guest_member("Alex")
+        room.add_guest_member("Alex", dietary_restrictions: [ 'No Restriction' ])
       }.to change { room.reload.get_all_members.length }.by(1)
     end
 
     it 'accepts optional location' do
-      room.add_guest_member("Alex", location: "Brooklyn")
+      room.add_guest_member("Alex", location: "Brooklyn", dietary_restrictions: [ 'No Restriction' ])
       member = room.reload.get_all_members.find { |m| m[:name] == "Alex" }
       expect(member).to be_present
     end
 
+    it 'accepts optional dietary_restrictions' do
+      room.add_guest_member("Alex", dietary_restrictions: [ 'Vegetarian' ])
+      member = room.reload.get_all_members.find { |m| m[:name] == "Alex" }
+      expect(member[:dietary_restrictions]).to eq([ 'Vegetarian' ])
+    end
+
     it 'accepts optional price' do
-      room.add_guest_member("Alex", price: "$$$")
+      room.add_guest_member("Alex", price: "$$$", dietary_restrictions: [ 'No Restriction' ])
       member = room.reload.get_all_members.find { |m| m[:name] == "Alex" }
       expect(member).to be_present
     end
 
     it 'accepts optional categories' do
-      room.add_guest_member("Alex", categories: [ "Italian" ])
+      room.add_guest_member("Alex", categories: [ "Italian" ], dietary_restrictions: [ 'No Restriction' ])
       member = room.reload.get_all_members.find { |m| m[:name] == "Alex" }
       expect(member).to be_present
     end
@@ -101,7 +118,7 @@ RSpec.describe Room, type: :model do
     end
 
     it 'generates member_id if not provided' do
-      result = room.add_guest_member("Alex")
+      result = room.add_guest_member("Alex", dietary_restrictions: [ 'No Restriction' ])
       expect(result["id"]).to match(/^guest_/)
     end
   end
@@ -116,7 +133,7 @@ RSpec.describe Room, type: :model do
     end
 
     it 'includes guest members' do
-      room.add_guest_member("Alex")
+      room.add_guest_member("Alex", dietary_restrictions: [ 'No Restriction' ])
       members = room.get_all_members
       expect(members.length).to eq(2)
     end
@@ -173,7 +190,7 @@ RSpec.describe Room, type: :model do
     end
 
     it 'includes guests in turn_order' do
-      room.add_guest_member("Alex")
+      room.add_guest_member("Alex", dietary_restrictions: [ 'No Restriction' ])
       room.start_spinning!
       expect(room.turn_order.length).to eq(2)
     end
@@ -619,13 +636,15 @@ RSpec.describe Room, type: :model do
       expect(room).to receive(:search_restaurants).with(
         location: "SoHo",
         price: "$$",
-        categories: [ "Italian" ]
+        categories: [ "Italian" ],
+        dietary_restrictions: []
       ).and_return(restaurant)
 
       result = room.send(:find_random_restaurant,
         location: "SoHo",
         price: "$$",
-        categories: [ "Italian" ]
+        categories: [ "Italian" ],
+        dietary_restrictions: []
       )
 
       expect(result[:match_type]).to eq("exact")
@@ -638,7 +657,8 @@ RSpec.describe Room, type: :model do
       result = room.send(:find_random_restaurant,
         location: "SoHo",
         price: "$$",
-        categories: [ "Italian" ]
+        categories: [ "Italian" ],
+        dietary_restrictions: []
       )
 
       expect(result[:match_type]).to eq("random")

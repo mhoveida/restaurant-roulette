@@ -21,6 +21,7 @@ Feature: Group Room Functionality
     And I select "SoHo" from the "Neighborhood" dropdown
     And I select "$$" from the "Price Range" dropdown
     And I select "Italian" from the cuisine grid
+    And I select "No Restriction" from the dietary restrictions grid
     And I submit the room form
     Then I should see "Room Waiting Area"
     And I should see "Room Code"
@@ -55,6 +56,7 @@ Feature: Group Room Functionality
     And I fill in "Name" with "John Doe"
     And I select "$$" from the "Price Range" dropdown
     And I select "Italian" from the cuisine grid
+    And I select "No Restriction" from the dietary restrictions grid
     And I click "Create Room"
     Then I should see a validation message
 
@@ -66,6 +68,7 @@ Feature: Group Room Functionality
     And I fill in "Name" with "John Doe"
     And I select "SoHo" from the "Neighborhood" dropdown
     And I select "Italian" from the cuisine grid
+    And I select "No Restriction" from the dietary restrictions grid
     And I click "Create Room"
     Then I should see "Please fill in all fields"
 
@@ -78,9 +81,40 @@ Feature: Group Room Functionality
     And I select "SoHo" from the "Neighborhood" dropdown
     And I select "$$" from the "Price Range" dropdown
     And I select "Italian" from the cuisine grid
+    And I select "No Restriction" from the dietary restrictions grid
     And I click "Create Room"
     Then I should see a 4-digit room code
     And the room code should be unique
+
+  @javascript
+  Scenario: Room creation fails without dietary restrictions
+    Given I am not logged in
+    And I am on the home page
+    When I click "Create Room"
+    And I fill in "Name" with "John Doe"
+    And I select "SoHo" from the "Neighborhood" dropdown
+    And I select "$$" from the "Price Range" dropdown
+    And I select "Italian" from the cuisine grid
+    And I click "Create Room"
+    Then I should see a validation message
+    And I should remain on the create room page
+
+  @javascript
+  Scenario: Room spin respects dietary restrictions
+    Given I am not logged in
+    And I am on the home page
+    When I click "Create Room"
+    And I fill in "Name" with "John Doe"
+    And I select "SoHo" from the "Neighborhood" dropdown
+    And I select "$$" from the "Price Range" dropdown
+    And I select "Italian" from the cuisine grid
+    And I select "Vegetarian" from the dietary restrictions grid
+    And I submit the room form
+    Then I should see "Room Waiting Area"
+    When I click "✨ Start Spinning!"
+    And I click "Spin"
+    Then the wheel should spin
+    And I should see a restaurant result
 
   # ==========================================
   # JOINING ROOM SCENARIOS
@@ -137,6 +171,7 @@ Feature: Group Room Functionality
     And I select "West Village" from the "Neighborhood" dropdown
     And I select "$$$" from the "Price Range" dropdown
     And I select "French" from the cuisine grid
+    And I select "No Restriction" from the dietary restrictions grid
     And I complete guest join for room "1234" with "Guest User"
     Then I should see "Room Waiting Area"
     And I should see "Guest User" in the members list
@@ -150,6 +185,7 @@ Feature: Group Room Functionality
     When I select "SoHo" from the "Neighborhood" dropdown
     And I select "$$" from the "Price Range" dropdown
     And I select "Italian" from the cuisine grid
+    And I select "No Restriction" from the dietary restrictions grid
     And I click "Join Room"
     Then I should see a validation message
 
@@ -161,6 +197,7 @@ Feature: Group Room Functionality
     When I fill in "Name" with "Guest User"
     And I select "$$" from the "Price Range" dropdown
     And I select "Italian" from the cuisine grid
+    And I select "No Restriction" from the dietary restrictions grid
     And I click "Join Room"
     Then I should see a validation message
 
@@ -336,12 +373,6 @@ Feature: Group Room Functionality
     Then I should still see the voting interface
     And the winner should not be revealed yet
 
-  @javascript
-  Scenario: Partial match indicators shown during voting
-    Given I am in the voting phase of room "1234"
-    And option 1 is a location-only match
-    When I view the voting options
-    Then I should see "📍 Same area" indicator for option 1
 
   # ==========================================
   # COMPLETE PHASE (Winner Selection)

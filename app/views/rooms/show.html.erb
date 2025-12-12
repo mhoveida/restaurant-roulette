@@ -88,6 +88,20 @@
         <% end %>
       </div>
     </div>
+
+    <% current_dietary = @current_member&.dig(:dietary_restrictions).presence || @room.dietary_restrictions %>
+      <div class="preference-item" style="grid-column: 1 / -1; margin-top: 1rem;">
+        <div class="preference-label">Dietary Restrictions</div>
+        <div class="cuisine-list">
+          <% if current_dietary.is_a?(Array) %>
+            <% current_dietary.each do |restriction| %>
+              <span class="cuisine-tag"><%= restriction %></span>
+            <% end %>
+          <% else %>
+            <span class="cuisine-tag"><%= current_dietary %></span>
+          <% end %>
+        </div>
+      </div>
   </div>
 
   <!-- Members Section -->
