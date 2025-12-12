@@ -214,6 +214,9 @@ export default class extends Controller {
     
     const stars = '★'.repeat(Math.floor(restaurant.rating)) + '☆'.repeat(5 - Math.floor(restaurant.rating))
     
+    // Check if user is signed in by looking for auth data
+    const isSignedIn = document.querySelector('meta[name="user-signed-in"]')?.content === "true"
+    
     const resultHTML = `
       <div class="result-overlay" id="soloResult">
         <div class="result-modal">
@@ -271,6 +274,11 @@ export default class extends Controller {
             <button class="button share-button" id="shareResultBtn">
               Share
             </button>
+            ${isSignedIn ? `
+              <button class="button going-button" id="goingResultBtn">
+                ✓ I'm Going!
+              </button>
+            ` : ''}
           </div>
         </div>
       </div>
@@ -286,6 +294,12 @@ export default class extends Controller {
     document.getElementById('shareResultBtn').addEventListener('click', () => {
       this.shareResult()
     })
+
+    if (isSignedIn) {
+      document.getElementById('goingResultBtn').addEventListener('click', () => {
+        this.saveToHistory(restaurant.id)
+      })
+    }
   }
 
   shareResult() {
@@ -313,6 +327,49 @@ export default class extends Controller {
       }).catch(() => {
         alert('Could not copy to clipboard')
       })
+    }
+  }
+
+  async saveToHistory(restaurantId) {
+    const btn = document.getElementById('goingResultBtn')
+    const originalText = btn.textContent
+    btn.disabled = true
+
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || ""
+
+      const response = await fetch('/solo_spin/save_to_history', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({
+          restaurant_id: restaurantId
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        btn.textContent = '✓ Added to History!'
+        btn.style.backgroundColor = '#22c55e'
+        
+        setTimeout(() => {
+          btn.textContent = originalText
+          btn.style.backgroundColor = ''
+          btn.disabled = false
+        }, 2000)
+      } else {
+        alert(data.error || 'Failed to save to history')
+        btn.textContent = originalText
+        btn.disabled = false
+      }
+    } catch (error) {
+      console.error('Error saving to history:', error)
+      alert('An error occurred while saving to history')
+      btn.textContent = originalText
+      btn.disabled = false
     }
   }
 

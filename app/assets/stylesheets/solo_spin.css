@@ -506,13 +506,36 @@
 .result-actions {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .spin-again-button,
-.share-button {
+.share-button,
+.going-button {
   flex: 1;
   font-size: 1rem;
   padding: 12px;
+  min-width: 100px;
+}
+
+.going-button {
+  background-color: #22c55e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.going-button:hover:not(:disabled) {
+  background-color: #16a34a;
+  transform: scale(1.02);
+}
+
+.going-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Empty State */

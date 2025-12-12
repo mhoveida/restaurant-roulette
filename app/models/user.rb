@@ -5,6 +5,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
+  # Associations
+  has_many :user_restaurant_histories, dependent: :destroy
+  has_many :visited_restaurants, through: :user_restaurant_histories, source: :restaurant
+
   # Validations - only validate names on signup, not login
   validates :first_name, presence: true, on: :create
   validates :last_name, presence: true, on: :create

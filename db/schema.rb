@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_18_011910) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_12_152455) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -67,6 +67,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_18_011910) do
     t.index ["created_at"], name: "index_solid_cable_messages_on_created_at"
   end
 
+  create_table "user_restaurant_histories", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "restaurant_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.datetime "visited_at"
+    t.index ["restaurant_id"], name: "index_user_restaurant_histories_on_restaurant_id"
+    t.index ["user_id", "restaurant_id"], name: "index_user_restaurant_histories_on_user_id_and_restaurant_id", unique: true
+    t.index ["user_id"], name: "index_user_restaurant_histories_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "confirmation_sent_at"
     t.string "confirmation_token"
@@ -89,16 +100,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_18_011910) do
     t.index ["uid"], name: "index_users_on_uid"
   end
 
-  create_table "votes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "restaurant_id", null: false
-    t.bigint "room_id", null: false
-    t.datetime "updated_at", null: false
-    t.string "value", null: false
-    t.string "voter_name", null: false
-    t.index ["room_id", "restaurant_id", "voter_name"], name: "index_votes_on_room_id_and_restaurant_id_and_voter_name", unique: true
-    t.index ["room_id"], name: "index_votes_on_room_id"
-  end
-
-  add_foreign_key "votes", "rooms"
+  add_foreign_key "user_restaurant_histories", "restaurants"
+  add_foreign_key "user_restaurant_histories", "users"
 end

@@ -1,0 +1,347 @@
+<% content_for :title, "My Restaurant History" %>
+
+<div class="user-history-container">
+  <header class="history-header">
+    <div class="header-content">
+      <h1>My Restaurant History</h1>
+      <p class="subtitle">Restaurants you've marked as "I'm Going!"</p>
+    </div>
+    <%= link_to "← Back to Home", root_path, class: "back-button" %>
+  </header>
+
+  <% if @restaurants.empty? %>
+    <div class="empty-state">
+      <div class="empty-icon">🍽️</div>
+      <h2>No restaurants yet</h2>
+      <p>Start spinning and mark your favorite restaurants as "I'm Going!" to see them here.</p>
+      <%= link_to "Go to Solo Spin", solo_spin_path, class: "button primary-button" %>
+    </div>
+  <% else %>
+    <div class="history-grid">
+      <% @restaurants.each_with_index do |restaurant, index| %>
+        <% history = @histories[index] %>
+        <div class="history-card">
+          <% if restaurant.image_url %>
+            <div class="card-image">
+              <img src="<%= restaurant.image_url %>" alt="<%= restaurant.name %>">
+            </div>
+          <% end %>
+
+          <div class="card-content">
+            <h3 class="restaurant-name"><%= restaurant.name %></h3>
+
+            <div class="card-meta">
+              <div class="rating-section">
+                <span class="stars">
+                  <%= '★'.repeat(restaurant.rating.floor) + '☆'.repeat(5 - restaurant.rating.floor) %>
+                </span>
+                <span class="rating-value">(<%= restaurant.rating %>)</span>
+              </div>
+              <span class="price"><%= restaurant.price %></span>
+            </div>
+
+            <% if restaurant.categories && restaurant.categories.any? %>
+              <div class="cuisine-tags">
+                <% restaurant.categories.each do |cuisine| %>
+                  <span class="cuisine-tag"><%= cuisine %></span>
+                <% end %>
+              </div>
+            <% end %>
+
+            <div class="address-section">
+              <span class="address-icon">📍</span>
+              <span class="address"><%= restaurant.address %></span>
+            </div>
+
+            <% if restaurant.neighborhood %>
+              <div class="neighborhood">
+                <%= restaurant.neighborhood %>
+              </div>
+            <% end %>
+
+            <div class="saved-date">
+              Marked on <%= history.created_at.strftime("%B %d, %Y") %>
+            </div>
+
+            <div class="card-actions">
+              <a href="https://www.google.com/maps/search/?api=1&query=<%= ERB::Util.url_encode(restaurant.address) %>"
+                 target="_blank"
+                 class="button map-button">
+                🗺️ View on Map
+              </a>
+              <button class="button remove-button" data-restaurant-id="<%= restaurant.id %>">
+                ✕ Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  .user-history-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+  }
+
+  .history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .header-content h1 {
+    font-size: 2.5rem;
+    color: #FEE440;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .back-button {
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .back-button:hover {
+    color: #FEE440;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    margin: 3rem 0;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h2 {
+    color: #FEE440;
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .empty-state p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .primary-button {
+    display: inline-block;
+    background-color: #FEE440;
+    color: #1a1a2e;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+
+  .primary-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(254, 228, 64, 0.3);
+  }
+
+  .history-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .history-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .history-card:hover {
+    transform: translateY(-4px);
+    border-color: #FEE440;
+    box-shadow: 0 8px 24px rgba(254, 228, 64, 0.2);
+  }
+
+  .card-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  .restaurant-name {
+    font-size: 1.3rem;
+    color: #FEE440;
+    margin: 0 0 0.75rem 0;
+  }
+
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .rating-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .stars {
+    color: #FEE440;
+    font-size: 0.9rem;
+  }
+
+  .rating-value {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+  }
+
+  .price {
+    background: rgba(254, 228, 64, 0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: #FEE440;
+    font-weight: 600;
+  }
+
+  .cuisine-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .cuisine-tag {
+    background: rgba(254, 228, 64, 0.15);
+    padding: 4px 8px;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+  }
+
+  .address-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+  }
+
+  .address-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .address {
+    line-height: 1.4;
+  }
+
+  .neighborhood {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .saved-date {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .map-button,
+  .remove-button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .map-button {
+    background-color: #4ECDC4;
+    color: #ffffff;
+  }
+
+  .map-button:hover {
+    background-color: #45B7D1;
+  }
+
+  .remove-button {
+    background-color: rgba(255, 107, 107, 0.2);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+  }
+
+  .remove-button:hover {
+    background-color: #ff6b6b;
+    color: #ffffff;
+  }
+
+  @media (max-width: 768px) {
+    .user-history-container {
+      padding: 1rem;
+    }
+
+    .history-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .header-content h1 {
+      font-size: 1.8rem;
+    }
+
+    .history-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .card-actions {
+      flex-direction: column;
+    }
+  }
+</style>
