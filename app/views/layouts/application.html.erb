@@ -47,7 +47,7 @@
       </div>
     </header>
 
-    <% skip_main = content_for?(:skip_main_container) || controller_name == 'sessions' || controller_name == 'registrations' %>
+    <% skip_main = content_for?(:skip_main_container) || controller_name == 'sessions' || controller_name == 'registrations' || controller_name == 'user_histories' %>
     <% if skip_main %>
       <%= yield %>
     <% else %>
