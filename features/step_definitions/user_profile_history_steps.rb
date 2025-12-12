@@ -22,9 +22,7 @@ Given('I am on the history page') do
   visit history_path
 end
 
-When('I view my history') do
-  visit history_path
-end
+# Removed: When('I view my history') - now defined in user_restaurant_history_steps.rb
 
 # Basic content verification
 Then('I should see a list of restaurants I\'ve visited') do

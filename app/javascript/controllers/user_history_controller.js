@@ -2,20 +2,24 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   connect() {
+    console.log('UserHistoryController connected')
     this.attachRemoveListeners()
   }
 
   attachRemoveListeners() {
     const removeButtons = document.querySelectorAll('.remove-button')
+    console.log('Found remove buttons:', removeButtons.length)
     removeButtons.forEach(button => {
       button.addEventListener('click', (e) => this.removeRestaurant(e))
     })
   }
 
   async removeRestaurant(event) {
+    console.log('Remove button clicked')
     const button = event.target.closest('.remove-button')
     const restaurantId = button.dataset.restaurantId
     const card = button.closest('.history-card')
+    console.log('Restaurant ID:', restaurantId)
 
     if (!confirm('Are you sure you want to remove this restaurant from your history?')) {
       return
