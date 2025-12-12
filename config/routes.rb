@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # Solo Spin
   get "solo_spin", to: "solo_spin#show", as: "solo_spin"
   post "solo_spin", to: "solo_spin#spin"
+  post "solo_spin/save_to_history", to: "solo_spin#save_to_history", as: "save_to_history"
 
   # Room Creation
   get "create_room", to: "rooms#new", as: "create_room"
@@ -49,6 +50,10 @@ Rails.application.routes.draw do
   get "neighborhoods", to: "rooms#neighborhoods"
   get "cuisines", to: "rooms#cuisines"
   get "dietary_restrictions", to: "rooms#dietary_restrictions"
+
+  # User History
+  get "user_history", to: "user_histories#show", as: "user_history"
+  delete "user_history/:restaurant_id", to: "user_histories#destroy", as: "remove_from_history"
 
   # Devise OAuth Failure
   devise_scope :user do

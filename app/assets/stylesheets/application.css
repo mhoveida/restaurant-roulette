@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
 /*
- *= require rooms
  *= require_self
  */
 
@@ -502,4 +501,273 @@ h1, h2, h3, h4, h5, h6 {
 .neighborhood-select option {
   background-color: #2B2B2B;
   color: var(--color-text);
+}
+
+/* =================================
+   User History Page Styles
+   ================================= */
+
+body.user-histories-show {
+  background-color: #2B2B2B !important;
+}
+
+.user-history-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  background-color: #2B2B2B;
+  border-radius: 12px;
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+}
+
+.header-content h1 {
+  font-size: 2.5rem;
+  color: var(--color-yellow);
+  margin: 0 0 0.5rem 0;
+}
+
+.history-header .subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.back-button {
+  color: rgba(255, 255, 255, 0.6);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.back-button:hover {
+  color: var(--color-yellow);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  margin: 3rem 0;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-state h2 {
+  color: var(--color-yellow);
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+.primary-button {
+  display: inline-block;
+  background-color: var(--color-yellow);
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.primary-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(254, 228, 64, 0.3);
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.history-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.history-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-yellow);
+  box-shadow: 0 8px 24px rgba(254, 228, 64, 0.2);
+}
+
+.card-image {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.restaurant-name {
+  font-size: 1.3rem;
+  color: var(--color-yellow);
+  margin: 0 0 0.75rem 0;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rating-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stars {
+  color: var(--color-yellow);
+  font-size: 0.9rem;
+}
+
+.rating-value {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.price {
+  background: rgba(254, 228, 64, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: var(--color-yellow);
+  font-weight: 600;
+}
+
+.history-card .cuisine-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.history-card .cuisine-tag {
+  background: rgba(254, 228, 64, 0.15);
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+}
+
+.address-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.95rem;
+}
+
+.address-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.address {
+  line-height: 1.4;
+}
+
+.neighborhood {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.saved-date {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.card-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.map-button,
+.remove-button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: transparent !important;
+  color: #ffffff !important;
+}
+
+.map-button {
+  background-color: #4ECDC4 !important;
+  color: #ffffff !important;
+}
+
+.map-button:hover {
+  background-color: #45B7D1 !important;
+}
+
+.remove-button {
+  background-color: rgba(255, 107, 107, 0.2) !important;
+  color: #ff6b6b !important;
+  border: 1px solid #ff6b6b;
+}
+
+.remove-button:hover {
+  background-color: #ff6b6b !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 768px) {
+  .history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .header-content h1 {
+    font-size: 1.8rem;
+  }
+
+  .history-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card-actions {
+    flex-direction: column;
+  }
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="user-signed-in" content="<%= user_signed_in? %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -37,7 +38,7 @@
           </span>
 
           <div data-dropdown-target="menu" class="dropdown-menu" hidden>
-            <%= link_to "View History", "#", class: "dropdown-item" %>
+            <%= link_to "View History", user_history_path, class: "dropdown-item" %>
             <%= link_to "Log Out", destroy_user_session_path, 'data-turbo-method': :delete, class: "dropdown-item" %>
           </div>
         <% else %>
@@ -46,7 +47,7 @@
       </div>
     </header>
 
-    <% skip_main = content_for?(:skip_main_container) || controller_name == 'sessions' || controller_name == 'registrations' %>
+    <% skip_main = content_for?(:skip_main_container) || controller_name == 'sessions' || controller_name == 'registrations' || controller_name == 'user_histories' %>
     <% if skip_main %>
       <%= yield %>
     <% else %>

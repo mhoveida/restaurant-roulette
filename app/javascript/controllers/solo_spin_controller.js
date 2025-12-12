@@ -59,27 +59,36 @@ export default class extends Controller {
   async fetchDietaryRestrictions() {
     try {
       const response = await fetch('/dietary_restrictions')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const restrictions = await response.json()
       
       const grid = this.dietaryRestrictionsGridTarget
-      grid.innerHTML = restrictions.map(restriction => `
+      const html = restrictions.map(restriction => `
         <label class="cuisine-checkbox">
           <input type="checkbox" value="${restriction}" data-action="change->solo-spin#toggleDietaryRestriction">
           <span class="cuisine-label">${restriction}</span>
         </label>
       `).join('')
+      
+      grid.innerHTML = html
     } catch (error) {
-      /*console.error('Error fetching dietary restrictions:', error)*/
+      console.error('Error fetching dietary restrictions:', error)
+      
       const fallbackRestrictions = [
         "Vegetarian", "Vegan", "Gluten-Free", "Halal", "Kosher", "No Restriction"
       ]
       const grid = this.dietaryRestrictionsGridTarget
-      grid.innerHTML = fallbackRestrictions.map(restriction => `
+      const html = fallbackRestrictions.map(restriction => `
         <label class="cuisine-checkbox">
           <input type="checkbox" value="${restriction}" data-action="change->solo-spin#toggleDietaryRestriction">
           <span class="cuisine-label">${restriction}</span>
         </label>
       `).join('')
+      
+      grid.innerHTML = html
     }
   }
 
@@ -286,6 +295,9 @@ export default class extends Controller {
     
     const stars = '★'.repeat(Math.floor(restaurant.rating)) + '☆'.repeat(5 - Math.floor(restaurant.rating))
     
+    // Check if user is signed in by looking for auth data
+    const isSignedIn = document.querySelector('meta[name="user-signed-in"]')?.content === "true"
+    
     const resultHTML = `
       <div class="result-overlay" id="soloResult">
         <div class="result-modal">
@@ -343,6 +355,11 @@ export default class extends Controller {
             <button class="button share-button" id="shareResultBtn">
               Share
             </button>
+            ${isSignedIn ? `
+              <button class="button going-button" id="goingResultBtn">
+                ✓ I'm Going!
+              </button>
+            ` : ''}
           </div>
         </div>
       </div>
@@ -358,6 +375,12 @@ export default class extends Controller {
     document.getElementById('shareResultBtn').addEventListener('click', () => {
       this.shareResult()
     })
+
+    if (isSignedIn) {
+      document.getElementById('goingResultBtn').addEventListener('click', () => {
+        this.saveToHistory(restaurant.id)
+      })
+    }
   }
 
   shareResult() {
@@ -385,6 +408,55 @@ export default class extends Controller {
       }).catch(() => {
         alert('Could not copy to clipboard')
       })
+    }
+  }
+
+  async saveToHistory(restaurantId) {
+    const btn = document.getElementById('goingResultBtn')
+    const originalText = btn.textContent
+    btn.disabled = true
+
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || ""
+
+      const response = await fetch('/solo_spin/save_to_history', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify({
+          restaurant_id: restaurantId
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Check if it's a duplicate entry
+        if (data.message && data.message.includes('Already')) {
+          btn.textContent = 'Already in your history'
+          btn.style.backgroundColor = '#fbbf24'  // Amber color
+        } else {
+          btn.textContent = '✓ Added to History!'
+          btn.style.backgroundColor = '#22c55e'  // Green color
+        }
+        
+        setTimeout(() => {
+          btn.textContent = originalText
+          btn.style.backgroundColor = ''
+          btn.disabled = false
+        }, 2000)
+      } else {
+        alert(data.error || 'Failed to save to history')
+        btn.textContent = originalText
+        btn.disabled = false
+      }
+    } catch (error) {
+      console.error('Error saving to history:', error)
+      alert('An error occurred while saving to history')
+      btn.textContent = originalText
+      btn.disabled = false
     }
   }
 

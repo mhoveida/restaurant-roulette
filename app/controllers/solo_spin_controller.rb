@@ -1,5 +1,7 @@
 class SoloSpinController < ApplicationController
   skip_before_action :authenticate_user!, only: [ :show, :spin ], raise: false
+  before_action :authenticate_user!, only: [ :save_to_history ]
+
   def show
     @name = current_user&.first_name || ""
   end
@@ -28,6 +30,31 @@ class SoloSpinController < ApplicationController
         success: false,
         error: "No restaurants found. Try different preferences!"
       }
+    end
+  end
+
+  def save_to_history
+    restaurant = Restaurant.find_by(id: params[:restaurant_id])
+
+    if restaurant.nil?
+      render json: { success: false, error: "Restaurant not found" }, status: :not_found
+      return
+    end
+
+    history = current_user.user_restaurant_histories.build(
+      restaurant: restaurant,
+      visited_at: Time.current
+    )
+
+    if history.save
+      render json: { success: true, message: "Added to your history!" }
+    else
+      # Handle duplicate entry gracefully
+      if history.errors.any? { |error| error.attribute == :restaurant_id }
+        render json: { success: true, message: "Already in your history" }
+      else
+        render json: { success: false, error: "Failed to save to history" }, status: :unprocessable_entity
+      end
     end
   end
 

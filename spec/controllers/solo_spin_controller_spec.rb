@@ -454,4 +454,68 @@ RSpec.describe SoloSpinController, type: :controller do
       expect(result).to be_present
     end
   end
+
+  describe 'POST #save_to_history' do
+    let(:user) { create(:user) }
+
+    context 'when user is signed in' do
+      before { sign_in user }
+
+      context 'with valid restaurant_id' do
+        it 'saves restaurant to user history' do
+          expect {
+            post :save_to_history, params: { restaurant_id: restaurant.id }
+          }.to change(UserRestaurantHistory, :count).by(1)
+        end
+
+        it 'returns success response' do
+          post :save_to_history, params: { restaurant_id: restaurant.id }
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)['success']).to eq(true)
+        end
+
+        it 'associates restaurant with current user' do
+          post :save_to_history, params: { restaurant_id: restaurant.id }
+          expect(user.user_restaurant_histories.pluck(:restaurant_id)).to include(restaurant.id)
+        end
+
+        it 'sets visited_at timestamp' do
+          post :save_to_history, params: { restaurant_id: restaurant.id }
+          history = user.user_restaurant_histories.last
+          expect(history.visited_at).to be_present
+        end
+      end
+
+      context 'when restaurant already in history' do
+        before { create(:user_restaurant_history, user: user, restaurant: restaurant) }
+
+        it 'returns success (handles gracefully)' do
+          post :save_to_history, params: { restaurant_id: restaurant.id }
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)['success']).to eq(true)
+        end
+
+        it 'does not create duplicate entry' do
+          expect {
+            post :save_to_history, params: { restaurant_id: restaurant.id }
+          }.not_to change(UserRestaurantHistory, :count)
+        end
+      end
+
+      context 'with invalid restaurant_id' do
+        it 'returns not found response' do
+          post :save_to_history, params: { restaurant_id: 99999 }
+          expect(response).to have_http_status(:not_found)
+          expect(JSON.parse(response.body)['success']).to eq(false)
+        end
+      end
+    end
+
+    context 'when user is not signed in' do
+      it 'redirects to sign in page' do
+        post :save_to_history, params: { restaurant_id: restaurant.id }
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
 end

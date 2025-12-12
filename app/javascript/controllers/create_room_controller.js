@@ -74,29 +74,48 @@ export default class extends Controller {
   async fetchDietaryRestrictions() {
     try {
       const response = await fetch('/dietary_restrictions')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const restrictions = await response.json()
       
       // Create checkbox grid
       const grid = this.dietaryRestrictionsGridTarget
-      grid.innerHTML = restrictions.map(restriction => `
+      const html = restrictions.map(restriction => `
         <label class="cuisine-checkbox">
           <input type="checkbox" value="${restriction}" data-action="change->create-room#toggleDietaryRestriction">
           <span class="cuisine-label">${restriction}</span>
         </label>
       `).join('')
+      
+      grid.innerHTML = html
     } catch (error) {
       console.error('Error fetching dietary restrictions:', error)
-      // Fallback options
-      const fallbackRestrictions = [
-        "Vegetarian", "Vegan", "Gluten-Free", "Halal", "Kosher", "No Restriction"
-      ]
-      const grid = this.dietaryRestrictionsGridTarget
-      grid.innerHTML = fallbackRestrictions.map(restriction => `
-        <label class="cuisine-checkbox">
-          <input type="checkbox" value="${restriction}" data-action="change->create-room#toggleDietaryRestriction">
-          <span class="cuisine-label">${restriction}</span>
-        </label>
-      `).join('')
+      
+      try {
+        // Fallback options
+        const fallbackRestrictions = [
+          "Vegetarian", "Vegan", "Gluten-Free", "Halal", "Kosher", "No Restriction"
+        ]
+        const grid = this.dietaryRestrictionsGridTarget
+        
+        if (!grid) {
+          console.error('dietaryRestrictionsGridTarget is undefined in fallback!')
+          return
+        }
+        
+        const html = fallbackRestrictions.map(restriction => `
+          <label class="cuisine-checkbox">
+            <input type="checkbox" value="${restriction}" data-action="change->create-room#toggleDietaryRestriction">
+            <span class="cuisine-label">${restriction}</span>
+          </label>
+        `).join('')
+        
+        grid.innerHTML = html
+      } catch (fallbackError) {
+        console.error('Error in fallback:', fallbackError)
+      }
     }
   }
 

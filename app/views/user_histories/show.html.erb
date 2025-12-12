@@ -1,0 +1,82 @@
+<% content_for :title, "My Restaurant History" %>
+<% content_for :body_class, "user-histories-show" %>
+
+<div class="user-history-container" data-controller="user-history">
+  <header class="history-header">
+    <div class="header-content">
+      <h1>My Restaurant History</h1>
+      <p class="subtitle">Restaurants you've marked as "I'm Going!"</p>
+    </div>
+    <%= link_to "← Back to Home", root_path, class: "back-button" %>
+  </header>
+
+  <% if @restaurants.empty? %>
+    <div class="empty-state">
+      <div class="empty-icon">🍽️</div>
+      <h2>No restaurants yet</h2>
+      <p>Start spinning and mark your favorite restaurants as "I'm Going!" to see them here.</p>
+      <%= link_to "Go to Solo Spin", solo_spin_path, class: "button primary-button" %>
+    </div>
+  <% else %>
+    <div class="history-grid">
+      <% @restaurants.each_with_index do |restaurant, index| %>
+        <% history = @histories[index] %>
+        <div class="history-card">
+          <% if restaurant.image_url %>
+            <div class="card-image">
+              <img src="<%= restaurant.image_url %>" alt="<%= restaurant.name %>">
+            </div>
+          <% end %>
+
+          <div class="card-content">
+            <h3 class="restaurant-name"><%= restaurant.name %></h3>
+
+            <div class="card-meta">
+              <div class="rating-section">
+                <span class="stars">
+                  <%= '★' * restaurant.rating.floor + '☆' * (5 - restaurant.rating.floor) %>
+                </span>
+                <span class="rating-value">(<%= restaurant.rating %>)</span>
+              </div>
+              <span class="price"><%= restaurant.price %></span>
+            </div>
+
+            <% if restaurant.categories && restaurant.categories.any? %>
+              <div class="cuisine-tags">
+                <% restaurant.categories.each do |cuisine| %>
+                  <span class="cuisine-tag"><%= cuisine %></span>
+                <% end %>
+              </div>
+            <% end %>
+
+            <div class="address-section">
+              <span class="address-icon">📍</span>
+              <span class="address"><%= restaurant.address %></span>
+            </div>
+
+            <% if restaurant.neighborhood %>
+              <div class="neighborhood">
+                <%= restaurant.neighborhood %>
+              </div>
+            <% end %>
+
+            <div class="saved-date">
+              Marked on <%= history.created_at.strftime("%B %d, %Y") %>
+            </div>
+
+            <div class="card-actions">
+              <a href="https://www.google.com/maps/search/?api=1&query=<%= ERB::Util.url_encode(restaurant.address) %>"
+                 target="_blank"
+                 class="button map-button">
+                🗺️ View on Map
+              </a>
+              <button class="button remove-button" data-restaurant-id="<%= restaurant.id %>">
+                ✕ Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

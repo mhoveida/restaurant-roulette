@@ -26,17 +26,23 @@ def select_cuisine_checkbox(cuisine)
 end
 
 def select_dietary_restriction_checkbox(restriction)
-  using_wait_time(15) do
-    grid_selector = if page.has_css?('[data-create-room-target="dietaryRestrictionsGrid"]')
+  using_wait_time(30) do
+    # First, wait for the grid to exist
+    grid_selector = if page.has_css?('[data-create-room-target="dietaryRestrictionsGrid"]', wait: 5)
                       '[data-create-room-target="dietaryRestrictionsGrid"]'
-    elsif page.has_css?('[data-solo-spin-target="dietaryRestrictionsGrid"]')
+    elsif page.has_css?('[data-solo-spin-target="dietaryRestrictionsGrid"]', wait: 5)
                       '[data-solo-spin-target="dietaryRestrictionsGrid"]'
     else
                       raise "Cannot find dietary restrictions grid"
     end
 
+    # Get the grid element
+    grid_element = find(grid_selector)
+
+    # Wait for the grid to be populated (has actual checkboxes, not just loading text)
+    expect(grid_element).to have_css('.cuisine-checkbox', wait: 15)
+
     within(grid_selector) do
-      expect(page).to have_css('.cuisine-checkbox', wait: 10)  # Uses same class as cuisines
       label = find('.cuisine-checkbox', text: restriction, match: :first)
       label.click
       checkbox = label.find('input[type="checkbox"]')
