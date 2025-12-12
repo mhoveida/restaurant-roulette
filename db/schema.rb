@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_12_152455) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_12_225106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -47,6 +47,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_152455) do
     t.string "location"
     t.jsonb "members", default: []
     t.string "owner_name"
+    t.integer "owner_user_id"
     t.string "price"
     t.jsonb "reveal_order", default: []
     t.json "spin_result"

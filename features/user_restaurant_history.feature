@@ -37,3 +37,27 @@ Feature: User Restaurant History
     When I click the "View on Map" button for a restaurant
     Then Google Maps should open with that restaurant's location
     And the map should open in a new tab
+
+  @javascript
+  Scenario: Logged-in user saves group spin winner to history
+    Given the restaurant service is available
+    And I have not saved any restaurants
+    And another user has created a group room with code "GROUP1"
+    And I have joined the group room as a logged-in user
+    When the group completes voting and selects a restaurant
+    Then the winning restaurant should be added to my user history
+    And I should see the restaurant in my history when I visit my history page
+
+  @javascript
+  Scenario: Room owner and all logged-in guests save group spin winner to history
+    Given the restaurant service is available
+    And I have not saved any restaurants
+    And I am logged in as a second user with different credentials
+    And that second user has not saved any restaurants
+    And I create a group room with code "OWNER1"
+    And I have not saved any restaurants
+    And a second logged-in user has joined the group room
+    When the group completes voting and selects a restaurant
+    Then the winning restaurant should be added to my user history as room owner
+    And the winning restaurant should be added to the second user's history as a guest
+    And I should see the restaurant in my history when I visit my history page
