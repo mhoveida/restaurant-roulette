@@ -771,3 +771,17 @@ body.user-histories-show {
     flex-direction: column;
   }
 }
+
+.create-room-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.create-room-title {
+  font-size: 2.5rem;
+  color: var(--color-yellow);
+  margin-bottom: 3rem;
+  text-align: center;
+  letter-spacing: 1px;
+}
