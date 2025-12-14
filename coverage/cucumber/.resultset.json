@@ -603,7 +603,7 @@
   },
   "Cucumber": {
     "coverage": {
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/restaurant.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/restaurant.rb": {
         "lines": [
           null,
           null,
@@ -653,14 +653,14 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/application_record.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/application_record.rb": {
         "lines": [
           1,
           1,
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/services/restaurant_service.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/services/restaurant_service.rb": {
         "lines": [
           null,
           null,
@@ -753,7 +753,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/user.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/user.rb": {
         "lines": [
           1,
           null,
@@ -802,7 +802,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/omniauth_callbacks_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/omniauth_callbacks_controller.rb": {
         "lines": [
           1,
           1,
@@ -847,7 +847,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/application_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/application_controller.rb": {
         "lines": [
           1,
           null,
@@ -862,37 +862,37 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/application_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/application_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/home_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/home_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/rooms_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/rooms_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/static_pages_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/static_pages_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/helpers/users/omniauth_callbacks_helper.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/helpers/users/omniauth_callbacks_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/static_pages_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/static_pages_controller.rb": {
         "lines": [
           1,
           1,
@@ -900,7 +900,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/registrations_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/registrations_controller.rb": {
         "lines": [
           1,
           1,
@@ -939,7 +939,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/room.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/room.rb": {
         "lines": [
           1,
           null,
@@ -998,25 +998,25 @@
           null,
           1,
           null,
-          353,
+          354,
           null,
           null,
           null,
           null,
           null,
-          353,
-          353,
-          481,
+          354,
+          354,
+          484,
           null,
           null,
-          353,
+          354,
           null,
           null,
           1,
-          146,
+          149,
           null,
-          98,
-          44,
+          103,
+          46,
           null,
           null,
           1,
@@ -1372,8 +1372,8 @@
           null,
           null,
           1,
-          311,
-          311,
+          315,
+          315,
           null,
           0,
           null,
@@ -1615,7 +1615,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/rooms_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/rooms_controller.rb": {
         "lines": [
           1,
           1,
@@ -1929,31 +1929,31 @@
           null,
           1,
           null,
-          18,
-          18,
+          19,
+          19,
           0,
           0,
           null,
           0,
           0,
           0,
-          null,
-          null,
-          null,
-          18,
-          null,
-          null,
-          18,
-          null,
-          null,
           null,
           null,
           null,
           19,
           null,
           null,
+          19,
           null,
-          0,
+          null,
+          null,
+          null,
+          null,
+          22,
+          null,
+          null,
+          null,
+          3,
           null,
           null,
           null,
@@ -1963,11 +1963,11 @@
           1,
           110,
           null,
-          1,
+          0,
           0,
           0,
           null,
-          1,
+          0,
           null,
           null,
           1,
@@ -2036,7 +2036,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/solo_spin_controller.rb": {
         "lines": [
           1,
           1,
@@ -2260,7 +2260,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/users/sessions_controller.rb": {
         "lines": [
           1,
           1,
@@ -2277,7 +2277,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/channels/application_cable/connection.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/application_cable/connection.rb": {
         "lines": [
           1,
           1,
@@ -2285,7 +2285,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/channels/room_channel.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/room_channel.rb": {
         "lines": [
           1,
           1,
@@ -2299,7 +2299,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/channels/application_cable/channel.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/channels/application_cable/channel.rb": {
         "lines": [
           1,
           1,
@@ -2307,7 +2307,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/models/user_restaurant_history.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/models/user_restaurant_history.rb": {
         "lines": [
           1,
           1,
@@ -2321,7 +2321,7 @@
           null
         ]
       },
-      "/Users/oliviacaulfield/COMS4152/restaurant-roulette/app/controllers/user_histories_controller.rb": {
+      "/Users/hoveida/Documents/GitHub/restaurant-roulette/app/controllers/user_histories_controller.rb": {
         "lines": [
           1,
           1,
@@ -2347,6 +2347,6 @@
         ]
       }
     },
-    "timestamp": 1765580779
+    "timestamp": 1765733652
   }
 }

@@ -7,7 +7,6 @@
       <h1>My Restaurant History</h1>
       <p class="subtitle">Restaurants you've marked as "I'm Going!"</p>
     </div>
-    <%= link_to "← Back to Home", root_path, class: "back-button" %>
   </header>
 
   <% if @restaurants.empty? %>
@@ -15,7 +14,10 @@
       <div class="empty-icon">🍽️</div>
       <h2>No restaurants yet</h2>
       <p>Start spinning and mark your favorite restaurants as "I'm Going!" to see them here.</p>
-      <%= link_to "Go to Solo Spin", solo_spin_path, class: "button primary-button" %>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 1.5rem;">
+        <%= link_to "Go to Solo Spin", solo_spin_path, class: "primary-button" %>
+        <%= link_to "Create Group Room", create_room_path, class: "primary-button" %>
+      </div>
     </div>
   <% else %>
     <div class="history-grid">
@@ -60,9 +62,12 @@
               </div>
             <% end %>
 
-            <div class="saved-date">
-              Marked on <%= history.created_at.strftime("%B %d, %Y") %>
-            </div>
+            <% if history.visited_at.present? %>
+              <div class="saved-date">
+                <span class="date-icon">📅</span>
+                Saved <%= time_ago_in_words(history.visited_at) %> ago
+              </div>
+            <% end %>
 
             <div class="card-actions">
               <a href="https://www.google.com/maps/search/?api=1&query=<%= ERB::Util.url_encode(restaurant.address) %>"

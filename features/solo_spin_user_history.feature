@@ -29,11 +29,3 @@ Feature: Solo Spin User History
     And I click the "I'm Going!" button
     Then the button should show "Already in your history"
     And no duplicate entry should be created
-
-  # @skip @javascript
-  # Scenario: Guest users don't see "I'm Going!" button
-  #  When I am not logged in
-  #  And I set my preferences and spin the wheel
-  #  And a restaurant result is shown
-  #  Then I should not see an "I'm Going!" button
-  #  And I should only see "View on Map" and "Share" buttons

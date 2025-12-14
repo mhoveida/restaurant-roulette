@@ -41,8 +41,16 @@ Given('I have saved restaurants to my history') do
   )
 
   # Save restaurants to user history
-  UserRestaurantHistory.create!(user: @user, restaurant: @restaurant1)
-  UserRestaurantHistory.create!(user: @user, restaurant: @restaurant2)
+  UserRestaurantHistory.create!(
+    user: @user, 
+    restaurant: @restaurant1,
+    visited_at: 2.days.ago
+  )
+  UserRestaurantHistory.create!(
+    user: @user, 
+    restaurant: @restaurant2,
+    visited_at: 1.day.ago
+  )
 end
 
 Given('I have no saved restaurants') do
@@ -175,19 +183,17 @@ Then('they should be ordered with most recent first') do
 end
 
 When('I click the "View on Map" button for a restaurant') do
-  # Ensure we're on the history page
   visit user_history_path(@user)
 
-  # Wait for the buttons to be visible
-  expect(page).to have_css('.map-button', visible: true)
+  expect(page).to have_css('.history-card', wait: 10)
+  
+  expect(page).to have_css('.map-button', visible: true, wait: 10)
 
-  # Find the map button for restaurant1 by looking for it in a card with that restaurant's name
-  card_with_restaurant1 = find('.history-card', text: @restaurant1.name)
-  @map_button = card_with_restaurant1.find('.map-button')
+  card_with_restaurant1 = find('.history-card', text: @restaurant1.name, wait: 10)
+  @map_button = card_with_restaurant1.find('.map-button', wait: 10)
 
   expect(@map_button['href']).to include('google.com/maps')
 
-  # Store which restaurant this button is for
   @map_button_restaurant = @restaurant1
 end
 
