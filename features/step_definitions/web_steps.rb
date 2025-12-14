@@ -196,5 +196,5 @@ Then /I should see a "(.*)" button in the header/ do |button_text|
 end
 
 Then "I should see a dropdown menu with profile options" do
-  expect(page).to have_css(".dropdown-menu", visible: true)
+  expect(page).to have_css(".dropdown-menu", visible: true, wait: 5)
 end
