@@ -57,6 +57,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   gap: 1rem; /* Adds space between email and button */
+  position: relative;
 }
 
 .main-navbar .profile-email {
@@ -86,33 +87,75 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* This makes the profile email look clickable */
+/* This makes the profile email look clickable */
 .profile-email {
   cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.profile-email:hover {
+  background-color: rgba(254, 228, 64, 0.1);
 }
 
 /* This styles the dropdown menu itself */
 .dropdown-menu {
   position: absolute;
-  top: 60px; /* Position it below the navbar */
-  right: 2rem;
-  background-color: white;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  top: 100%; /* Position directly below the profile email */
+  right: 0; /* Align to right edge of parent */
+  margin-top: 0.5rem; /* Small gap between name and dropdown */
+  background-color: #1a1a1a;
+  color: var(--color-text);
+  border: 2px solid rgba(254, 228, 64, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   z-index: 10;
+  min-width: 200px;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* This styles the links inside the dropdown */
 .dropdown-menu .dropdown-item {
   display: block;
-  padding: 0.75rem 1.5rem;
-  color: #333;
+  padding: 1rem 1.5rem;
+  color: var(--color-text);
   text-decoration: none;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.dropdown-menu .dropdown-item:last-child {
+  border-bottom: none;
 }
 
 .dropdown-menu .dropdown-item:hover {
-  background-color: #f5f5f5;
+  background-color: rgba(254, 228, 64, 0.15);
+  color: var(--color-yellow);
+  padding-left: 2rem;
+}
+
+/* Add icons spacing if you have them */
+.dropdown-menu .dropdown-item svg,
+.dropdown-menu .dropdown-item i {
+  margin-right: 0.5rem;
 }
 
 /* =================================
