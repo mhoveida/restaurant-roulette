@@ -42,12 +42,12 @@ Given('I have saved restaurants to my history') do
 
   # Save restaurants to user history
   UserRestaurantHistory.create!(
-    user: @user, 
+    user: @user,
     restaurant: @restaurant1,
     visited_at: 2.days.ago
   )
   UserRestaurantHistory.create!(
-    user: @user, 
+    user: @user,
     restaurant: @restaurant2,
     visited_at: 1.day.ago
   )
@@ -186,7 +186,7 @@ When('I click the "View on Map" button for a restaurant') do
   visit user_history_path(@user)
 
   expect(page).to have_css('.history-card', wait: 10)
-  
+
   expect(page).to have_css('.map-button', visible: true, wait: 10)
 
   card_with_restaurant1 = find('.history-card', text: @restaurant1.name, wait: 10)
