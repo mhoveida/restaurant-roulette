@@ -393,6 +393,33 @@ class Room < ApplicationRecord
     save
   end
 
+  def save_winner_to_user_histories
+    return unless winner.present? && winner["restaurant"].present?
+
+    winner_restaurant_data = winner["restaurant"]
+
+    # Find or create the restaurant in the database
+    restaurant = find_or_create_restaurant_from_spin(winner_restaurant_data)
+    return unless restaurant.present?
+
+    # Save to history of owner (if they're a logged-in user)
+    if owner_user_id.present?
+      UserRestaurantHistory.find_or_create_by(user_id: owner_user_id, restaurant_id: restaurant.id)
+    end
+
+    # Save to history of all logged-in guest members
+    if members.present?
+      members.each do |member|
+        next unless member["type"] == "guest" && member["id"]&.start_with?("user_")
+
+        user_id = member["id"].sub(/^user_/, "").to_i
+        next unless User.exists?(user_id)
+
+        UserRestaurantHistory.find_or_create_by(user_id: user_id, restaurant_id: restaurant.id)
+      end
+    end
+  end
+
   private
 
   def dietary_restrictions_present
@@ -616,5 +643,30 @@ class Room < ApplicationRecord
     # Return random restaurant from the final filtered list
     # Use sample which returns nil if array is empty (shouldn't happen due to checks above)
     restaurants.sample
+  end
+
+  private
+
+  def find_or_create_restaurant_from_spin(restaurant_data)
+    return nil unless restaurant_data.present?
+
+    # Extract restaurant info from the spin result
+    name = restaurant_data["name"] || restaurant_data["title"] || "Unknown Restaurant"
+    rating = restaurant_data["rating"]&.to_f || 0.0
+    price = restaurant_data["price"] || "$"
+    address = restaurant_data["address"] || restaurant_data["location"] || "Unknown Location"
+    categories = restaurant_data["categories"] || restaurant_data["cuisines"] || []
+    dietary_restrictions = restaurant_data["dietary_restrictions"] || ""
+
+    # Find existing restaurant or create new one
+    Restaurant.find_or_create_by(
+      name: name,
+      address: address
+    ) do |restaurant|
+      restaurant.rating = rating
+      restaurant.price = price
+      restaurant.categories = Array(categories)
+      restaurant.dietary_restrictions = dietary_restrictions
+    end
   end
 end
