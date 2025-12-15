@@ -109,9 +109,8 @@ You should see the application's homepage.
 
 **Note: If you get a 422 error when trying to log in, make sure you have added the rails master key (Installation Step 4).**
 
----
 
-### Running Tests
+## Running Tests
 
 Make sure your test database is migrated (`rails db:migrate RAILS_ENV=test`) before running tests.
 This project includes both **RSpec** and **Cucumber** tests.
@@ -128,6 +127,30 @@ This project includes both **RSpec** and **Cucumber** tests.
     ```
     * Open `coverage/cucumber/index.html` in your browser to view the detailed report.
 
+---
+## How Restaurant Matching Works
+When you spin for a restaurant, the app searches based on your preferences:
 
+* Location
+* Price
+* Cuisine
+* Dietary needs
 
-When testing group rooms, you may notice that multiple members occasionally get the same restaurant. This is expected with the current limited dataset and occurs when members have similar preferences (location, price, cuisine, dietary restrictions). In production, this would be addressed by integrating with a comprehensive restaurant API or seeding a larger dataset.
+### Fallback System
+If the app can't find a restaurant matching all your preferences, it tries to find the closest match by relaxing some requirements:
+
+* First: Try to match all 4 preferences
+* Then: Try matching 3 preferences (skip cuisine)
+* Then: Try matching 2 preferences (location + price)
+* Continue relaxing until a restaurant is found
+
+This way, you always get a result instead of "No restaurants found."
+
+With the current test data, if multiple people have similar preferences, they might get the same restaurant. This happens because:
+
+* The test database has a limited number of restaurants
+* The app prioritizes giving everyone a result over preventing duplicates
+
+We chose this approach because preventing duplicates would mean some people get "No restaurants found" when options run out.
+
+In a real deployment, you'd have many more restaurants (or use an API like Yelp), so duplicates would be rare.
