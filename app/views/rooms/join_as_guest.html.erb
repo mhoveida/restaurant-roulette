@@ -24,6 +24,7 @@
       <div class="form-group">
         <label for="guest_name">Name</label>
         <%= form.text_field :guest_name,
+            value: user_signed_in? ? current_user.first_name : "",
             placeholder: "Your name",
             required: true,
             data: { 'create-room-target': 'ownerNameInput' } %>

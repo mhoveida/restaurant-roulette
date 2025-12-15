@@ -106,21 +106,8 @@ class RoomsController < ApplicationController
     @room = Room.find_by(code: params[:room_code])
 
     if @room
-      if user_signed_in?
-        # For logged-in users, add them as a member with their user ID
-        guest_name = current_user.first_name
-        member_id = "user_#{current_user.id}"
-
-        # Check if already in room
-        unless @room.members&.any? { |m| m["id"] == member_id }
-          @room.add_guest_member(guest_name, member_id: member_id)
-        end
-
-        session["member_id_for_room_#{@room.id}"] = member_id
-        redirect_to @room, notice: "You joined the room successfully"
-      else
-        redirect_to join_as_guest_path(@room)
-      end
+      # Both logged-in and logged-out users go to preferences form
+      redirect_to join_as_guest_path(@room)
     else
       flash[:alert] = "Room not found"
       flash[:submitted_code] = params[:room_code]
@@ -173,12 +160,30 @@ class RoomsController < ApplicationController
         return
       end
 
-      # Add guest with their preferences
-      @room.add_guest_member(guest_name, location: location, price: price, categories: categories, dietary_restrictions: dietary_restrictions)
+      if user_signed_in?
+        member_id = "user_#{current_user.id}"
+        guest_name = current_user.first_name  # Use logged-in user's name
+      else
+        member_id = nil  # Will be auto-generated as guest_xxx
+      end
 
-      # Get the member ID that was just created
-      new_member = @room.members.last
-      session["member_id_for_room_#{@room.id}"] = new_member["id"]
+      # Add member with their preferences
+      @room.add_guest_member(
+        guest_name,
+        location: location,
+        price: price,
+        categories: categories,
+        dietary_restrictions: dietary_restrictions,
+        member_id: member_id
+      )
+
+      # Set session member ID
+      if user_signed_in?
+        session["member_id_for_room_#{@room.id}"] = member_id
+      else
+        new_member = @room.members.last
+        session["member_id_for_room_#{@room.id}"] = new_member["id"]
+      end
 
       redirect_to @room, notice: "Successfully joined the room!"
     end

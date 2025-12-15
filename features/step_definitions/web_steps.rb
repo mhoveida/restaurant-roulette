@@ -173,8 +173,11 @@ Then /I should be on the create room page/ do
   expect(page.has_content?("Create a Group Room")).to be(true)
 end
 
-Then /I should be redirected to the group room page/ do
-  expect(page.has_content?("Room Waiting Area")).to be(true)
+Then "I should be redirected to the group room page" do
+  # Now logged-in users go to preferences first, then to room
+  expect(page.current_path.start_with?("/rooms/") &&
+         (page.current_path.include?("/join_as_guest") ||
+          page.current_path.match?(/\/rooms\/\d+$/))).to be true
 end
 
 Then /I should be redirected to the join room page/ do

@@ -546,13 +546,17 @@ Then('the owner name should be my first name') do
 end
 
 When('I join the room while logged in') do
-  page.driver.post join_room_path, room_code: @room_to_join.code
+  visit root_path
+  fill_in "Enter Room Code", with: @room_to_join.code
+  click_button "Join Room"
 end
 
 Then('I should be added as a user member') do
-  @room_to_join.reload
-  user_member_id = "user_#{User.find_by(first_name: 'TestUser').id}"
-  expect(@room_to_join.members.any? { |m| m['id'] == user_member_id }).to be true
+  # New behavior: user is redirected to preferences page first
+  # They're not added to members until they complete the form
+  expect(page.current_path).to eq(join_as_guest_path(@room_to_join))
+  expect(page).to have_content("Set your preferences")
+  expect(page).to have_content("Join Room: #{@room_to_join.code}")
 end
 
 Given('I am already a member of that room') do

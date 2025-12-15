@@ -176,15 +176,9 @@ RSpec.describe RoomsController, type: :controller do
     end
 
     context 'successful join' do
-      it 'redirects logged-in user to room and adds to members' do
-        user = create(:user, first_name: 'Test')
-        sign_in user
-
+      it 'redirects logged-in user to preferences page' do
         post :join, params: { room_code: room.code }
-        expect(response).to redirect_to(room)
-
-        member_id = "user_#{user.id}"
-        expect(session["member_id_for_room_#{room.id}"]).to eq(member_id)
+        expect(response).to redirect_to(join_as_guest_path(room))
       end
 
       it 'redirects guest user to join_as_guest page' do
