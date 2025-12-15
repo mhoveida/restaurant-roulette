@@ -29,7 +29,7 @@ When('the host spins') do
 
   @room.update!(
     state: :spinning,
-    turn_order: [owner_id],
+    turn_order: [ owner_id ],
     current_turn_index: 0
   )
 
@@ -107,7 +107,7 @@ Given('the room is in spinning state') do
 
   @room.update!(
     state: :spinning,
-    turn_order: [owner_id],
+    turn_order: [ owner_id ],
     current_turn_index: 0
   )
 end
