@@ -2,14 +2,6 @@ require 'json'
 require 'cgi'
 require 'rspec/mocks/standalone'
 
-When("I click the site logo") do
-  find('.navbar-logo a').click
-end
-
-Then("I should not see {string}") do |text|
-  expect(page).not_to have_content(text)
-end
-
 When('I hit the OmniAuth failure callback with {string}') do |message|
   visit "/users/auth/failure?message=#{CGI.escape(message)}&strategy=google_oauth2"
 end
