@@ -379,6 +379,10 @@ Then('I should still be logged in') do
   expect(page).not_to have_button('Log In')
 end
 
+Then("the main container should not be rendered") do
+  expect(page).not_to have_css("main.container")
+end
+
 Then('I enter an email in incorrect format') do
   fill_in 'Email address', with: 'invalid-email'
 end
