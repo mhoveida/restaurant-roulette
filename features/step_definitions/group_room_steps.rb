@@ -1188,3 +1188,54 @@ Then('I should see {string} badge for {string}') do |badge_type, member_name|
     end
   end
 end
+
+When('the host starts spinning') do
+  @room ||= Room.last
+  @room.start_spinning!
+end
+
+When('the host tries to start spinning again') do
+  @room.reload
+  @start_spinning_result = @room.start_spinning!
+end
+
+Then('starting spinning should fail') do
+  expect(@start_spinning_result).to eq(false)
+end
+
+When('{string} tries to spin') do |name|
+  @room.reload
+  member = @room.get_all_members.find { |m| m[:name] == name }
+  @spin_result = @room.spin_for_member(member[:id])
+end
+
+Then('spinning should fail') do
+  expect(@spin_result[:success]).to eq(false)
+end
+
+When('the host votes for option {int}') do |option|
+  @room ||= Room.last
+  @vote_result = @room.vote("owner", option - 1)
+end
+
+Then('voting should fail') do
+  expect(@vote_result).to eq(false)
+end
+
+When('the host confirms vote without voting') do
+  @room.reload
+  @confirm_result = @room.confirm_vote("owner")
+end
+
+Then('vote confirmation should fail') do
+  expect(@confirm_result).to eq(false)
+end
+
+When('the host tries to reveal options') do
+  @room ||= Room.last
+  @reveal_result = @room.reveal_options!
+end
+
+Then('reveal should fail') do
+  expect(@reveal_result).to eq(false)
+end
