@@ -33,8 +33,8 @@ Given('a completed room with a winner exists') do
     owner_name: "John Doe",
     location: "SoHo",
     price: "$$",
-    dietary_restrictions: ["No Restriction"],
-    categories: ["Italian"],
+    dietary_restrictions: [ "No Restriction" ],
+    categories: [ "Italian" ],
     state: :complete,
     winner: {
       "restaurant" => {
@@ -84,7 +84,7 @@ Given('the room is in the voting phase') do
         "name" => @room.owner_name,
         "role" => "owner"
     }
-    
+
     @room.update!(members: members)
   end
 
@@ -108,10 +108,10 @@ Given('the room is in the voting phase') do
   @room.update!(
     state: :voting,
     current_round: 1,
-    turn_order: [owner_id],
+    turn_order: [ owner_id ],
     current_turn_index: 0,
-    spins: [spin],
-    reveal_order: [0],
+    spins: [ spin ],
+    reveal_order: [ 0 ],
     votes: {}
   )
 
