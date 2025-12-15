@@ -883,12 +883,12 @@ Then('a winner should be randomly selected') do
       sleep 0.1
     end
   end
-  
+
   # Verify winner exists
   expect(@room.winner).to be_present
   expect(@room.winner["tie_broken"]).to be true
   expect(@room.winner["tied_count"]).to eq(3)
-  
+
   # Give JavaScript time to finish any pending requests
   sleep 0.5
 end
