@@ -107,7 +107,7 @@ To run the application locally:
 
 You should see the application's homepage.
 
-Note: If you get a 422 error when trying to log in, make sure you have added the rails master key (Installation Step 4).
+**Note: If you get a 422 error when trying to log in, make sure you have added the rails master key (Installation Step 4).**
 
 ---
 
@@ -129,4 +129,5 @@ This project includes both **RSpec** and **Cucumber** tests.
     * Open `coverage/cucumber/index.html` in your browser to view the detailed report.
 
 
-**Note: If you get a 422 error when trying to log in, make sure you have added the rails master key (Installation Step 4).**
+
+When testing group rooms, you may notice that multiple members occasionally get the same restaurant. This is expected with the current limited dataset and occurs when members have similar preferences (location, price, cuisine, dietary restrictions). In production, this would be addressed by integrating with a comprehensive restaurant API or seeding a larger dataset.
