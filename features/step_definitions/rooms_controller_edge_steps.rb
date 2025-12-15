@@ -195,6 +195,5 @@ And("voting is completed") do
 
   @room.votes_will_change!
   @room.save!
-
   @room.tally_votes_and_select_winner!
 end
