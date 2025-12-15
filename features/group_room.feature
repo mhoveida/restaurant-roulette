@@ -7,6 +7,104 @@ Feature: Group Room Functionality
     Given the restaurant database has test data
 
   # ==========================================
+  # ADDITIONAL SCENARIOS
+  # ==========================================
+
+  Scenario: Spin fails when room is not spinning
+    Given a room exists with code "1111" created by "John Doe"
+    When the host tries to spin
+    Then spinning should fail with error "Not in spinning state"
+
+  Scenario: Reveal options fails when not revealing
+    Given a room exists with code "2222" created by "John Doe"
+    When the host tries to reveal options
+    Then reveal should fail
+
+  Scenario: Voting fails with invalid option index
+    Given a room exists with code "3333" created by "John Doe"
+    And the voting phase has begun
+    When the host votes for option 999
+    Then voting should fail
+
+  Scenario: Confirming vote without voting returns false
+    Given a room exists with code "4444" created by "John Doe"
+    And the voting phase has begun
+    When the host confirms vote without voting
+    Then vote confirmation should fail
+
+  Scenario: Voting does not complete until all members confirm
+    Given a room exists with code "5555" created by "John Doe"
+    And "Guest User" has joined room "5555"
+    And the voting phase has begun
+    When the host confirms their vote
+    Then the room should remain in voting state
+
+  Scenario: Random fallback restaurant is used
+    Given a room exists with code "6666" created by "John Doe"
+    And the room is in spinning state
+    And no restaurants match any filters
+    When the host spins
+    Then a restaurant should still be selected
+
+  Scenario: Spin fails when member does not exist
+    Given a room exists with code "7777" created by "John Doe"
+    And the spinning phase has started
+    When an invalid member tries to spin
+    Then spinning should fail with error "Not your turn"
+
+  Scenario: Spin fails when no restaurants exist
+    Given all restaurants are deleted
+    And a room exists with code "8888" created by "John Doe"
+    And the spinning phase has started
+    When the host spins
+    Then spinning should fail with error "No restaurants found. Please try different preferences."
+
+  Scenario: Voting fails with invalid option index
+    Given a room exists with code "1234" created by "John Doe"
+    And the voting phase has begun
+    When the host votes for option 999
+    Then voting should fail
+
+  Scenario: Confirming vote without voting returns false
+    Given a room exists with code "1234" created by "John Doe"
+    And the voting phase has begun
+    When the host confirms vote without voting
+    Then vote confirmation should fail
+
+  Scenario: Voting does not complete until all members confirm
+    Given a room exists with code "9999" created by "John Doe"
+    And "Guest User" has joined room "9999"
+    And the voting phase has begun
+    When the host confirms their vote
+    Then the room should remain in voting state
+
+  Scenario: Voting does not complete until all members confirm
+    Given a room exists with code "9999" created by "John Doe"
+    And "Guest User" has joined room "9999"
+    And the voting phase has begun
+    When the host confirms their vote
+    Then the room should remain in voting state
+
+  Scenario: Cannot start new round while waiting
+    Given a room exists with code "4444" created by "John Doe"
+    When a new round is started
+    Then starting a new round should fail
+
+  Scenario: Cannot start new round while waiting
+    Given a room exists with code "4444" created by "John Doe"
+    When a new round is started
+    Then starting a new round should fail
+
+  Scenario: Restaurant helpers handle empty values
+    Given a restaurant exists with no categories or dietary restrictions
+    Then the restaurant should not have cuisine "Italian"
+    And the dietary restrictions list should be empty
+
+  Scenario: Login model validation requires email and password
+    Given a user login is validated without email or password
+    Then login validation should fail
+
+  # ==========================================
   # ROOM CREATION SCENARIOS
   # ==========================================
 
@@ -253,6 +351,19 @@ Feature: Group Room Functionality
   # SPINNING PHASE
   # ==========================================
 
+  Scenario: Room cannot start spinning twice
+    Given a room exists with code "1234" created by "John Doe"
+    When the host starts spinning
+    And the host tries to start spinning again
+    Then starting spinning should fail
+
+  Scenario: Member cannot spin out of turn
+    Given a room exists with code "1234" created by "John Doe"
+    And "Alice" has joined room "1234"
+    And the spinning phase has started
+    When "Alice" tries to spin
+    Then spinning should fail
+
   @javascript
   Scenario: Room creator starts spinning phase
     Given I have created a room with code "1234"
@@ -261,6 +372,11 @@ Feature: Group Room Functionality
     Then I should see "Taking Turns Spinning!"
     And I should see "Turn Order:"
     And I should see my turn indicator
+
+  Scenario: Room cannot start spinning if already spinning
+    Given a room exists in spinning state
+    When I try to start spinning again
+    Then it should return false
 
   @javascript
   Scenario: Members take turns spinning
@@ -340,6 +456,17 @@ Feature: Group Room Functionality
   # VOTING PHASE
   # ==========================================
 
+  Scenario: User cannot vote before voting phase
+    Given a room exists with code "1234" created by "John Doe"
+    When the host votes for option 1
+    Then voting should fail
+
+  Scenario: Confirming vote without voting fails
+    Given a room exists with code "1234" created by "John Doe"
+    And the voting phase has begun
+    When the host confirms vote without voting
+    Then vote confirmation should fail
+
   @javascript
   Scenario: Members vote on revealed options
     Given I have created a room with code "1234"
@@ -377,6 +504,11 @@ Feature: Group Room Functionality
   # ==========================================
   # COMPLETE PHASE (Winner Selection)
   # ==========================================
+
+  Scenario: Reveal options fails outside revealing state
+    Given a room exists with code "1234" created by "John Doe"
+    When the host tries to reveal options
+    Then reveal should fail
 
   @javascript
   Scenario: Winner is selected after all votes
@@ -471,3 +603,4 @@ Feature: Group Room Functionality
     When the spinning phase starts
     Then all 6 members should be in turn order
     And each should get exactly one turn
+

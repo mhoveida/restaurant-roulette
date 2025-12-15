@@ -21,6 +21,11 @@ Feature: Home Page
     Given I am on the home page
     Then I should see the roulette wheel graphic
 
+  Scenario: Clicking site logo returns user to home page
+    Given I am on the solo spin page
+    When I click the site logo
+    Then I should be on the home page
+
   Scenario: Guest user clicks Solo Spin button
     Given I am on the home page
     And I am not logged in

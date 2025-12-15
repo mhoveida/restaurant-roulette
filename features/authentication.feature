@@ -221,4 +221,6 @@ Feature: User Authentication
     Then I should be redirected to the home page
     And I should see "Authentication failed"
 
-
+  Scenario: Login page does not render main container
+    Given I am on the login page
+    Then the main container should not be rendered
