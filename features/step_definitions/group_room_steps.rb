@@ -875,9 +875,22 @@ Then('I should see the status') do
 end
 
 Then('a winner should be randomly selected') do
-  @room.reload
-  expect(@room.state).to eq('complete')
+  # Wait for room to be in complete state
+  Timeout.timeout(10) do
+    loop do
+      @room.reload
+      break if @room.complete? && @room.winner.present?
+      sleep 0.1
+    end
+  end
+  
+  # Verify winner exists
   expect(@room.winner).to be_present
+  expect(@room.winner["tie_broken"]).to be true
+  expect(@room.winner["tied_count"]).to eq(3)
+  
+  # Give JavaScript time to finish any pending requests
+  sleep 0.5
 end
 
 Then('the winner should be selected') do
